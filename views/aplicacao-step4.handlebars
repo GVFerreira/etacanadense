@@ -1,0 +1,44 @@
+<style>
+    label {
+        font-weight: bold;
+    }
+    .text-red {
+        color: #FF0000
+    }
+</style>
+<main class="my-4" style="flex: 1 1 0">
+    <section class="container">
+        <h1>Solicitação de Autorização Eletrônica de Viagem (eTA)</h1>
+        <hr>
+        {{#each errors}}
+            <div class="alert alert-danger">{{text}}</div>
+        {{else}}
+        {{/each}}
+        <h2>Acompanhe o progresso da sua aplicação de visto</h2>
+        <div class="progress mt-3 mb-5">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">1. Representante ou titular?</p>
+            </div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">2. Validação</p>
+            </div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">3. Documentos</p>
+            </div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">4. Pagamento</p>
+            </div>
+        </div>
+        <form action="/aplicacaoStep4" method="POST">
+            <p>{{mensagem}}</p>
+            <input class="btn btn-success mt-5" id="envForm" type="submit" value="Próximo">
+        </form>
+    </section>
+    {{!-- MODAIS--}}
+    <section></section>
+</main>
+<script>
+    
+</script>
+
+

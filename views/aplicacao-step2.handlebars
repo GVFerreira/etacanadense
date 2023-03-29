@@ -1,0 +1,300 @@
+<style>
+    label {
+        font-weight: bold;
+    }
+    .text-red {
+        color: #FF0000
+    }
+</style>
+<main class="my-4" style="flex: 1 1 0">
+    <section class="container">
+        <h1>Solicitação de Autorização Eletrônica de Viagem (eTA)</h1>
+        <hr>
+        {{#each errors}}
+            <div class="alert alert-danger">{{text}}</div>
+        {{else}}
+        {{/each}}
+        <h2>Acompanhe o progresso da sua aplicação de visto</h2>
+        <div class="progress mt-3 mb-5">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">1. Representante ou titular?</p>
+            </div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">2. Validação</p>
+            </div>
+            <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">3. Documentos</p>
+            </div>
+            <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                <p class="m-0 p-0">4. Pagamento</p>
+            </div>
+        </div>
+        <form action="/aplicacaoStep2" method="POST">
+            <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
+            <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
+                <i class="bi bi-question-circle-fill btn"></i>
+            </a>
+            <select class="form-select w-50 mb-3" name="document" id="document" onchange="showFields(this.value)" required>
+                <option value="">Selecione</option>
+                <option value="pass-commom">Passaporte – comum/regular</option>
+            </select>
+            <div class="mb-3" id="dynamicFields"></div>
+            <input class="btn btn-success mt-5" id="envForm" type="submit" value="Próximo">
+        </form>
+    </section>
+    {{!-- MODAIS--}}
+    <section>
+        {{!-- MODAL PARA EXPLICAR OS TIPOS DE DOCUMENTOS--}}
+        <div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h5 class="modal-title bg-dark" id="exampleModalLabel">Ajuda - Qual documento de viagem você pretende usar para viajar para o Canadá?</h5>
+                </div>
+                <div class="modal-body">
+                    <h6>Passaporte – comum/regular</h6>
+                    <p>Passaporte emitido para cidadãos em viagens ocasionais, como férias e viagens de negócios.</p>
+                    <hr>
+
+                    <h6>Passaporte – diplomático</h6>
+                    <p>Passaporte emitido para cidadãos que são funcionários governamentais de alto escalão, diplomatas ou representantes e delegados de um governo.</p>
+                    <hr>
+
+                    <h6>Passaporte – oficial</h6>
+                    <p>Passaporte normalmente emitido para cidadãos viajando em negócios oficiais do governo, tais como funcionários governamentais não diplomáticos. Use-o se a capa do seu passaporte diz “oficial”.</p>
+                    <hr>
+
+                    <h6>Passaporte – serviço</h6>
+                    <p>Passaporte normalmente emitido para cidadãos viajando em negócios oficiais do governo, tais como funcionários governamentais não diplomáticos. Use-o se a capa do seu passaporte diz “serviço”.</p>
+                    <hr>
+
+                    <h6>Documento de viagem emergencial/temporário</h6>
+                    <p>Documento de viagem ou passaporte emitido para cidadãos em casos urgentes, quando a emissão de um passaporte temporário não é possível. Esses documentos geralmente são válidos por um curto período de tempo.</p>
+                    <hr>
+
+                    <h6>Documento de viagem de refugiados</h6>
+                    <p>Documento de viagem emitido para não cidadãos com estatuto de pessoa protegida, inclusive os refugiados amparados por Convenção e as pessoas que necessitam de proteção. Observação: você não tem direito a solicitar uma AEV usando este documento. É possível que você necessite de um visto ou outro tipo de documento de viagem para viajar ao Canadá.</p>
+                    <hr>
+
+                    <h6>Passaporte de estrangeiro/documento de viagem emitido para não cidadãos</h6>
+                    <p>Passaporte ou documento de viagem emitido para não cidadãos que residem permanentemente ou temporariamente no país que emitiu o documento, mas que não são cidadãos daquele país. Observação: você não tem direito a solicitar uma AEV usando este documento. É possível que você necessite de um visto ou outro tipo de documento de viagem para viajar ao Canadá.</p>
+                    <hr>
+
+                    <h6>Permissão para reingressar nos Estados Unidos (I-327)</h6>
+                    <p>Documento de viagem emitido pelos Serviços de Cidadania e Imigração dos Estados Unidos para residentes permanentes legais a fim de permitir que eles viajem ao exterior e retornem aos EUA sem terem que obter um visto de regresso para residentes.</p>
+                    <hr>
+
+                    <h6>Documento de viagem para refugiados dos Estados Unidos (I-571)</h6>
+                    <p>Documento de viagem emitido pelos Serviços de Cidadania e Imigração dos Estados Unidos para não cidadãos que foram reconhecidos como refugiados ou que receberam asilo. Se você possui um I-571, tem direito a solicitar uma AEV somente se for um residente permanente legal dos EUA.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        {{!-- MODAL PARA EXPLICAR ONDE ENCONTAR O CÓDIGO NO PASSAPORTE--}}
+        <div class="modal fade" id="codPassportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-light" id="exampleModalLabel">Ajuda - Encontre o código abaixo no seu passaporte.</h5>
+                </div>
+                <div class="modal-body">
+                    <img src="/img/example-passport.jpg" alt="Exemplo de um passaporte" width="100%">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    function showFields(type) {
+        let dynamicFields = document.getElementById('dynamicFields');
+        dynamicFields.innerHTML = ''
+
+        if (type === '') {
+            dynamicFields.innerHTML += '<span class="text-red">Selecione alguma das opções acima</span>'
+        } else if (type === 'pass-commom') {
+            dynamicFields.innerHTML += `
+                <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.  <span class="text-red">* (obrigatório)</span></label>
+                <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
+                    <i class="bi bi-question-circle-fill btn"></i>
+                </a>
+                <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passaporteBrasil" id="passaporteBrasil1" onchange="showUSCIS(0)" value="0" required="required">
+                        <label class="form-check-label" for="passaporteBrasil1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passaporteBrasil" id="passaporteBrasil2" onchange="showUSCIS(1)" value="1" required="required">
+                        <label class="form-check-label" for="passaporteBrasil2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+                <div id="dynamicUSCIS"></div>
+            `
+        }
+    }
+    function showUSCIS(type) {
+        let dynamicUSCIS = document.getElementById('dynamicUSCIS')
+        dynamicUSCIS.innerHTML = ''
+
+        if(type === '') {
+            dynamicUSCIS.innerHTML += '<p>Selecione uma opção</p>'
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+        } else if (type === 0) {
+            dynamicUSCIS.innerHTML += `
+                <div class="alert alert-danger w-50 my-3">
+                    <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
+                </div>
+            `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+
+        } else if (type === 1) {
+            dynamicUSCIS.innerHTML += `
+                <label for="USCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="USCIS" id="USCIS1" onchange="showAviao(0)" value="0" required="required">
+                        <label class="form-check-label" for="USCIS1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="USCIS" id="USCIS2" onchange="showAviao(1)" value="1" required="required">
+                        <label class="form-check-label" for="USCIS2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+                <div id="dynamicAviao"></div>
+            `
+        }
+    }
+    function showAviao(type) {
+        let dynamicAviao = document.getElementById('dynamicAviao')
+        dynamicAviao.innerHTML = ''
+
+        if(type === 1) {
+            dynamicAviao.innerHTML += `
+                <div class="alert alert-danger w-50 my-3">
+                    <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
+                </div>
+            `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+                
+        } else if (type === 0) {
+            dynamicAviao.innerHTML += `
+                <label for="aviao" class="mt-3">Você está viajando para o Canadá de avião? <span class="text-red">* (obrigatório)</span></label>
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="aviao" id="aviao1" onchange="showCanadaVisa(0)" value="0" required="required">
+                        <label class="form-check-label" for="aviao1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="aviao" id="aviao2" onchange="showCanadaVisa(1)" value="1" required="required">
+                        <label class="form-check-label" for="aviao2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            `
+            dynamicAviao.innerHTML += `
+                <div id="dynamicCanadaVisa"></div>
+            `
+        }
+    }
+    function showCanadaVisa(type) {
+        let dynamicCanadaVisa = document.getElementById('dynamicCanadaVisa')
+        dynamicCanadaVisa.innerHTML = ''
+
+        if(type === 0) {
+            dynamicCanadaVisa.innerHTML += `
+                <div class="alert alert-danger w-50 my-3">
+                    <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
+                </div>
+            `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+        } else if (type === 1) {
+            dynamicCanadaVisa.innerHTML += `
+                <label for="canadaVisa" class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido? <span class="text-red">* (obrigatório)</span></label>
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" onchange="showNonImmigrantVisa(0)" value="0" required="required">
+                        <label class="form-check-label" for="canadaVisa1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" onchange="showNonImmigrantVisa(1)" value="1" required="required">
+                        <label class="form-check-label" for="canadaVisa2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            `
+            dynamicCanadaVisa.innerHTML += `
+                <div id="dynamicNonImmigrantVisa"></div>
+            `
+        }
+    }
+    function showNonImmigrantVisa(type) {
+        let dynamicNonImmigrantVisa = document.getElementById('dynamicNonImmigrantVisa')
+        dynamicNonImmigrantVisa.innerHTML = `
+            <label for="nonImmigrantVisa" class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA? <span class="text-red">* (obrigatório)</span></label>
+            <div class="p-2 w-50 d-flex flex-row gap-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="nonImmigrantVisa" id="nonImmigrantVisa1" onchange="showDangerText(0)" value="0" required="required">
+                    <label class="form-check-label" for="nonImmigrantVisa1">
+                        Não
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="nonImmigrantVisa" id="nonImmigrantVisa2" onchange="showDangerText(1)" value="1" required="required">
+                    <label class="form-check-label" for="nonImmigrantVisa2">
+                        Sim
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" id="valueCanadaVisa" value="${type}">
+            <div id="finalDangerText"></div>
+
+        `
+    }
+    function showDangerText(type) {
+        let finalDangerText = document.getElementById('finalDangerText')
+        const canadaVisa = document.getElementById('valueCanadaVisa').value
+        finalDangerText.innerHTML = ''
+
+        if(type === 0 && canadaVisa === "0") {
+            finalDangerText.innerHTML += `
+                <div class="alert alert-danger w-50 my-3">
+                    <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
+                </div>
+            `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+        } else  {
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = ""
+        }
+
+    }
+</script>
+
+
