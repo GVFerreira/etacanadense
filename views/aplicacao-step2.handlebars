@@ -2,6 +2,9 @@
     label {
         font-weight: bold;
     }
+    .form-check-label {
+        font-weight: 400;
+    }
     .text-red {
         color: #FF0000
     }
@@ -35,7 +38,7 @@
                 <i class="bi bi-question-circle-fill btn"></i>
             </a>
             <select class="form-select w-50 mb-3" name="document" id="document" onchange="showFields(this.value)" required>
-                <option value="">Selecione</option>
+                <option value="" selected disabled>Selecione</option>
                 <option value="pass-commom">Passaporte – comum/regular</option>
             </select>
             <div class="mb-3" id="dynamicFields"></div>
