@@ -120,9 +120,7 @@
         let dynamicFields = document.getElementById('dynamicFields');
         dynamicFields.innerHTML = ''
 
-        if (type === '') {
-            dynamicFields.innerHTML += '<span class="text-red">Selecione alguma das opções acima</span>'
-        } else if (type === 'pass-commom') {
+        if (type === 'pass-commom') {
             dynamicFields.innerHTML += `
                 <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.  <span class="text-red">* (obrigatório)</span></label>
                 <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
@@ -131,14 +129,14 @@
                 <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="passaporteBrasil" id="passaporteBrasil1" onchange="showUSCIS(0)" value="0" required="required">
-                        <label class="form-check-label" for="passaporteBrasil1">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" onchange="showUSCIS(0)" value="0" required="required">
+                        <label class="form-check-label" for="passportBrazil1">
                             Não
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="passaporteBrasil" id="passaporteBrasil2" onchange="showUSCIS(1)" value="1" required="required">
-                        <label class="form-check-label" for="passaporteBrasil2">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" onchange="showUSCIS(1)" value="1" required="required">
+                        <label class="form-check-label" for="passportBrazil2">
                             Sim
                         </label>
                     </div>
@@ -147,6 +145,7 @@
             `
         }
     }
+    
     function showUSCIS(type) {
         let dynamicUSCIS = document.getElementById('dynamicUSCIS')
         dynamicUSCIS.innerHTML = ''
@@ -185,6 +184,7 @@
             `
         }
     }
+    
     function showAviao(type) {
         let dynamicAviao = document.getElementById('dynamicAviao')
         dynamicAviao.innerHTML = ''
@@ -200,17 +200,17 @@
                 
         } else if (type === 0) {
             dynamicAviao.innerHTML += `
-                <label for="aviao" class="mt-3">Você está viajando para o Canadá de avião? <span class="text-red">* (obrigatório)</span></label>
+                <label for="airplane" class="mt-3">Você está viajando para o Canadá de avião? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="aviao" id="aviao1" onchange="showCanadaVisa(0)" value="0" required="required">
-                        <label class="form-check-label" for="aviao1">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane1" onchange="showCanadaVisa(0)" value="0" required="required">
+                        <label class="form-check-label" for="airplane1">
                             Não
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="aviao" id="aviao2" onchange="showCanadaVisa(1)" value="1" required="required">
-                        <label class="form-check-label" for="aviao2">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane2" onchange="showCanadaVisa(1)" value="1" required="required">
+                        <label class="form-check-label" for="airplane2">
                             Sim
                         </label>
                     </div>
@@ -221,6 +221,7 @@
             `
         }
     }
+    
     function showCanadaVisa(type) {
         let dynamicCanadaVisa = document.getElementById('dynamicCanadaVisa')
         dynamicCanadaVisa.innerHTML = ''
@@ -238,13 +239,13 @@
                 <label for="canadaVisa" class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" onchange="showNonImmigrantVisa(0)" value="0" required="required">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" onchange="showNonImmigrateVisa(0)" value="0" required="required">
                         <label class="form-check-label" for="canadaVisa1">
                             Não
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" onchange="showNonImmigrantVisa(1)" value="1" required="required">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" onchange="showNonImmigrateVisa(1)" value="1" required="required">
                         <label class="form-check-label" for="canadaVisa2">
                             Sim
                         </label>
@@ -252,24 +253,25 @@
                 </div>
             `
             dynamicCanadaVisa.innerHTML += `
-                <div id="dynamicNonImmigrantVisa"></div>
+                <div id="dynamicNonImmigrateVisa"></div>
             `
         }
     }
-    function showNonImmigrantVisa(type) {
-        let dynamicNonImmigrantVisa = document.getElementById('dynamicNonImmigrantVisa')
-        dynamicNonImmigrantVisa.innerHTML = `
-            <label for="nonImmigrantVisa" class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA? <span class="text-red">* (obrigatório)</span></label>
+    
+    function showNonImmigrateVisa(type) {
+        let dynamicNonImmigrateVisa = document.getElementById('dynamicNonImmigrateVisa')
+        dynamicNonImmigrateVisa.innerHTML = `
+            <label for="nonImmigrateVisa" class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA? <span class="text-red">* (obrigatório)</span></label>
             <div class="p-2 w-50 d-flex flex-row gap-4">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="nonImmigrantVisa" id="nonImmigrantVisa1" onchange="showDangerText(0)" value="0" required="required">
-                    <label class="form-check-label" for="nonImmigrantVisa1">
+                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" onchange="showDangerText(0)" value="0" required="required">
+                    <label class="form-check-label" for="nonImmigrateVisa1">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="nonImmigrantVisa" id="nonImmigrantVisa2" onchange="showDangerText(1)" value="1" required="required">
-                    <label class="form-check-label" for="nonImmigrantVisa2">
+                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" onchange="showDangerText(1)" value="1" required="required">
+                    <label class="form-check-label" for="nonImmigrateVisa2">
                         Sim
                     </label>
                 </div>
@@ -279,6 +281,7 @@
 
         `
     }
+    
     function showDangerText(type) {
         let finalDangerText = document.getElementById('finalDangerText')
         const canadaVisa = document.getElementById('valueCanadaVisa').value

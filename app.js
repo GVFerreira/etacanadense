@@ -36,16 +36,24 @@ const bodyParser = require('body-parser')
 
 const mongoose = require('mongoose')
 
+const Visa = require('./models/Visa')
+
 const nodemailer = require('nodemailer')
+
+const checkout = require('./routes/checkout')
 
 const flash = require("connect-flash")
 
 const path = require('path')
 
-const multer  = require('multer')
-const { resolveSoa } = require('dns')
-
+const dotenv = require('dotenv')
 require('dotenv').config()
+
+const mercadopago = require('./config/mercadoPago')
+mercadopago.configure({
+    access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
+})
+
 
 /*SETTINGS*/
 app.use(express.static(path.join(__dirname, "public")))
@@ -74,11 +82,21 @@ app.use((req, res, next) => {
 })
 
 //Mongoose
-// mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`).then(() => {
-//     console.log("MongoDB connected...")
-// }).catch((err) => {
-//     console.log(`Erro: ${err}`)
-// })
+//mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
+ mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+ }).then(() => {
+     console.log("MONGODB CONNECTED")
+ }).catch((err) => {
+     console.log(`Erro: ${err}`)
+ })
+
+//Mercaado Pago
+    mercadopago.configure({
+        sandbox: true,
+        access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874',
+    })
 
 
 app.get('/', (req, res) => {
@@ -123,16 +141,16 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
         const title = "Documentos - "
         const data = req.session.aplicacaoStep
         const canadaVisa = data.canadaVisa
-        const nonImmigrantVisa = data.nonImmigrantVisa
-        if ((canadaVisa === "0" && nonImmigrantVisa === "1") || (canadaVisa === "1" && nonImmigrantVisa === "1")) {
+        const nonImmigrateVisa = data.nonImmigrateVisa
+        if ((canadaVisa === "0" && nonImmigrateVisa === "1") || (canadaVisa === "1" && nonImmigrateVisa === "1")) {
             let dynamicData = `
                 <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
-                <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrant" id="numVisaNonImmigrant" maxlength="35" required>
+                <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
-                <label class="mb-2" for="numVisaNonImmigrant">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
+                <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
                 <div class="row">
                     <div class="col">
-                        <select class="form-select mb-3" name="dayVisaNonImmigrant" id="dayVisaNonImmigrant">
+                        <select class="form-select mb-3" name="dayVisaNonImmigrate" id="dayVisaNonImmigrate">
                             <option selected disabled="disabled">Selecione o dia</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -168,7 +186,7 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
                         </select>
                     </div>
                     <div class="col">
-                        <select class="form-select mb-3" name="monthVisaNonImmigrant" id="monthVisaNonImmigrant">
+                        <select class="form-select mb-3" name="monthVisaNonImmigrate" id="monthVisaNonImmigrate">
                             <option selected disabled="disabled">Selecione o mês</option>
                             <option value="1">Janeiro</option>
                             <option value="2">Fevereiro</option>
@@ -185,7 +203,7 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
                         </select>
                     </div>
                     <div class="col">
-                        <select class="form-select mb-3" name="yearVisaNonImmigrant" id="yearVisaNonImmigrant">
+                        <select class="form-select mb-3" name="yearVisaNonImmigrate" id="yearVisaNonImmigrate">
                             <option selected disabled="disabled">Selecione o ano</option>
                             <option value="2023">2023</option>
                             <option value="2024">2024</option>
@@ -236,6 +254,8 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
                 </div>
             `
             res.render('aplicacao-step3', {title, dynamicData})
+        } else {
+            res.render('aplicacao-step3', {title})
         }
     }
 
@@ -262,11 +282,12 @@ app.post('/aplicacaoStep3',  /*validarFormulario,*/ (req, res) => {
     res.redirect('/aplicacao?etapa=4')
 })
 
-app.post('/aplicacaoStep4', /*validarFormulario,*/ (req, res) => {
+app.post('/aplicacaoStep4',  /*validarFormulario,*/ (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
-    res.send(req.session.aplicacaoStep)
-    req.session.destroy()
+    res.redirect('/checkout')
 })
+
+app.use('/checkout', checkout)
 
 app.listen(3000, ()=> {
     console.log("SERVER ON!")
