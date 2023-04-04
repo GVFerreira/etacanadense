@@ -50,6 +50,7 @@ const dotenv = require('dotenv')
 require('dotenv').config()
 
 const mercadopago = require('./config/mercadoPago')
+const { stringify } = require('querystring')
 mercadopago.configure({
     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
 })
@@ -83,14 +84,14 @@ app.use((req, res, next) => {
 
 //Mongoose
 //mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
- mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
- }).then(() => {
-     console.log("MONGODB CONNECTED")
- }).catch((err) => {
-     console.log(`Erro: ${err}`)
- })
+//  mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//  }).then(() => {
+//      console.log("MONGODB CONNECTED")
+//  }).catch((err) => {
+//      console.log(`Erro: ${err}`)
+//  })
 
 //Mercaado Pago
     mercadopago.configure({
@@ -262,7 +263,8 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
     if(parseInt(req.query.etapa) === 4) {
         const etapa = parseInt(req.query.etapa) || 4
         const title = "Pagamento - "
-        res.render('aplicacao-step4', {title})
+        const data = req.session.aplicacaoStep
+        res.render('aplicacao-step4', {title, data})
     }
 
 })

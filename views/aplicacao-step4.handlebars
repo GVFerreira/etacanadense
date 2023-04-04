@@ -29,7 +29,98 @@
                 <p class="m-0 p-0">4. Pagamento</p>
             </div>
         </div>
+        <h2>Confira seus dados</h2>
+        
         <form action="/aplicacaoStep4" method="POST">
+            {{#if data.representative}}
+                <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</label>
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representative" id="representative1" value="0" required>
+                        <label class="form-check-label" for="representative1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representative" id="representative2"value="1" checked required>
+                        <label class="form-check-label" for="representative2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+                <label for="relationship">Eu sou</label>
+                <select class="form-select w-50 mb-3" name="relationship" id="relationship" onchange="relationType(this.value)" selected="{{relationship}}" required>
+                    <option value="parent-friend">Parente ou amigo</option>
+                    <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
+                    <option value="iccrc">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
+                    <option value="juridico-territorial">Uma sociedade jurídica provincial ou territorial do Canadá</option>
+                    <option value="notarios">A Câmara de Notários do Quebec</option>
+                    <option value="agent">Agente de viagens</option>
+                </select>
+                {{data.relationship}}
+                {{data.payed}}
+                {{data.representativeName}}
+                {{data.representativeSurname}}
+                {{data.representativeOrgName}}
+                {{data.representativeAddress}}
+                {{data.representativeEmail}}
+                {{data.representativeNumTel}}
+                {{data.representativeNumIDmebro}}
+                {{data.representativeProvOrTer}}
+                {{data.representativeCodpostal}}
+            {{/if}}
+            
+            {{data.document}}
+            {{data.passportBrazil}}
+            {{data.USCIS}}
+            {{data.airplane}}
+            {{data.canadaVisa}}
+            {{data.numVisaNonImmigrate}}
+            {{data.dayVisaNonImmigrate}}
+            {{data.monthVisaNonImmigrate}}
+            {{data.yearVisaNonImmigrate}}
+            {{data.numPassport}}
+            {{data.doiDay}}
+            {{data.doiMonth}}
+            {{data.doiYear}}
+            {{data.doeDay}}
+            {{data.doeMonth}}
+            {{data.doeYear}}
+            {{data.firstName}}
+            {{data.surname}}
+            {{data.dobDay}}
+            {{data.dobMonth}}
+            {{data.dobYear}}
+            {{data.gender}}
+            {{data.countryBirth}}
+            {{data.cityBirth}}
+            {{data.maritalStatus}}
+            {{data.appliedToCanada}}
+            {{data.personalUCI}}
+            {{data.occupation}}
+            {{data.employmentTitle}}
+            {{data.employmentCompanyName}}
+            {{data.employmentCountry}}
+            {{data.employmentCity}}
+            {{data.employmentFromDateYear}}
+            {{data.travelWhen}}
+            {{data.travelDay}}
+            {{data.travelMonth}}
+            {{data.travelYear}}
+            {{data.travelTimeHour}}
+            {{data.travelTimeMinute}}
+            {{data.travelTimeZone}}
+            {{data.refusedVisaToCanda}}
+            {{data.refusedVisaToCandaDetails}}
+            {{data.criminalOffenceAnywhere}}
+            {{data.criminalOffenceAnywhereDetails}}
+            {{data.tuberculosis}}
+            {{data.tuberculosisResultCareWorker}}
+            {{data.diagnosedWithTuberculosis}}
+            {{data.theseConditions}}
+            {{data.canadaDuringStayDetails}}
+            {{data.agreeCheck}}
+            {{data.consentAndDeclaration}}
             <input type="text" class="form-control mb-3 w-50" name="title" value="Solicitação Eletrônica de Viagem">
             <input type="number" class="form-control mb-3 w-50" name="price" value="99">
             <input type="number" class="form-control mb-3 w-50" name="quantity" value="1">
