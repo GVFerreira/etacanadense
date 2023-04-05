@@ -33,6 +33,7 @@
         
         <form action="/aplicacaoStep4" method="POST">
             {{#if data.representative}}
+                <h3 class="h4">Dados do representante</h3>
                 <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
@@ -49,7 +50,7 @@
                     </div>
                 </div>
                 <label for="relationship">Eu sou</label>
-                <select class="form-select w-50 mb-3" name="relationship" id="relationship" onchange="relationType(this.value)" selected="{{relationship}}" required>
+                <select class="form-select w-50 mb-3" name="relationship" id="relationship" required>
                     <option value="parent-friend">Parente ou amigo</option>
                     <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
                     <option value="iccrc">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
@@ -57,19 +58,67 @@
                     <option value="notarios">A Câmara de Notários do Quebec</option>
                     <option value="agent">Agente de viagens</option>
                 </select>
-                {{data.relationship}}
-                {{data.payed}}
-                {{data.representativeName}}
-                {{data.representativeSurname}}
-                {{data.representativeOrgName}}
-                {{data.representativeAddress}}
-                {{data.representativeEmail}}
-                {{data.representativeNumTel}}
-                {{data.representativeNumIDmebro}}
-                {{data.representativeProvOrTer}}
-                {{data.representativeCodpostal}}
+                <label for="payed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome?</label>
+                {{#if data.payed}}
+                    <div class="p-2 w-50 d-flex flex-row gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payed" id="payed1" value="0" required>
+                            <label class="form-check-label" for="payed1">
+                                Não
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payed" id="payed2"value="1" checked required>
+                            <label class="form-check-label" for="payed2">
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                {{else}}
+                    <div class="p-2 w-50 d-flex flex-row gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payed" id="payed1" value="0" checked required>
+                            <label class="form-check-label" for="payed1">
+                                Não
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="payed" id="payed2"value="1" required>
+                            <label class="form-check-label" for="payed2">
+                                Sim
+                            </label>
+                        </div>
+                    </div>
+                {{/if}}
+                 <label for="representativeName">Nome:</label>
+                <input class="form-control mb-3 w-50" type="text" name="name" id="name" value="{{data.representativeName}}" required>
+
+                <label for="representativeSurname">Sobrenome(s):</label>
+                <input class="form-control mb-3 w-50" type="text" name="surname" id="surname" value="{{data.representativeSurname}}" required>
+
+                <label for="representativeOrgName">Nome da empresa:</label>
+                <input class="form-control mb-3" type="text" name="orgname" id="orgname" value="{{data.representativeOrgName}}" required>
+
+                <label for="representativeAddress">Endereço:</label>
+                <input class="form-control mb-3 w-50" type="text" name="address" id="address" value="{{data.representativeOrgName}}" required>
+
+                <label for="representativeEmail">E-mail:</label>
+                <input class="form-control mb-3 w-50" type="email" name="email" id="email" value="{{data.representativeEmail}}" required>
+
+                <label for="representativeNumTel">Número de telefone:</label>
+                <input class="form-control mb-3 w-50" type="text" name="numTel" id="numTel" value="{{data.representativeNumTel}}" required>
+
+                <label for="representativeNumIDmebro">Número de identificação de membro:</label>
+                <input class="form-control mb-3" type="text" name="numIDmebro" id="numIDmebro" value="{{representativeNumIDmebro}}" required>
+
+                <label for="representativeProvOrTer">Província ou território:</label>
+                <input class="form-control mb-3" type="text" name="provOuTer" id="provOuTer" value="{{data.representativeProvOrTer}}" required>
+
+                <label for="representativeCodpostal">Código postal:</label>
+                <input class="form-control mb-3" type="text" name="codpostal" id="codpostal" value="{{data.representativeCodpostal}}" required>
+
+                <hr>
             {{/if}}
-            
             {{data.document}}
             {{data.passportBrazil}}
             {{data.USCIS}}
@@ -131,7 +180,9 @@
     <section></section>
 </main>
 <script>
-    
+  window.onload = function() {
+    document.getElementById("relationship").value = "{{data.relationship}}"
+  }
 </script>
 
 

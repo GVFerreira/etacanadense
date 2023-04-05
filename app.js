@@ -264,13 +264,14 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
         const etapa = parseInt(req.query.etapa) || 4
         const title = "Pagamento - "
         const data = req.session.aplicacaoStep
+        console.log(data)
         res.render('aplicacao-step4', {title, data})
     }
 
 })
 
 app.post('/aplicacaoStep1', (req, res) => {
-    req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
+    req.session.aplicacaoStep = Object.assign({}, req.body)
     res.redirect('/aplicacao?etapa=2')
 })
 
