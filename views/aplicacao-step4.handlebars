@@ -29,7 +29,7 @@
                 <p class="m-0 p-0">4. Pagamento</p>
             </div>
         </div>
-        <h2>Confira seus dados</h2>
+        <h2 class="mb-5">Confira as informações respondidas anteriormente</h2>
         
         <form action="/aplicacaoStep4" method="POST">
             {{#if data.representative}}
@@ -37,7 +37,7 @@
                 <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="representative" id="representative1" value="0" required>
+                        <input class="form-check-input" type="radio" name="representative" id="representative1" value="0" disabled required>
                         <label class="form-check-label" for="representative1">
                             Não
                         </label>
@@ -49,8 +49,8 @@
                         </label>
                     </div>
                 </div>
-                <label for="relationship">Eu sou</label>
-                <select class="form-select w-50 mb-3" name="relationship" id="relationship" required>
+                <label for="representativeRelationship">Eu sou</label>
+                <select class="form-select w-50 mb-3" name="representativeRelationship" id="representativeRelationship" required>
                     <option value="parent-friend">Parente ou amigo</option>
                     <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
                     <option value="iccrc">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
@@ -59,17 +59,17 @@
                     <option value="agent">Agente de viagens</option>
                 </select>
                 <label for="payed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome?</label>
-                {{#if data.payed}}
+                {{#if data.representativePayed}}
                     <div class="p-2 w-50 d-flex flex-row gap-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payed" id="payed1" value="0" required>
-                            <label class="form-check-label" for="payed1">
+                            <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed1" value="0" disabled required>
+                            <label class="form-check-label" for="representativePayed1">
                                 Não
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payed" id="payed2"value="1" checked required>
-                            <label class="form-check-label" for="payed2">
+                            <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed2"value="1" checked required>
+                            <label class="form-check-label" for="representativePayed2">
                                 Sim
                             </label>
                         </div>
@@ -77,20 +77,20 @@
                 {{else}}
                     <div class="p-2 w-50 d-flex flex-row gap-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payed" id="payed1" value="0" checked required>
-                            <label class="form-check-label" for="payed1">
+                            <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed1" value="0" checked required>
+                            <label class="form-check-label" for="representativePayed1">
                                 Não
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="payed" id="payed2"value="1" required>
-                            <label class="form-check-label" for="payed2">
+                            <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed2"value="1" disabled required>
+                            <label class="form-check-label" for="representativePayed2">
                                 Sim
                             </label>
                         </div>
                     </div>
                 {{/if}}
-                 <label for="representativeName">Nome:</label>
+                <label for="representativeName">Nome:</label>
                 <input class="form-control mb-3 w-50" type="text" name="name" id="name" value="{{data.representativeName}}" required>
 
                 <label for="representativeSurname">Sobrenome(s):</label>
@@ -116,18 +116,196 @@
 
                 <label for="representativeCodpostal">Código postal:</label>
                 <input class="form-control mb-3" type="text" name="codpostal" id="codpostal" value="{{data.representativeCodpostal}}" required>
-
                 <hr>
             {{/if}}
-            {{data.document}}
-            {{data.passportBrazil}}
-            {{data.USCIS}}
-            {{data.airplane}}
-            {{data.canadaVisa}}
+
+            <h3 class="h4">Perguntas de validação</h3>
+
+            <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá?</label>
+            <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
+                <i class="bi bi-question-circle-fill btn"></i>
+            </a>
+            <select class="form-select w-50 mb-3" name="document" id="document" onchange="showFields(this.value)" required>
+                <option value="pass-commom" selected>Passaporte – comum/regular</option>
+            </select>
+
+            <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.</label>
+            <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
+                <i class="bi bi-question-circle-fill btn"></i>
+            </a>
+            <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
+            {{#if data.passportBrazil}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" value="0" disabled required>
+                        <label class="form-check-label" for="passportBrazil1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" value="1" checked required>
+                        <label class="form-check-label" for="passportBrazil2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{else}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" value="0" checked required>
+                        <label class="form-check-label" for="passportBrazil1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" value="1" disabled required>
+                        <label class="form-check-label" for="passportBrazil2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+
+            <label for="residentUSCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</label>  
+            {{#if data.residentUSCIS}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" disabled required>
+                        <label class="form-check-label" for="residentUSCIS1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" checked required>
+                        <label class="form-check-label" for="residentUSCIS2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{else}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" checked required>
+                        <label class="form-check-label" for="residentUSCIS1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" disabled required>
+                        <label class="form-check-label" for="residentUSCIS2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+
+            <label for="airplane" class="mt-3">Você está viajando para o Canadá de avião?</label>
+            {{#if data.airplane}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" disabled required>
+                        <label class="form-check-label" for="airplane1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" checked required>
+                        <label class="form-check-label" for="airplane2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{else}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" checked required>
+                        <label class="form-check-label" for="airplane1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" disabled required>
+                        <label class="form-check-label" for="airplane2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+
+            <label for="canadaVisa" class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</label>
+            {{#if data.canadaVisa}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" disabled required>
+                        <label class="form-check-label" for="canadaVisa1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" checked required>
+                        <label class="form-check-label" for="canadaVisa2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{else}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" checked required>
+                        <label class="form-check-label" for="canadaVisa1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" disabled required>
+                        <label class="form-check-label" for="canadaVisa2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+
+            <label for="nonImmigrateVisa" class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA?</label>
+            {{#if data.canadaVisa}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" disabled required>
+                        <label class="form-check-label" for="nonImmigrateVisa1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" checked required>
+                        <label class="form-check-label" for="nonImmigrateVisa2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{else}}
+                <div class="p-2 w-50 d-flex flex-row gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" checked required>
+                        <label class="form-check-label" for="nonImmigrateVisa1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" disabled required>
+                        <label class="form-check-label" for="nonImmigrateVisa2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+            {{/if}}
+            <hr>
+
+            <h3 class="h4">Dados de Não-Imigrante</h3>
             {{data.numVisaNonImmigrate}}
-            {{data.dayVisaNonImmigrate}}
-            {{data.monthVisaNonImmigrate}}
-            {{data.yearVisaNonImmigrate}}
+            {{data.datetVisaNonImmigrate}}
+            <hr>
+
+            <h3 class="h4">Dados do passaporte do requerente</h3>
+
             {{data.numPassport}}
             {{data.doiDay}}
             {{data.doiMonth}}
@@ -143,15 +321,32 @@
             {{data.gender}}
             {{data.countryBirth}}
             {{data.cityBirth}}
+            <hr>
+
+            <h3 class="h4">Dados pessoais do requerente</h3>
             {{data.maritalStatus}}
             {{data.appliedToCanada}}
             {{data.personalUCI}}
+            <hr>
+
+            <h3 class="h4">Informações de emprego</h3>
             {{data.occupation}}
             {{data.employmentTitle}}
             {{data.employmentCompanyName}}
             {{data.employmentCountry}}
             {{data.employmentCity}}
             {{data.employmentFromDateYear}}
+            <hr>
+
+            <h3 class="h4">Informações de contato</h3>
+
+            <hr>
+
+            <h3 class="h4">Endereço residencial</h3>
+    
+            <hr>
+
+            <h3 class="h4">Informação de viagem</h3>
             {{data.travelWhen}}
             {{data.travelDay}}
             {{data.travelMonth}}
@@ -159,6 +354,9 @@
             {{data.travelTimeHour}}
             {{data.travelTimeMinute}}
             {{data.travelTimeZone}}
+            <hr>
+
+            <h3 class="h4">Perguntas básicas</h3>
             {{data.refusedVisaToCanda}}
             {{data.refusedVisaToCandaDetails}}
             {{data.criminalOffenceAnywhere}}
@@ -167,12 +365,30 @@
             {{data.tuberculosisResultCareWorker}}
             {{data.diagnosedWithTuberculosis}}
             {{data.theseConditions}}
-            {{data.canadaDuringStayDetails}}
-            {{data.agreeCheck}}
-            {{data.consentAndDeclaration}}
-            <input type="text" class="form-control mb-3 w-50" name="title" value="Solicitação Eletrônica de Viagem">
-            <input type="number" class="form-control mb-3 w-50" name="price" value="99">
-            <input type="number" class="form-control mb-3 w-50" name="quantity" value="1">
+
+            <h3 class="mt-4">Consentimento e declaração</h3>
+
+            <p>As informações fornecidas ao IRCC são coletadas sob a autoridade da Lei de Proteção à Imigração e Refugiados (IRPA) para determinar a admissibilidade no Canadá. As informações fornecidas podem ser compartilhadas com outras instituições do governo canadense, como, entre outras, a Agência de Serviços de Fronteiras do Canadá (CBSA), a Polícia Montada Real do Canadá (RCMP), o Serviço de Inteligência de Segurança do Canadá (CSIS), o Departamento de Relações Exteriores , Comércio e Desenvolvimento (DFATD), Emprego e Desenvolvimento Social do Canadá (ESDC), Agência de Receita do Canadá (CRA), governos provinciais e territoriais e governos estrangeiros de acordo com a subseção 8(2) da Lei de Privacidade. As informações podem ser divulgadas ou validadas com governos estrangeiros, órgãos de aplicação da lei e autoridades de detenção no que diz respeito à administração e aplicação da legislação de imigração, onde tal compartilhamento de informações não pode colocar o indivíduo e/ou sua família em risco. As informações também podem ser sistematicamente validadas por outras instituições do governo canadense para fins de validação de status e identidade para administrar seus programas.</p>
+            <p>Quando a biometria for fornecida como parte de um aplicativo, as impressões digitais coletadas serão armazenadas e compartilhadas com o RCMP. O registro da impressão digital também pode ser divulgado às agências de aplicação da lei no Canadá, de acordo com a subseção 13.11(1) dos Regulamentos de Imigração e Proteção aos Refugiados. As informações podem ser usadas para estabelecer ou verificar a identidade de uma pessoa a fim de prevenir, investigar ou processar um delito sob qualquer lei do Canadá ou de uma província. Essas informações também podem ser usadas para estabelecer ou verificar a identidade de um indivíduo cuja identidade não pode ser razoavelmente estabelecida ou verificada por causa de sua condição física ou mental. O Canadá também pode compartilhar informações de imigração relacionadas a registros biométricos com governos estrangeiros com os quais o Canadá tenha um acordo ou acordo.</p>
+            <p>Dependendo do tipo de solicitação feita, as informações fornecidas serão armazenadas em um ou mais bancos de informações pessoais (PIB) de acordo com a seção 10(1) da Lei de Privacidade do Canadá. Os indivíduos também têm direito à proteção e acesso às suas informações pessoais armazenadas em cada PIB correspondente de acordo com a Lei de Acesso à Informação. Mais detalhes sobre os PIBs pertencentes à linha de negócios e serviços do IRCC e o acesso do Governo do Canadá a programas de informação e privacidade estão disponíveis no <a href="https://www.tbs-sct.gc.ca/hgw-cgf/oversight-surveillance/atip-aiprp/ai/iapih-rpfr-eng.asp" target="_blank">site da Infosource</a> e por meio do Call Center do IRCC. Info Source também está disponível em bibliotecas públicas em todo o Canadá.</p>
+            <h4>Declaração do Requerente</h4>
+            <p>Li e compreendi a declaração acima.</p>
+            <p>Declaro que as informações por mim prestadas neste requerimento são verdadeiras, completas e corretas.</p>
+            <p>Entendo que a declaração falsa é uma ofensa sob a seção 127 da <em>Lei de Proteção à Imigração e Refugiados</em> e pode resultar em inadmissibilidade para o Canadá ou remoção do Canadá.</p>
+            <p>Concordo que, ao digitar meu nome e clicar em assinar, assino eletronicamente minha inscrição.</p>
+            
+            <h4 class="mt-4">Concordo <span class="text-red">* (obrigatório)</span></h4>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" value="OK" name="agreeCheck" id="flexCheckDefault" required>
+                <label class="form-check-label" for="flexCheckDefault">
+                    Concordo
+                </label>
+            </div>
+
+            <label for="consentAndDeclaration">Assinatura do requerente <span class="text-red">* (obrigatório)</span></label>
+            <p>Para assinar, digite seu nome como aparece no seu passaporte.</p> 
+            <input type="text" class="form-control mb-3 w-50" id="consentAndDeclaration"  name="consentAndDeclaration" required>
+
             <input class="btn btn-success mt-5" id="envForm" type="submit" value="Próximo">
         </form>
     </section>
@@ -181,7 +397,7 @@
 </main>
 <script>
   window.onload = function() {
-    document.getElementById("relationship").value = "{{data.relationship}}"
+    document.getElementById("representativeRelationship").value = "{{data.representativeRelationship}}"
   }
 </script>
 

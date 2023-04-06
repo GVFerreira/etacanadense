@@ -165,17 +165,17 @@
 
         } else if (type === 1) {
             dynamicUSCIS.innerHTML += `
-                <label for="USCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
+                <label for="residentUSCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="USCIS" id="USCIS1" onchange="showAviao(0)" value="0" required="required">
-                        <label class="form-check-label" for="USCIS1">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" onchange="showAviao(0)" value="0" required="required">
+                        <label class="form-check-label" for="residentUSCIS1">
                             Não
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="USCIS" id="USCIS2" onchange="showAviao(1)" value="1" required="required">
-                        <label class="form-check-label" for="USCIS2">
+                        <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" onchange="showAviao(1)" value="1" required="required">
+                        <label class="form-check-label" for="residentUSCIS2">
                             Sim
                         </label>
                     </div>
@@ -299,7 +299,6 @@
             const envForm = document.getElementById('envForm')
             envForm.disabled = ""
         }
-
     }
 </script>
 

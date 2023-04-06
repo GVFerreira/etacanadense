@@ -255,16 +255,15 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
                 </div>
             `
             res.render('aplicacao-step3', {title, dynamicData})
-        } else {
+         } else {
             res.render('aplicacao-step3', {title})
-        }
+         }
     }
 
     if(parseInt(req.query.etapa) === 4) {
         const etapa = parseInt(req.query.etapa) || 4
         const title = "Pagamento - "
         const data = req.session.aplicacaoStep
-        console.log(data)
         res.render('aplicacao-step4', {title, data})
     }
 

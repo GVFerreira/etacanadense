@@ -54,8 +54,8 @@
         } else if (type === '1') {
             dynamicFields.innerHTML += '<h2>Detalhes do responsável ou representante</h2><hr>'
             dynamicFields.innerHTML += `
-                <label for="relationship">Eu sou <span class="text-red">* (obrigatório)</span></label>
-                <select class="form-select w-50 mb-3" name="relationship" id="relationship" onchange="relationType(this.value)" required>
+                <label for="representativeRelationship">Eu sou <span class="text-red">* (obrigatório)</span></label>
+                <select class="form-select w-50 mb-3" name="representativeRelationship" id="representativeRelationship" onchange="relationType(this.value)" required>
                     <option value="" selected disabled>Selecione</option>
                     <option value="parent-friend">Parente ou amigo</option>
                     <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
@@ -64,8 +64,8 @@
                     <option value="notarios">A Câmara de Notários do Quebec</option>
                     <option value="agent">Agente de viagens</option>
                 </select>
-                <label for="payed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome? <span class="text-red">* (obrigatório)</span></label>
-                <select class="form-select w-50 mb-3" name="payed" id="payed" required>
+                <label for="representativePayed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome? <span class="text-red">* (obrigatório)</span></label>
+                <select class="form-select w-50 mb-3" name="representativePayed" id="representativePayed" required>
                     <option value="" selected disabled>Selecione</option>
                     <option value="0">Não</option>
                     <option value="1">Sim</option>
@@ -84,91 +84,91 @@
         } else if (type === 'parent-friend') {
             relationFields.innerHTML += `
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3 w-50" type="text" name="name" id="name" required>
+                <input class="form-control mb-3 w-50" type="text" name="representativeName" id="representativeName" required>
 
                 <label for="representativeSurname">Sobrenome(s): <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3 w-50" type="text" name="surname" id="surname" required>
+                <input class="form-control mb-3 w-50" type="text" name="representativeSurname" id="representativeSurname" required>
 
                 <label for="representativeAddress">Endereço: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3 w-50" type="text" name="address" id="address" required>
+                <input class="form-control mb-3 w-50" type="text" name="representativeAddress" id="representativeAddress" required>
 
                 <label for="representativeEmail">E-mail: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3 w-50" type="email" name="email" id="email" required>
+                <input class="form-control mb-3 w-50" type="email" name="representativeEmail" id="representativeEmail" required>
 
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3 w-50" type="text" name="numTel" id="numTel" required>
+                <input class="form-control mb-3 w-50" type="text" name="representativeNumTel" id="representativeNumTel" required>
             `
         } else if (type === 'org-rel' || type === 'agent') {
             relationFields.innerHTML += `
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="name" id="name" required>
+                <input class="form-control mb-3" type="text" name="representativeName" id="representativeName" required>
 
                 <label for="representativeSurname">Sobrenome(s): <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="surname" id="surname" required>
+                <input class="form-control mb-3" type="text" name="representativeSurname" id="representativeSurname" required>
 
                 <label for="representativeOrgName">Nome da empresa: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="orgname" id="orgname" required>
+                <input class="form-control mb-3" type="text" name="representativeOrgName" id="representativeOrgName" required>
 
                 <label for="representativeAddress">Endereço: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="address" id="address" required>
+                <input class="form-control mb-3" type="text" name="representativeAddress" id="representativeAddress" required>
 
                 <label for="representativeEmail">E-mail: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="email" name="email" id="email" required>
+                <input class="form-control mb-3" type="email" name="representativeEmail" id="representativeEmail" required>
 
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="numTel" id="numTel" required>
+                <input class="form-control mb-3" type="text" name="representativeNumTel" id="representativeNumTel" required>
             `
         } else if (type === 'iccrc' || type === 'juridico-territorial') {
             relationFields.innerHTML += `
                 <label for="representativeNumIDmebro">Número de identificação de membro: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="numIDmebro" id="numIDmebro" required>
+                <input class="form-control mb-3" type="text" name="representativeNumIDmebro" id="representativeNumIDmebro" required>
 
                 <label for="representativeProvOrTer">Província ou território: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="provOuTer" id="provOuTer" required>
+                <input class="form-control mb-3" type="text" name="representativeProvOrTer" id="representativeProvOrTer" required>
 
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="name" id="name" required>
+                <input class="form-control mb-3" type="text" name="representativeName" id="representativeName" required>
 
                 <label for="representativeSurname">Sobrenome(s): <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="surname" id="surname" required>
+                <input class="form-control mb-3" type="text" name="representativeSurname" id="representativeSurname" required>
 
                 <label for="representativeOrgName">Nome da empresa: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="orgname" id="orgname" required>
+                <input class="form-control mb-3" type="text" name="representativeOrgName" id="representativeOrgName" required>
 
                 <label for="representativeAddress">Endereço: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="address" id="address" required>
+                <input class="form-control mb-3" type="text" name="representativeAddress" id="representativeAddress" required>
 
                 <label for="representativeCodpostal">Código postal: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="codpostal" id="codpostal" required>
+                <input class="form-control mb-3" type="text" name="representativeCodpostal" id="representativeCodpostal" required>
 
                 <label for="representativeEmail">E-mail: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="email" name="email" id="email" required>
+                <input class="form-control mb-3" type="email" name="representativeEmail" id="representativeEmail" required>
 
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="numTel" id="numTel" required>
+                <input class="form-control mb-3" type="text" name="representativeNumTel" id="representativeNumTel" required>
             `
         } else if (type === 'notarios') {
             relationFields.innerHTML += `
                 <label for="representativeNumIDmebro">Número de identificação de membro: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="numIDmebro" id="numIDmebro" required>
+                <input class="form-control mb-3" type="text" name="representativeNumIDmebro" id="representativeNumIDmebro" required>
                 
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="name" id="name" required>
+                <input class="form-control mb-3" type="text" name="representativeName" id="representativeName" required>
 
                 <label for="representativeSurname">Sobrenome(s): <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="surname" id="surname" required>
+                <input class="form-control mb-3" type="text" name="representativeSurname" id="representativeSurname" required>
 
                 <label for="representativeOrgName">Nome da empresa: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="orgname" id="orgname" required>
+                <input class="form-control mb-3" type="text" name="representativeOrgName" id="representativeOrgName" required>
 
                 <label for="representativeAddress">Endereço: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="address" id="address" required>
+                <input class="form-control mb-3" type="text" name="representativeAddress" id="representativeAddress" required>
 
                 <label for="representativeEmail">E-mail: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="email" name="email" id="email" required>
+                <input class="form-control mb-3" type="email" name="representativeEmail" id="representativeEmail" required>
                 
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
-                <input class="form-control mb-3" type="text" name="numTel" id="numTel" required>
+                <input class="form-control mb-3" type="text" name="representativeNumTel" id="representativeNumTel" required>
             `
         }
     }
