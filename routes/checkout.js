@@ -6,22 +6,21 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 mercadopago.configure({
-  access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
+  access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874',
+  sandbox: true
 })
 
 router.get('/', (req, res) => {
-    const dateForm = req.session.aplicacaoStep
-    res.render('checkout/index', {dateForm})
+    res.render('checkout/index')
 })
 
-router.post('/create_payment', async (req, res) => {
-  const { title, price, quantity } = req.body
+router.post('/create-payment', async (req, res) => {
   const preference = {
     items: [
       {
-        title,
-        unit_price: parseFloat(price),
-        quantity
+        title: 'Solicitação de Viagem Eletrônica - Canadá',
+        unit_price: 99.00,
+        quantity: 1
       }
     ],
     back_urls: {

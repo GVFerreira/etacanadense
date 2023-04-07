@@ -121,13 +121,13 @@ const validarFormulario = (req, res, next) => {
 app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
     if(!parseInt(req.query.etapa)) {
         const etapa = parseInt(req.query.etapa) || 1
-        const title = "Representante ou titular? - "
+        const title = "Representante - "
         res.render('aplicacao-step1', {title})
     }
 
     if(parseInt(req.query.etapa) === 1) {
         const etapa = parseInt(req.query.etapa) || 1
-        const title = "Representante ou titular? - "
+        const title = "Representante - "
         res.render('aplicacao-step1', {title})
     }
 
@@ -159,7 +159,7 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
 
     if(parseInt(req.query.etapa) === 4) {
         const etapa = parseInt(req.query.etapa) || 4
-        const title = "Pagamento - "
+        const title = "Conferência - "
         const data = req.session.aplicacaoStep
         res.render('aplicacao-step4', {title, data})
     }

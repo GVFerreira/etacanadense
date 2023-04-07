@@ -22,7 +22,7 @@
         <h2>Acompanhe o progresso da sua aplicação de visto</h2>
         <div class="progress mt-3 mb-5">
             <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                <p class="m-0 p-0">1. Representante ou titular?</p>
+                <p class="m-0 p-0">1. Representante</p>
             </div>
             <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                 <p class="m-0 p-0">2. Validação</p>
@@ -31,7 +31,7 @@
                 <p class="m-0 p-0">3. Documentos</p>
             </div>
             <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                <p class="m-0 p-0">4. Pagamento</p>
+                <p class="m-0 p-0">4. Conferência</p>
             </div>
         </div>
         <form action="/aplicacaoStep3" method="POST">
@@ -729,7 +729,7 @@
             <div id="dynamicTuberculosis"></div>
             
             <label for="theseConditions">Você tem uma dessas condições?</label>
-            <select class="form-select mb-3 w-50" id="theseConditions" name="theseConditions" require>
+            <select class="form-select mb-3 w-50" id="theseConditions" name="theseConditions" required>
                 <option value="" selected disabled>Por favor selecione</option>
                 <option value="0">Sífilis não tratada</option>
                 <option value="1">Dependência de drogas ou álcool não tratada</option>
@@ -1160,14 +1160,14 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Locutores e outros artistas</option>
-                    <option value="1">Atletas, treinadores, árbitros e ocupações relacionadas</option>
-                    <option value="2">Artistas criativos e performáticos</option>
-                    <option value="3">Designers criativos e artesãos</option>
-                    <option value="4">Bibliotecário, arquivista, conservador ou curador</option>
-                    <option value="5">Fotógrafos, técnicos de artes gráficas, ocupações técnicas e de coordenação em imagens em movimento, radiodifusão e artes cênicas</option>
-                    <option value="6">Ocupações técnicas em bibliotecas, arquivos públicos, museus e galerias de arte</option>
-                    <option value="7">Profissionais de redação, tradução e comunicação relacionados</option>
+                    <option value="art-0">Locutores e outros artistas</option>
+                    <option value="art-1">Atletas, treinadores, árbitros e ocupações relacionadas</option>
+                    <option value="art-2">Artistas criativos e performáticos</option>
+                    <option value="art-3">Designers criativos e artesãos</option>
+                    <option value="art-4">Bibliotecário, arquivista, conservador ou curador</option>
+                    <option value="art-5">Fotógrafos, técnicos de artes gráficas, ocupações técnicas e de coordenação em imagens em movimento, radiodifusão e artes cênicas</option>
+                    <option value="art-6">Ocupações técnicas em bibliotecas, arquivos públicos, museus e galerias de arte</option>
+                    <option value="art-7">Profissionais de redação, tradução e comunicação relacionados</option>
                 </select>
             `
 
@@ -1179,19 +1179,19 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Ocupações administrativas e regulatórias</option>
-                    <option value="1">Supervisores de serviços administrativos</option>
-                    <option value="2">Auditores, contadores e profissionais de investimento</option>
-                    <option value="3">Repórteres do tribunal, transcritores, técnicos de gerenciamento de registros e oficiais de estatística</option>
-                    <option value="4">Finanças, seguros e ocupações administrativas de negócios relacionados</option>
-                    <option value="5">Trabalhadores financeiros, de seguros e de apoio administrativo relacionados</option>
-                    <option value="6">Trabalhadores de escritório em geral</option>
-                    <option value="7">Profissionais de recursos humanos e serviços empresariais</option>
-                    <option value="8">Biblioteca, correspondência e outros funcionários</option>
-                    <option value="9">Ocupações de distribuição de correio e mensagens</option>
-                    <option value="10">Auxiliares administrativos de escritório - geral, jurídico e médico</option>
-                    <option value="11">Operadores de equipamentos de escritório</option>
-                    <option value="12">Logística da cadeia de suprimentos, rastreamento e agendamento de ocupações de coordenação</option>
+                    <option value="bus-0">Ocupações administrativas e regulatórias</option>
+                    <option value="bus-1">Supervisores de serviços administrativos</option>
+                    <option value="bus-2">Auditores, contadores e profissionais de investimento</option>
+                    <option value="bus-3">Repórteres do tribunal, transcritores, técnicos de gerenciamento de registros e oficiais de estatística</option>
+                    <option value="bus-4">Finanças, seguros e ocupações administrativas de negócios relacionados</option>
+                    <option value="bus-5">Trabalhadores financeiros, de seguros e de apoio administrativo relacionados</option>
+                    <option value="bus-6">Trabalhadores de escritório em geral</option>
+                    <option value="bus-7">Profissionais de recursos humanos e serviços empresariais</option>
+                    <option value="bus-8">Biblioteca, correspondência e outros funcionários</option>
+                    <option value="bus-9">Ocupações de distribuição de correio e mensagens</option>
+                    <option value="bus-10">Auxiliares administrativos de escritório - geral, jurídico e médico</option>
+                    <option value="bus-11">Operadores de equipamentos de escritório</option>
+                    <option value="bus-12">Logística da cadeia de suprimentos, rastreamento e agendamento de ocupações de coordenação</option>
                 </select>
             `
 
@@ -1203,16 +1203,16 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled class="">Por favor selecione</option>
-                    <option value="0">Colégio e outros instrutores vocacionais</option>
-                    <option value="1">Provedores de cuidados domiciliares e ocupações de apoio educacional</option>
-                    <option value="2">Juízes, advogados e notários</option>
-                    <option value="3">Ocupações legais e de apoio à proteção pública</option>
-                    <option value="4">Ocupações em serviços de proteção pública de linha de frente</option>
-                    <option value="5">Ocupações paraprofissionais em serviços jurídicos, sociais, comunitários e educacionais</option>
-                    <option value="6">Pesquisadores, consultores e oficiais de políticas e programas</option>
-                    <option value="7">Professores do ensino médio e fundamental e conselheiros educacionais</option>
-                    <option value="8">Profissionais de serviços sociais e comunitários</option>
-                    <option value="9">Professores universitários e assistentes pós-secundários</option>
+                    <option value="edu-0">Colégio e outros instrutores vocacionais</option>
+                    <option value="edu-1">Provedores de cuidados domiciliares e ocupações de apoio educacional</option>
+                    <option value="edu-2">Juízes, advogados e notários</option>
+                    <option value="edu-3">Ocupações legais e de apoio à proteção pública</option>
+                    <option value="edu-4">Ocupações em serviços de proteção pública de linha de frente</option>
+                    <option value="edu-5">Ocupações paraprofissionais em serviços jurídicos, sociais, comunitários e educacionais</option>
+                    <option value="edu-6">Pesquisadores, consultores e oficiais de políticas e programas</option>
+                    <option value="edu-7">Professores do ensino médio e fundamental e conselheiros educacionais</option>
+                    <option value="edu-8">Profissionais de serviços sociais e comunitários</option>
+                    <option value="edu-9">Professores universitários e assistentes pós-secundários</option>
                 </select>
             `
         
@@ -1224,15 +1224,15 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Auxiliar ocupações em apoio aos serviços de saúde</option>
-                    <option value="1">Tecnólogos e técnicos médicos</option>
-                    <option value="2">Optometristas, quiropráticos, outros profissionais de saúde que diagnosticam e tratam</option>
-                    <option value="3">Outras ocupações técnicas na área da saúde</option>
-                    <option value="4">Farmacêuticos, dietistas e nutricionistas</option>
-                    <option value="5">Médicos, dentistas e veterinários</option>
-                    <option value="6">Ocupações profissionais em enfermagem</option>
-                    <option value="7">Ocupações técnicas em saúde bucal</option>
-                    <option value="8">Profissionais de terapia e avaliação</option>
+                    <option value="hea-0">Auxiliar ocupações em apoio aos serviços de saúde</option>
+                    <option value="hea-1">Tecnólogos e técnicos médicos</option>
+                    <option value="hea-2">Optometristas, quiropráticos, outros profissionais de saúde que diagnosticam e tratam</option>
+                    <option value="hea-3">Outras ocupações técnicas na área da saúde</option>
+                    <option value="hea-4">Farmacêuticos, dietistas e nutricionistas</option>
+                    <option value="hea-5">Médicos, dentistas e veterinários</option>
+                    <option value="hea-6">Ocupações profissionais em enfermagem</option>
+                    <option value="hea-7">Ocupações técnicas em saúde bucal</option>
+                    <option value="hea-8">Profissionais de terapia e avaliação</option>
                 </select>
             `
 
@@ -1249,24 +1249,24 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Gerentes de serviços administrativos</option>
-                    <option value="1">Gerentes de vendas corporativas</option>
-                    <option value="2">Legisladores e alta administração, incluindo funcionários políticos</option><option value="3">Gerentes de agricultura, horticultura e aquicultura</option>
-                    <option value="4">Gestores de arte, cultura, recreação e esporte</option>
-                    <option value="5">Gerentes de comunicação</option>
-                    <option value="6">Gerentes de construção, operação e manutenção de instalações</option>
-                    <option value="7">Gerentes de atendimento ao cliente e pessoal</option>
-                    <option value="8">Gestores em educação e serviços sociais e comunitários</option>
-                    <option value="9">Gerentes em engenharia, arquitetura, ciência e sistemas de informação</option>
-                    <option value="10">Gerentes de serviços financeiros e empresariais</option>
-                    <option value="11">Gestores de restauração e alojamento</option>
-                    <option value="12">Gerentes de saúde</option>
-                    <option value="13">Gerentes de manufatura e utilidades</option>
-                    <option value="14">Gestores na produção de recursos naturais e pesca</option>
-                    <option value="15">Gestores na administração pública</option>
-                    <option value="16">Gestores de serviços de proteção pública</option>
-                    <option value="17">Gerentes de transporte</option>
-                    <option value="18">Gerentes de comércio varejista e atacadista</option>
+                    <option value="man-0">Gerentes de serviços administrativos</option>
+                    <option value="man-1">Gerentes de vendas corporativas</option>
+                    <option value="man-2">Legisladores e alta administração, incluindo funcionários políticos</option><option value="man-3">Gerentes de agricultura, horticultura e aquicultura</option>
+                    <option value="man-4">Gestores de arte, cultura, recreação e esporte</option>
+                    <option value="man-5">Gerentes de comunicação</option>
+                    <option value="man-6">Gerentes de construção, operação e manutenção de instalações</option>
+                    <option value="man-7">Gerentes de atendimento ao cliente e pessoal</option>
+                    <option value="man-8">Gestores em educação e serviços sociais e comunitários</option>
+                    <option value="man-9">Gerentes em engenharia, arquitetura, ciência e sistemas de informação</option>
+                    <option value="man-10">Gerentes de serviços financeiros e empresariais</option>
+                    <option value="man-11">Gestores de restauração e alojamento</option>
+                    <option value="man-12">Gerentes de saúde</option>
+                    <option value="man-13">Gerentes de manufatura e utilidades</option>
+                    <option value="man-14">Gestores na produção de recursos naturais e pesca</option>
+                    <option value="man-15">Gestores na administração pública</option>
+                    <option value="man-16">Gestores de serviços de proteção pública</option>
+                    <option value="man-17">Gerentes de transporte</option>
+                    <option value="man-18">Gerentes de comércio varejista e atacadista</option>
                 </select>
             `
             
@@ -1278,18 +1278,19 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Controle central e operadores de processo em processamento e fabricação</option>
-                    <option value="1">Trabalhadores em processamento, fabricação e serviços públicos</option>
-                    <option value="2">Operadores de máquinas e trabalhadores relacionados no processamento de produtos químicos, plásticos e borracha</option>
-                    <option value="3">Operadores de máquinas e trabalhadores relacionados no processamento de alimentos, bebidas e produtos associados</option>
-                    <option value="4">Operadores de máquinas e trabalhadores relacionados no processamento e fabricação de produtos minerais e metálicos</option>
-                    <option value="5">Operadores de máquinas e trabalhadores relacionados na produção de celulose e papel e processamento e fabricação de madeira</option>
-                    <option value="6">Operadores de máquinas e trabalhadores relacionados no processamento e fabricação de produtos têxteis, tecidos, peles e couro</option>
-                    <option value="7">Montadores mecânicos, elétricos e eletrônicos</option>
-                    <option value="8">Outras montagens e ocupações relacionadas</option>
-                    <option value="9">Operadores de equipamentos de impressão e ocupações relacionadas</option>
-                    <option value="10">Supervisores de montagem e fabricação</option>
-                    <option value="11">Supervisores em ocupações de processamento e fabricação</option><option value="12">Operadores e controladores de equipamentos de utilidades</option>
+                    <option value="pub-0">Controle central e operadores de processo em processamento e fabricação</option>
+                    <option value="pub-1">Trabalhadores em processamento, fabricação e serviços públicos</option>
+                    <option value="pub-2">Operadores de máquinas e trabalhadores relacionados no processamento de produtos químicos, plásticos e borracha</option>
+                    <option value="pub-3">Operadores de máquinas e trabalhadores relacionados no processamento de alimentos, bebidas e produtos associados</option>
+                    <option value="pub-4">Operadores de máquinas e trabalhadores relacionados no processamento e fabricação de produtos minerais e metálicos</option>
+                    <option value="pub-5">Operadores de máquinas e trabalhadores relacionados na produção de celulose e papel e processamento e fabricação de madeira</option>
+                    <option value="pub-6">Operadores de máquinas e trabalhadores relacionados no processamento e fabricação de produtos têxteis, tecidos, peles e couro</option>
+                    <option value="pub-7">Montadores mecânicos, elétricos e eletrônicos</option>
+                    <option value="pub-8">Outras montagens e ocupações relacionadas</option>
+                    <option value="pub-9">Operadores de equipamentos de impressão e ocupações relacionadas</option>
+                    <option value="pub-10">Supervisores de montagem e fabricação</option>
+                    <option value="pub-11">Supervisores em ocupações de processamento e fabricação</option>
+                    <option value="12">Operadores e controladores de equipamentos de utilidades</option>
                 </select>
             `
             
@@ -1301,74 +1302,74 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Oficial de Controle Aeroespacial</option>
-                    <option value="1">Operador de Controle Aeroespacial</option>
-                    <option value="2">Diretor de Engenharia Aeroespacial</option>
-                    <option value="3">Técnico em Telecomunicações e Sistemas de Informação Aeroespacial</option>
-                    <option value="4">Oficial de Sistemas de Combate Aéreo</option>
-                    <option value="5">Técnico de Estruturas Aeronáuticas</option>
-                    <option value="6">Oficial de armadura</option>
-                    <option value="7">Soldado blindado</option>
-                    <option value="8">Oficial de artilharia</option>
-                    <option value="9">Soldado de Artilharia - Campo</option>
-                    <option value="10">Soldado de Artilharia / Defesa Aérea</option>
-                    <option value="11">Técnico de Sistemas de Aviação</option>
-                    <option value="12">Técnico de Sistemas Aviônicos</option>
-                    <option value="13">Tecnólogo em Eletrônica Biomédica</option>
-                    <option value="14">Contramestre</option>
-                    <option value="15">Capelão</option>
-                    <option value="16">Engenheiro de Combate</option>
-                    <option value="17">Diretor de Comunicações e Engenharia Eletrônica (Aérea)</option>
-                    <option value="18">Operador de pesquisa do comunicador</option>
-                    <option value="19">Técnico de construção</option>
-                    <option value="20">Cozinheiro</option>
-                    <option value="21">Dentista</option>
-                    <option value="22">Diretor de Engenharia Elétrica e Mecânica</option>
-                    <option value="23">Técnico de Distribuição Elétrica</option>
-                    <option value="24">Técnico de Sistemas de Geração Elétrica</option>
-                    <option value="25">Diretor de Engenharia</option>
-                    <option value="26">Bombeiro</option>
-                    <option value="27">Técnico em Geomática</option>
-                    <option value="28">Oficial de Administração de Saúde</option>
-                    <option value="29">Técnico de imagem</option>
-                    <option value="30">Oficial de infantaria</option>
-                    <option value="31">Soldado de infantaria</option>
-                    <option value="32">Oficial de Inteligência, Reserva Naval</option>
-                    <option value="33">Operador de Inteligência</option>
-                    <option value="34">Técnico de Sistemas de Informação e Comunicações Terrestres</option>
-                    <option value="35">Diretor Jurídico</option>
-                    <option value="36">Técnico de linha</option>
-                    <option value="37">Logística (Apoio), Oficial da Reserva Naval</option>
-                    <option value="38">Oficial de Logística</option>
-                    <option value="39">Oficial Marítimo de Superfície e Subsuperfície</option>
-                    <option value="40">Oficial médico</option>
-                    <option value="41">Técnico médico</option>
-                    <option value="42">Policial Militar</option>
-                    <option value="43">Policial Militar à Oficial</option>
-                    <option value="44">Operador de equipamento de suporte móvel</option>
-                    <option value="45">Músico</option>
-                    <option value="46">Operador de Informações de Combate Naval</option>
-                    <option value="47">Comunicador Naval</option>
-                    <option value="48">auxiliar de enfermagem</option>
-                    <option value="49">Diretor de Seleção de Pessoal</option>
-                    <option value="50">Oficial de Farmácia</option>
-                    <option value="51">Piloto</option>
-                    <option value="52">Técnico de encanamento e aquecimento</option>
-                    <option value="53">Mergulhador de Inspeção de Porto</option>
-                    <option value="54">Oficial de Relações Públicas</option>
-                    <option value="55">Técnico de Refrigeração e Sistemas Mecânicos</option>
-                    <option value="56">Escriturário de Apoio à Gestão de Recursos, Reserva Aérea</option>
-                    <option value="57">Escriturário de Apoio à Gestão de Recursos, Reserva do Exército</option>
-                    <option value="58">Escriturário de Apoio à Gestão de Recursos, Reserva Naval</option>
-                    <option value="59">Operador de sinal</option>
-                    <option value="60">Sinais (Oficial)</option>
-                    <option value="61">Técnico de Suprimentos, Reserva Aérea</option>
-                    <option value="62">Técnico de Suprimentos, Reserva do Exército</option>
-                    <option value="63">Técnico de Suprimentos, Reserva Naval</option>
-                    <option value="64">Técnico de Trânsito</option>
-                    <option value="65">Técnico de Veículos, Reserva do Exército</option>
-                    <option value="66">Técnico de Água, Combustíveis e Ambiente</option>
-                    <option value="67">Técnico de Armas / Terra</option>
+                    <option value="mil-0">Oficial de Controle Aeroespacial</option>
+                    <option value="mil-1">Operador de Controle Aeroespacial</option>
+                    <option value="mil-2">Diretor de Engenharia Aeroespacial</option>
+                    <option value="mil-3">Técnico em Telecomunicações e Sistemas de Informação Aeroespacial</option>
+                    <option value="mil-4">Oficial de Sistemas de Combate Aéreo</option>
+                    <option value="mil-5">Técnico de Estruturas Aeronáuticas</option>
+                    <option value="mil-6">Oficial de armadura</option>
+                    <option value="mil-7">Soldado blindado</option>
+                    <option value="mil-8">Oficial de artilharia</option>
+                    <option value="mil-9">Soldado de Artilharia - Campo</option>
+                    <option value="mil-10">Soldado de Artilharia / Defesa Aérea</option>
+                    <option value="mil-11">Técnico de Sistemas de Aviação</option>
+                    <option value="mil-12">Técnico de Sistemas Aviônicos</option>
+                    <option value="mil-13">Tecnólogo em Eletrônica Biomédica</option>
+                    <option value="mil-14">Contramestre</option>
+                    <option value="mil-15">Capelão</option>
+                    <option value="mil-16">Engenheiro de Combate</option>
+                    <option value="mil-17">Diretor de Comunicações e Engenharia Eletrônica (Aérea)</option>
+                    <option value="mil-18">Operador de pesquisa do comunicador</option>
+                    <option value="mil-19">Técnico de construção</option>
+                    <option value="mil-20">Cozinheiro</option>
+                    <option value="mil-21">Dentista</option>
+                    <option value="mil-22">Diretor de Engenharia Elétrica e Mecânica</option>
+                    <option value="mil-23">Técnico de Distribuição Elétrica</option>
+                    <option value="mil-24">Técnico de Sistemas de Geração Elétrica</option>
+                    <option value="mil-25">Diretor de Engenharia</option>
+                    <option value="mil-26">Bombeiro</option>
+                    <option value="mil-27">Técnico em Geomática</option>
+                    <option value="mil-28">Oficial de Administração de Saúde</option>
+                    <option value="mil-29">Técnico de imagem</option>
+                    <option value="mil-30">Oficial de infantaria</option>
+                    <option value="mil-31">Soldado de infantaria</option>
+                    <option value="mil-32">Oficial de Inteligência, Reserva Naval</option>
+                    <option value="mil-33">Operador de Inteligência</option>
+                    <option value="mil-34">Técnico de Sistemas de Informação e Comunicações Terrestres</option>
+                    <option value="mil-35">Diretor Jurídico</option>
+                    <option value="mil-36">Técnico de linha</option>
+                    <option value="mil-37">Logística (Apoio), Oficial da Reserva Naval</option>
+                    <option value="mil-38">Oficial de Logística</option>
+                    <option value="mil-39">Oficial Marítimo de Superfície e Subsuperfície</option>
+                    <option value="mil-40">Oficial médico</option>
+                    <option value="mil-41">Técnico médico</option>
+                    <option value="mil-42">Policial Militar</option>
+                    <option value="mil-43">Policial Militar à Oficial</option>
+                    <option value="mil-44">Operador de equipamento de suporte móvel</option>
+                    <option value="mil-45">Músico</option>
+                    <option value="mil-46">Operador de Informações de Combate Naval</option>
+                    <option value="mil-47">Comunicador Naval</option>
+                    <option value="mil-48">auxiliar de enfermagem</option>
+                    <option value="mil-49">Diretor de Seleção de Pessoal</option>
+                    <option value="mil-50">Oficial de Farmácia</option>
+                    <option value="mil-51">Piloto</option>
+                    <option value="mil-52">Técnico de encanamento e aquecimento</option>
+                    <option value="mil-53">Mergulhador de Inspeção de Porto</option>
+                    <option value="mil-54">Oficial de Relações Públicas</option>
+                    <option value="mil-55">Técnico de Refrigeração e Sistemas Mecânicos</option>
+                    <option value="mil-56">Escriturário de Apoio à Gestão de Recursos, Reserva Aérea</option>
+                    <option value="mil-57">Escriturário de Apoio à Gestão de Recursos, Reserva do Exército</option>
+                    <option value="mil-58">Escriturário de Apoio à Gestão de Recursos, Reserva Naval</option>
+                    <option value="mil-59">Operador de sinal</option>
+                    <option value="mil-60">Sinais (Oficial)</option>
+                    <option value="mil-61">Técnico de Suprimentos, Reserva Aérea</option>
+                    <option value="mil-62">Técnico de Suprimentos, Reserva do Exército</option>
+                    <option value="mil-63">Técnico de Suprimentos, Reserva Naval</option>
+                    <option value="mil-64">Técnico de Trânsito</option>
+                    <option value="mil-65">Técnico de Veículos, Reserva do Exército</option>
+                    <option value="mil-66">Técnico de Água, Combustíveis e Ambiente</option>
+                    <option value="mil-67">Técnico de Armas / Terra</option>
                 </select>
             `
             
@@ -1380,21 +1381,21 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Arquitetos, urbanistas e agrimensores</option>
-                    <option value="1">Engenheiros civis, mecânicos, elétricos e químicos</option>
-                    <option value="2">Profissionais de informática e sistemas de informação</option>
-                    <option value="3">Profissionais de ciências da vida</option>
-                    <option value="4">Matemáticos, estatísticos e atuários</option>
-                    <option value="5">Outros engenheiros</option>
-                    <option value="6">Outros inspetores técnicos e oficiais reguladores</option>
-                    <option value="7">Profissionais de ciências físicas</option>
-                    <option value="8">Ocupações técnicas em arquitetura, desenho, agrimensura, geomática e meteorologia</option>
-                    <option value="9">Ocupações técnicas em engenharia civil, mecânica e industrial</option>
-                    <option value="10">Ocupações técnicas em computadores e sistemas de informação</option>
-                    <option value="11">Ocupações técnicas em eletrônica e engenharia elétrica</option>
-                    <option value="12">Ocupações técnicas em ciências da vida</option>
-                    <option value="13">Ocupações técnicas em ciências físicas</option>
-                    <option value="14">Oficiais de transporte e controladores</option>
+                    <option value="nat-0">Arquitetos, urbanistas e agrimensores</option>
+                    <option value="nat-1">Engenheiros civis, mecânicos, elétricos e químicos</option>
+                    <option value="nat-2">Profissionais de informática e sistemas de informação</option>
+                    <option value="nat-3">Profissionais de ciências da vida</option>
+                    <option value="nat-4">Matemáticos, estatísticos e atuários</option>
+                    <option value="nat-5">Outros engenheiros</option>
+                    <option value="nat-6">Outros inspetores técnicos e oficiais reguladores</option>
+                    <option value="nat-7">Profissionais de ciências físicas</option>
+                    <option value="nat-8">Ocupações técnicas em arquitetura, desenho, agrimensura, geomática e meteorologia</option>
+                    <option value="nat-9">Ocupações técnicas em engenharia civil, mecânica e industrial</option>
+                    <option value="nat-10">Ocupações técnicas em computadores e sistemas de informação</option>
+                    <option value="nat-11">Ocupações técnicas em eletrônica e engenharia elétrica</option>
+                    <option value="nat-12">Ocupações técnicas em ciências da vida</option>
+                    <option value="nat-13">Ocupações técnicas em ciências físicas</option>
+                    <option value="nat-14">Oficiais de transporte e controladores</option>
                 </select>
             `
             
@@ -1406,17 +1407,17 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Trabalhadores da agricultura e horticultura</option>
-                    <option value="1">Empreiteiros e supervisores em agricultura, horticultura e operações e serviços relacionados</option>
-                    <option value="2">Empreiteiros e supervisores em mineração, petróleo e gás</option>
-                    <option value="3">Comandantes de embarcações de pesca e pescadores/pescadoras</option>
-                    <option value="4">Trabalhadores de colheita, paisagismo e recursos naturais</option>
-                    <option value="5">Trabalhadores madeireiros e florestais</option>
-                    <option value="6">Operadores de máquinas madeireiras</option>
-                    <option value="7">Trabalhadores e operadores de serviços de minas na perfuração de petróleo e gás</option>
-                    <option value="8">Outros trabalhadores em profissões de pesca e caça com armadilhas</option>
-                    <option value="9">Supervisores, extração de madeira e silvicultura</option>
-                    <option value="10">Mineiros subterrâneos, perfuradores de petróleo e gás e ocupações relacionadas</option>
+                    <option value="agr-0">Trabalhadores da agricultura e horticultura</option>
+                    <option value="agr-1">Empreiteiros e supervisores em agricultura, horticultura e operações e serviços relacionados</option>
+                    <option value="agr-2">Empreiteiros e supervisores em mineração, petróleo e gás</option>
+                    <option value="agr-3">Comandantes de embarcações de pesca e pescadores/pescadoras</option>
+                    <option value="agr-4">Trabalhadores de colheita, paisagismo e recursos naturais</option>
+                    <option value="agr-5">Trabalhadores madeireiros e florestais</option>
+                    <option value="agr-6">Operadores de máquinas madeireiras</option>
+                    <option value="agr-7">Trabalhadores e operadores de serviços de minas na perfuração de petróleo e gás</option>
+                    <option value="agr-8">Outros trabalhadores em profissões de pesca e caça com armadilhas</option>
+                    <option value="agr-9">Supervisores, extração de madeira e silvicultura</option>
+                    <option value="agr-10">Mineiros subterrâneos, perfuradores de petróleo e gás e ocupações relacionadas</option>
                 </select>
             `
             
@@ -1433,27 +1434,27 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Açougueiros e padeiros</option>
-                    <option value="1">caixas</option>
-                    <option value="2">Chefs e cozinheiros</option>
-                    <option value="3">Limpadores</option>
-                    <option value="4">Representantes de serviços de informação e clientes</option>
-                    <option value="5">Atendentes de balcão de alimentos, ajudantes de cozinha e ocupações de apoio relacionadas</option>
-                    <option value="6">Ocupações de vendas de seguros, imóveis e financeiras</option>
-                    <option value="7">Ocupações em serviços de alimentação e bebidas</option>
-                    <option value="8">Ocupações em viagens e alojamento</option>
-                    <option value="9">Outras ocupações em serviços pessoais</option>
-                    <option value="10">Outro suporte de vendas e ocupações relacionadas</option>
-                    <option value="11">Outros serviços de apoio e ocupações relacionadas</option>
-                    <option value="12">Supervisores de vendas no varejo</option>
-                    <option value="13">vendedores de varejo</option>
-                    <option value="14">Representantes de vendas e contas</option>
-                    <option value="15">Guardas de segurança e ocupações relacionadas com serviços de segurança</option>
-                    <option value="16">Supervisores de serviço</option>
-                    <option value="17">Ocupações especializadas em serviços pessoais e ao cliente</option>
-                    <option value="18">Apoiar ocupações em serviços de alojamento, viagens e diversão</option>
-                    <option value="19">Especialistas em vendas técnicas no comércio atacadista e compradores de varejo e atacado</option>
-                    <option value="20">Profissões de serviços de turismo e diversão</option>
+                    <option value="sal-0">Açougueiros e padeiros</option>
+                    <option value="sal-1">caixas</option>
+                    <option value="sal-2">Chefs e cozinheiros</option>
+                    <option value="sal-3">Limpadores</option>
+                    <option value="sal-4">Representantes de serviços de informação e clientes</option>
+                    <option value="sal-5">Atendentes de balcão de alimentos, ajudantes de cozinha e ocupações de apoio relacionadas</option>
+                    <option value="sal-6">Ocupações de vendas de seguros, imóveis e financeiras</option>
+                    <option value="sal-7">Ocupações em serviços de alimentação e bebidas</option>
+                    <option value="sal-8">Ocupações em viagens e alojamento</option>
+                    <option value="sal-9">Outras ocupações em serviços pessoais</option>
+                    <option value="sal-10">Outro suporte de vendas e ocupações relacionadas</option>
+                    <option value="sal-11">Outros serviços de apoio e ocupações relacionadas</option>
+                    <option value="sal-12">Supervisores de vendas no varejo</option>
+                    <option value="sal-13">vendedores de varejo</option>
+                    <option value="sal-14">Representantes de vendas e contas</option>
+                    <option value="sal-15">Guardas de segurança e ocupações relacionadas com serviços de segurança</option>
+                    <option value="sal-16">Supervisores de serviço</option>
+                    <option value="sal-17">Ocupações especializadas em serviços pessoais e ao cliente</option>
+                    <option value="sal-18">Apoiar ocupações em serviços de alojamento, viagens e diversão</option>
+                    <option value="sal-19">Especialistas em vendas técnicas no comércio atacadista e compradores de varejo e atacado</option>
+                    <option value="sal-20">Profissões de serviços de turismo e diversão</option>
                 </select>
             `
             
@@ -1468,27 +1469,27 @@
 
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
                     <option value="" selected disabled>Por favor selecione</option>
-                    <option value="0">Técnicos de serviços automotivos</option>
-                    <option value="1">Carpinteiros e marceneiros</option>
-                    <option value="2">Empreiteiros e supervisores em comércios industriais, elétricos e de construção e trabalhadores relacionados</option>
-                    <option value="3">Empreiteiros e supervisores em comércios de manutenção e equipamentos pesados ​​e operadores de transporte</option>
-                    <option value="4">Operadores de guindastes, perfuradores e detonadores</option>
-                    <option value="5">Comércios elétricos e trabalhadores de linhas de energia elétrica e telecomunicações</option>
-                    <option value="6">Operadores de equipamentos pesados</option>
-                    <option value="7">Trabalhadores de estiva e manipuladores de materiais</option>
-                    <option value="8">Mecânica de máquinas e equipamentos de transporte</option>
-                    <option value="9">Trabalhos de usinagem, conformação de metais, modelagem e montagem</option>
-                    <option value="10">Comércio de alvenaria e reboco</option>
-                    <option value="11">Motoristas de veículos automotores e de trânsito</option>
-                    <option value="12">Outros comércios de construção</option>
-                    <option value="13">Outros instaladores, reparadores e prestadores de serviços</option>
-                    <option value="14">Outros mecânicos e reparadores relacionados</option>
-                    <option value="15">Outros operadores de equipamentos de transporte e trabalhadores de manutenção relacionados</option>
-                    <option value="16">Encanadores, encanadores e instaladores de gás</option>
-                    <option value="17">Operadores de impressoras, outros ofícios e ocupações relacionadas</option>
-                    <option value="18">Obras públicas e outros trabalhadores</option>
-                    <option value="19">Auxiliares de comércio e trabalhadores</option>
-                    <option value="20">Ocupações operacionais da tripulação do trem</option>
+                    <option value="com-0">Técnicos de serviços automotivos</option>
+                    <option value="com-1">Carpinteiros e marceneiros</option>
+                    <option value="com-2">Empreiteiros e supervisores em comércios industriais, elétricos e de construção e trabalhadores relacionados</option>
+                    <option value="com-3">Empreiteiros e supervisores em comércios de manutenção e equipamentos pesados ​​e operadores de transporte</option>
+                    <option value="com-4">Operadores de guindastes, perfuradores e detonadores</option>
+                    <option value="com-5">Comércios elétricos e trabalhadores de linhas de energia elétrica e telecomunicações</option>
+                    <option value="com-6">Operadores de equipamentos pesados</option>
+                    <option value="com-7">Trabalhadores de estiva e manipuladores de materiais</option>
+                    <option value="com-8">Mecânica de máquinas e equipamentos de transporte</option>
+                    <option value="com-9">Trabalhos de usinagem, conformação de metais, modelagem e montagem</option>
+                    <option value="com-10">Comércio de alvenaria e reboco</option>
+                    <option value="com-11">Motoristas de veículos automotores e de trânsito</option>
+                    <option value="com-12">Outros comércios de construção</option>
+                    <option value="com-13">Outros instaladores, reparadores e prestadores de serviços</option>
+                    <option value="com-14">Outros mecânicos e reparadores relacionados</option>
+                    <option value="com-15">Outros operadores de equipamentos de transporte e trabalhadores de manutenção relacionados</option>
+                    <option value="com-16">Encanadores, encanadores e instaladores de gás</option>
+                    <option value="com-17">Operadores de impressoras, outros ofícios e ocupações relacionadas</option>
+                    <option value="com-18">Obras públicas e outros trabalhadores</option>
+                    <option value="com-19">Auxiliares de comércio e trabalhadores</option>
+                    <option value="com-20">Ocupações operacionais da tripulação do trem</option>
                 </select>
             `
            
