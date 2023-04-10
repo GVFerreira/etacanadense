@@ -1,6 +1,312 @@
-<main class="my-4" style="flex: 1 1 0">
-    <section class="container">
-        <h1>Checkout</h1>
-        <form action="/checkout/create-payment" method="post"></form>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/index.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script src="./js/index.js" defer></script>
+<main>
+    <section class="payment-form container dark">
+        <div class="container__payment">
+            <div class="block-heading">
+                <h2>Pagamento</h2>
+            </div>
+            <div class="form-payment">
+                <div class="payment-details">
+                    <form id="form-checkout">
+                        <input id="mercado-pago-public-key" value="{{mercadoPagoPublicKey}}" type="hidden" />
+                        <h3 class="title">Detalhes do comprador</h3>
+                        <div class="row">
+                            <div class="form-group col">
+                                <input id="form-checkout__cardholderEmail" name="cardholderEmail" type="email" class="form-control mb-2"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                <select id="form-checkout__identificationType" name="identificationType" class="form-select"></select>
+                            </div>
+                            <div class="form-group col-sm-7">
+                                <input id="form-checkout__identificationNumber" name="docNumber" type="text" class="form-control"/>
+                            </div>
+                        </div>
+                        <br>
+                        <h3 class="title">Detalhes do cartão de crédito</h3>
+                        <div class="row">
+                            <div class="form-group col-sm-8">
+                                <input id="form-checkout__cardholderName" name="cardholderName" type="text" class="form-control mb-2" />
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <div class="input-group expiration-date">                                            
+                                    <div id="form-checkout__expirationDate" class="form-control h-40 mb-2"></div>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-8">
+                                <div id="form-checkout__cardNumber" class="form-control h-40 mb-2"></div>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <div id="form-checkout__securityCode" class="form-control h-40 mb-2"></div>
+                            </div>
+                            <div id="issuerInput" class="form-group col-sm-12 hidden">
+                                <select id="form-checkout__issuer" name="issuer" class="form-control mb-2"></select>
+                            </div>
+                            <div class="form-group col-sm-12">
+                                <select id="form-checkout__installments" name="installments" type="text" class="form-select mb-2"></select>
+                            </div>
+                            <div class="form-group col-sm-12">
+                                <input type="hidden" id="amount" />
+                                <input type="hidden" id="description" />
+                                <div id="validation-error-messages">
+                                </div>
+                                <br>
+                                <button id="form-checkout__submit" type="submit" class="btn btn-primary">Pagar</button>
+                                <br>
+                                <p id="loading-message">Loading, please wait...</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container container__result">
+            <div class="block-heading">
+                <h2>Resultado de pagamento</h2>
+            </div>
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div class="items product info product-details">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-4 product-detail">
+                                    <div class="product-info">
+                                        <div id="fail-response">
+                                            <br/>
+                                            <p class="text-center font-weight-bold">Something went wrong</p>
+                                            <p id="error-message" class="text-center"></p>
+                                            <br/>
+                                        </div>
+
+                                        <div id="success-response">
+                                            <br/>
+                                            <p><b>ID: </b><span id="payment-id"></span></p>
+                                            <p><b>Status: </b><span id="payment-status"></span></p>
+                                            <p><b>Detail: </b><span id="payment-detail"></span></p>
+                                            <br/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </main>
+<script>
+    window.onload = () => {
+        const mercadopago = new MercadoPago('TEST-96adb56a-9ef9-415a-bb5a-1e21fdf7a45e')
+
+        const productCost = '99.00'
+        const productDescription = 'Solicitação de Autorização de Viagem - Canadá'
+        const payButton = document.getElementById("form-checkout__submit")
+        const validationErrorMessages= document.getElementById('validation-error-messages')
+
+        const form = {
+            id: "form-checkout",
+            cardholderName: {
+                id: "form-checkout__cardholderName",
+                placeholder: "Nome do Titular",
+            },
+            cardholderEmail: {
+                id: "form-checkout__cardholderEmail",
+                placeholder: "E-mail",
+            },
+            cardNumber: {
+                id: "form-checkout__cardNumber",
+                placeholder: "Número do cartão",
+                style: {
+                    fontSize: "1rem"
+                },
+            },
+            expirationDate: {
+                id: "form-checkout__expirationDate",
+                placeholder: "MM/AAAA",
+                style: {
+                    fontSize: "1rem"
+                },
+            },
+            securityCode: {
+                id: "form-checkout__securityCode",
+                placeholder: "CVV",
+                style: {
+                    fontSize: "1rem"
+                },
+            },
+            installments: {
+                id: "form-checkout__installments",
+                placeholder: "Parcelas",
+            },
+            identificationType: {
+                id: "form-checkout__identificationType",
+            },
+            identificationNumber: {
+                id: "form-checkout__identificationNumber",
+                placeholder: "Número do documento",
+            },
+            issuer: {
+                id: "form-checkout__issuer",
+                placeholder: "Banco emissor",
+            },
+        }
+
+        const cardForm = mercadopago.cardForm({
+            amount: productCost,
+            iframe: true,
+            form,
+            callbacks: {
+                onFormMounted: error => {
+                    if (error)
+                        return console.warn("Form Mounted handling error: ", error)
+                    console.log("Form mounted")
+                },
+                onSubmit: event => {
+                    event.preventDefault()
+                    document.getElementById("loading-message").style.display = "block"
+
+                    const {
+                        paymentMethodId,
+                        issuerId,
+                        cardholderEmail: email,
+                        amount,
+                        token,
+                        installments,
+                        identificationNumber,
+                        identificationType,
+                    } = cardForm.getCardFormData()
+
+                    fetch("/checkout/process_payment", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            token,
+                            issuerId,
+                            paymentMethodId,
+                            transactionAmount: Number(amount),
+                            installments: Number(installments),
+                            description: productDescription,
+                            payer: {
+                                email,
+                                identification: {
+                                    type: identificationType,
+                                    number: identificationNumber,
+                                },
+                            },
+                        }),
+                    }).then(response => {
+                        return response.json()
+                    }).then(result => {
+                        if(!result.hasOwnProperty("error_message")) {
+                            document.getElementById("success-response").style.display = "block"
+                            document.getElementById("payment-id").innerText = result.id
+                            document.getElementById("payment-status").innerText = result.status
+                            document.getElementById("payment-detail").innerText = result.detail
+                        } else {
+                            document.getElementById("error-message").textContent = result.error_message
+                            document.getElementById("fail-response").style.display = "block"
+                        }
+                        
+                        $('.container__payment').fadeOut(500)
+                        setTimeout(() => { $('.container__result').show(500).fadeIn() }, 500)
+                    }).catch(error => {
+                            alert("Unexpected error\n" + error)
+                        })
+                },
+                onFetching: (resource) => {
+                    console.log("Fetching resource: ", resource)
+                    payButton.setAttribute('disabled', true)
+                    return () => {
+                        payButton.removeAttribute("disabled")
+                    }
+                },
+                onCardTokenReceived: (errorData, token) => {
+                    if (errorData && errorData.error.fieldErrors.length !== 0) {
+                        errorData.error.fieldErrors.forEach(errorMessage => {
+                            alert(errorMessage)
+                        })
+                    }
+
+                    return token
+                },
+                onValidityChange: (error, field) => {
+                    const input = document.getElementById(form[field].id)
+                    removeFieldErrorMessages(input, validationErrorMessages)
+                    addFieldErrorMessages(input, validationErrorMessages, error)
+                    enableOrDisablePayButton(validationErrorMessages, payButton)
+                }
+            },
+        })
+        
+
+        function removeFieldErrorMessages(input, validationErrorMessages) {
+            Array.from(validationErrorMessages.children).forEach(child => {
+                const shouldRemoveChild = child.id.includes(input.id)
+                if (shouldRemoveChild) {
+                    validationErrorMessages.removeChild(child)
+                }
+            })
+        }
+
+        function addFieldErrorMessages(input, validationErrorMessages, error) {
+            if (error) {
+                input.classList.add('validation-error')
+                error.forEach((e, index) => {
+                    const p = document.createElement('p')
+                    p.id = `${input.id}-${index}`
+                    p.innerText = e.message
+                    validationErrorMessages.appendChild(p)
+                })
+            } else {
+                input.classList.remove('validation-error')
+            }
+        }
+
+        function enableOrDisablePayButton(validationErrorMessages, payButton) {
+            if (validationErrorMessages.children.length > 0) {
+                payButton.setAttribute('disabled', true)
+            } else {
+                payButton.removeAttribute('disabled')
+            }
+        }
+
+        // Handle transitions
+        document.getElementById('checkout-btn').addEventListener('click', function(){
+            $('.container__cart').fadeOut(500)
+            setTimeout(() => {
+                loadCardForm()
+                $('.container__payment').show(500).fadeIn()
+            }, 500)
+        })
+
+        document.getElementById('go-back').addEventListener('click', function(){
+            $('.container__payment').fadeOut(500)
+            setTimeout(() => { $('.container__cart').show(500).fadeIn() }, 500)
+        })
+
+        // Handle price update
+        function updatePrice(){
+            let quantity = document.getElementById('quantity').value
+            let unitPrice = document.getElementById('unit-price').innerText
+            let amount = parseInt(unitPrice) * parseInt(quantity)
+
+            document.getElementById('cart-total').innerText = '$ ' + amount
+            document.getElementById('summary-price').innerText = '$ ' + unitPrice
+            document.getElementById('summary-quantity').innerText = quantity
+            document.getElementById('summary-total').innerText = '$ ' + amount
+            document.getElementById('amount').value = amount
+        }
+
+        document.getElementById('quantity').addEventListener('change', updatePrice)
+        updatePrice()
+    }
+</script>
