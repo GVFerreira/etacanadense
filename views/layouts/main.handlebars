@@ -11,17 +11,12 @@
         <title>{{title}}eTA Canadense</title>
     </head>
     <body>
+        {{>_header}}
         {{#if error}}
             <div class="container">
                 <div class="alert alert-danger mt-4">{{error}}</div>
             </div>
         {{/if}}
-
-        {{!--{{#if user}}
-            {{>_header_logged}}
-        {{else}}
-            {{>_header}}
-        {{/if}}--}}
 
         {{>_msg}}
         {{{body}}}
