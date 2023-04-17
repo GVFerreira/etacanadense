@@ -35,8 +35,8 @@ const handle = handlebars.create({
 const bodyParser = require('body-parser')
 
 const mongoose = require('mongoose')
-
-const Visa = require('./models/Visa')
+require('./models/Visa')
+const Visa = mongoose.model("visa")
 
 const nodemailer = require('nodemailer')
 
@@ -84,14 +84,16 @@ app.use((req, res, next) => {
 
 //Mongoose
 //mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
-//  mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-//  }).then(() => {
-//      console.log("MONGODB CONNECTED")
-//  }).catch((err) => {
-//      console.log(`Erro: ${err}`)
-//  })
+    mongoose.set('strictQuery', true)
+    mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(() => {
+        console.log("MONGODB CONNECTED")
+    }).catch((err) => {
+        console.log(`Erro: ${err}`)
+    })
+    
 
 //Mercaado Pago
     mercadopago.configure({
@@ -99,26 +101,25 @@ app.use((req, res, next) => {
         sandbox: true,
     })
 
+const validarFormulario = (req, res, next) => {
+    const etapaAnterior = req.query.etapa ? teste = parseInt(req.query.etapa) - 1 : 0
+    if (etapaAnterior > 0) {
+        const dadosEtapaAnterior = req.session[`aplicacaoStep`]
+        if (!dadosEtapaAnterior) {
+        req.flash('error_msg', 'Você não pode acessar a próxima etapa')
+        res.redirect(`/aplicacao?etapa=${etapaAnterior}`)
+        return
+        }
+    }
+    next()
+}
 
 app.get('/', (req, res) => {
     const title = "Início - "
     res.render('index', {title})
 })
 
-const validarFormulario = (req, res, next) => {
-    const etapaAnterior = req.query.etapa ? teste = parseInt(req.query.etapa) - 1 : 0
-    if (etapaAnterior > 0) {
-      const dadosEtapaAnterior = req.session[`aplicacaoStep`]
-      if (!dadosEtapaAnterior) {
-        req.flash('error_msg', 'Você não pode acessar a próxima etapa')
-        res.redirect(`/aplicacao?etapa=${etapaAnterior}`)
-        return
-      }
-    }
-    next()
-}
-
-app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
+app.get('/aplicacao', validarFormulario, (req, res) => {
     if(!parseInt(req.query.etapa)) {
         const etapa = parseInt(req.query.etapa) || 1
         const title = "Representante - "
@@ -168,22 +169,63 @@ app.get('/aplicacao', /*validarFormulario,*/ (req, res) => {
 
 app.post('/aplicacaoStep1', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.body)
+    req.session.aplicacaoStep.representative = parseInt(req.session.aplicacaoStep.representative)
+    if(req.session.aplicacaoStep.representativePayed) {
+        req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed)
+    }
+    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=2')
 })
 
-app.post('/aplicacaoStep2', /*validarFormulario,*/ (req, res) => {
+app.post('/aplicacaoStep2', validarFormulario, (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
+    req.session.aplicacaoStep.passportBrazil = parseInt(req.session.aplicacaoStep.passportBrazil)
+    req.session.aplicacaoStep.residentUSCIS = parseInt(req.session.aplicacaoStep.residentUSCIS)
+    req.session.aplicacaoStep.airplane = parseInt(req.session.aplicacaoStep.airplane)
+    req.session.aplicacaoStep.canadaVisa = parseInt(req.session.aplicacaoStep.canadaVisa)
+    req.session.aplicacaoStep.nonImmigrateVisa = parseInt(req.session.aplicacaoStep.nonImmigrateVisa)
+    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=3')
 })
 
-app.post('/aplicacaoStep3',  /*validarFormulario,*/ (req, res) => {
+app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
+    req.session.aplicacaoStep.appliedToCanada = parseInt(req.session.aplicacaoStep.appliedToCanada)
+    req.session.aplicacaoStep.travelWhen = parseInt(req.session.aplicacaoStep.travelWhen)
+    req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
+    req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
+    req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
+    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=4')
 })
 
-app.post('/aplicacaoStep4',  /*validarFormulario,*/ (req, res) => {
-    req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
-    res.redirect('/checkout')
+app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
+    console.log(req.session.aplicacaoStep)
+    const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep))
+  
+    newVisa.save().then(() => {
+        req.flash('success_msg', 'Seus dados foram salvos com sucesso. Efetue o pagamento.')
+        res.redirect('/checkout')
+    }).catch((err) => {
+        console.log(err)
+        req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
+        res.redirect('/aplicacao?etapa=1')
+        req.session.destroy()
+    })
+})
+
+app.get('/acompanhar-solicitacao', (req, res) => {
+    res.render('acompanhar-solicitacao', {title: 'Acompanhar solicitação - '})
+})
+
+app.post('/consulting-process', (req, res) => {
+    if(req.body.codeInsert === undefined || req.body.codeInsert === null || req.body.codeInsert === '') {
+        req.flash('error_msg', `Digite um código`)
+        res.redirect('/acompanhar-solicitacao')
+    } else {
+        req.flash('success_msg', `Consulta feita`)
+        res.redirect('/acompanhar-solicitacao')
+    }
 })
 
 app.use('/checkout', checkout)

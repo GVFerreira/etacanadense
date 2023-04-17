@@ -1,12 +1,10 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/css/checkout.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <script src="./js/index.js" defer></script>
 <main>
     <section class="payment-form container dark">
-        <div class="container__payment">
+        <div class="container__payment container">
             <div class="block-heading">
                 <h2>Pagamento</h2>
             </div>
@@ -22,10 +20,10 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-5">
-                                <select id="form-checkout__identificationType" name="identificationType" class="form-select"></select>
+                                <select id="form-checkout__identificationType" name="identificationType" class="form-select mb-2"></select>
                             </div>
                             <div class="form-group col-sm-7">
-                                <input id="form-checkout__identificationNumber" name="docNumber" type="text" class="form-control"/>
+                                <input id="form-checkout__identificationNumber" name="docNumber" type="text" class="form-control mb-2"/>
                             </div>
                         </div>
                         <br>
@@ -59,14 +57,14 @@
                                 <br>
                                 <button id="form-checkout__submit" type="submit" class="btn btn-primary">Pagar</button>
                                 <br>
-                                <p id="loading-message">Loading, please wait...</p>
+                                <p id="loading-message">Efetuando pagmento. Aguarde, não saia e nem recarregue a página.</p>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="container container__result">
+         <div class="container container__result">
             <div class="block-heading">
                 <h2>Resultado de pagamento</h2>
             </div>
@@ -84,7 +82,7 @@
                                             <br/>
                                         </div>
 
-                                        <div id="success-response">
+                                        <div class="container" id="success-response">
                                             <br/>
                                             <p><b>ID: </b><span id="payment-id"></span></p>
                                             <p><b>Status: </b><span id="payment-status"></span></p>
@@ -163,12 +161,13 @@
             iframe: true,
             form,
             callbacks: {
-                onFormMounted: error => {
-                    if (error)
+                onFormMounted: (error) => {
+                    if (error) {
                         return console.warn("Form Mounted handling error: ", error)
+                    }
                     console.log("Form mounted")
                 },
-                onSubmit: event => {
+                onSubmit: (event) => {
                     event.preventDefault()
                     document.getElementById("loading-message").style.display = "block"
 
@@ -203,9 +202,9 @@
                                 },
                             },
                         }),
-                    }).then(response => {
+                    }).then((response) => {
                         return response.json()
-                    }).then(result => {
+                    }).then((result) => {
                         if(!result.hasOwnProperty("error_message")) {
                             document.getElementById("success-response").style.display = "block"
                             document.getElementById("payment-id").innerText = result.id
@@ -219,11 +218,10 @@
                         $('.container__payment').fadeOut(500)
                         setTimeout(() => { $('.container__result').show(500).fadeIn() }, 500)
                     }).catch(error => {
-                            alert("Unexpected error\n" + error)
+                            alert("Unexpected error TEST\n" + error)
                         })
                 },
                 onFetching: (resource) => {
-                    console.log("Fetching resource: ", resource)
                     payButton.setAttribute('disabled', true)
                     return () => {
                         payButton.removeAttribute("disabled")
@@ -231,7 +229,7 @@
                 },
                 onCardTokenReceived: (errorData, token) => {
                     if (errorData && errorData.error.fieldErrors.length !== 0) {
-                        errorData.error.fieldErrors.forEach(errorMessage => {
+                        errorData.error.fieldErrors.forEach((errorMessage) => {
                             alert(errorMessage)
                         })
                     }
@@ -292,21 +290,5 @@
             $('.container__payment').fadeOut(500)
             setTimeout(() => { $('.container__cart').show(500).fadeIn() }, 500)
         })
-
-        // Handle price update
-        function updatePrice(){
-            let quantity = document.getElementById('quantity').value
-            let unitPrice = document.getElementById('unit-price').innerText
-            let amount = parseInt(unitPrice) * parseInt(quantity)
-
-            document.getElementById('cart-total').innerText = '$ ' + amount
-            document.getElementById('summary-price').innerText = '$ ' + unitPrice
-            document.getElementById('summary-quantity').innerText = quantity
-            document.getElementById('summary-total').innerText = '$ ' + amount
-            document.getElementById('amount').value = amount
-        }
-
-        document.getElementById('quantity').addEventListener('change', updatePrice)
-        updatePrice()
     }
 </script>

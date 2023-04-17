@@ -1,8 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const mongoose = require('mongoose')
+require('../models/Visa')
+const Visa = mongoose.model("visa")
 const mercadopago = require('mercadopago')
 const dotenv = require('dotenv')
 dotenv.config()
+
 
 const mercadoPagoPublicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY;
 if (!mercadoPagoPublicKey) {
@@ -49,15 +53,21 @@ router.post('/process_payment', (req, res) => {
 
   mercadopago.payment.save(paymentData).then((response) => {
     const { response: data } = response
+    const detail = data.status_detail
+    const status = data.status
+    const id = data.id
+
     res.status(201).json({
-      detail: data.status_detail,
-      status: data.status,
-      id: data.id
+      detail,
+      status,
+      id
     })
+
   }).catch((error) => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)
     res.status(errorStatus).json({ error_message: errorMessage })
+
   })
 
   function validateError(error) {
@@ -74,6 +84,10 @@ router.post('/process_payment', (req, res) => {
   
     return { errorMessage, errorStatus }
   }
+})
+
+router.get('/result-payment', (req, res) => {
+  res.render('checkout/result-payment')
 })
 
 module.exports = router

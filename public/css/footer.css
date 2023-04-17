@@ -64,3 +64,25 @@ footer #after-footer p {
 footer #after-footer a {
     color: #7EA6BC;
 }
+
+@media(min-width: 992px) {
+    footer .container .row {
+        display: flex;
+        align-items: start;
+        flex-direction: row;
+    }
+
+    footer .container p {
+        text-align: center;
+    }
+
+    footer .container .row .col #nav-social {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+
+    footer .container .row .col #nav-social div {
+        justify-content: start;
+    }
+}

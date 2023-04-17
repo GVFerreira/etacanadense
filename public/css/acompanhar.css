@@ -1,0 +1,36 @@
+@media(max-width: 764px){
+    .card-body .row{
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    .card-body .row .col {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    .card-body .process-progress {
+        display: flex;
+        padding: 0 !important;
+        flex-direction: column !important;
+        gap: 1.2rem;
+    }
+    .card-body .process-progress .step {
+        width: 100%;
+    }
+    .card-body .process-progress .step .circle {
+        
+        flex-direction: row;
+    }
+    .card-body .process-progress .step .circle .ballon {
+        margin-right: 25px;
+    }
+    .card-body .process-progress .step .circle .description {
+        height: auto;
+        flex-direction: row;
+        gap: 0.25rem;
+        align-items: start;
+    }
+}

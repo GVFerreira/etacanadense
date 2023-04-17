@@ -6,10 +6,10 @@ const Visa = new Schema({
         type: Number,
         required: true
     },
-    relationship: {
+    representativeRelationship: {
         type: String
     },
-    payed: {
+    representativePayed: {
         type: Number
     },
     representativeName: {
@@ -47,7 +47,7 @@ const Visa = new Schema({
         type: Number,
         required: true
     },
-    USCIS: {
+    residentUSCIS: {
         type: Number,
         required: true
     },
@@ -59,43 +59,25 @@ const Visa = new Schema({
         type: Number,
         required: true
     },
+    nonImmigrateVisa: {
+        type: Number,
+        required: true
+    },
     numVisaNonImmigrate: {
         type: String
     },
-    dayVisaNonImmigrate: {
-        type: String
-    },
-    monthVisaNonImmigrate: {
-        type: String
-    },
-    yearVisaNonImmigrate: {
+    dateVisaNonImmigrate: {
         type: String
     },
     numPassport: {
         type: String,
         required: true
     },
-    doiDay: {
+    doiPassport: {
         type: String,
         required: true
     },
-    doiMonth: {
-        type: String,
-        required: true
-    },
-    doiYear: {
-        type: String,
-        required: true
-    },
-    doeDay: {
-        type: String,
-        required: true
-    },
-    doeMonth: {
-        type: String,
-        required: true
-    },
-    doeYear: {
+    doePassport: {
         type: String,
         required: true
     },
@@ -107,15 +89,7 @@ const Visa = new Schema({
         type: String,
         required: true
     },
-    dobDay: {
-        type: String,
-        required: true
-    },
-    dobMonth: {
-        type: String,
-        required: true
-    },
-    dobYear: {
+    dateBirthday: {
         type: String,
         required: true
     },
@@ -161,24 +135,42 @@ const Visa = new Schema({
     employmentFromDateYear: {
         type: Number
     },
+    contactEmail: {
+        type: String,
+        required: true
+    },
+    contactTel : {
+        type: String,
+        required: true
+    },
+    addressName: {
+        type: String,
+        required: true
+    },
+    addressNumber: {
+        type: String,
+        required: true
+    },
+    addressComplement: {
+        type: String
+    },
+    addressCity: {
+        type: String,
+        required: true
+    },
+    addressCountry: {
+        type: String,
+        required: true
+    },
     travelWhen: {
         type: Number,
         required: true
     },
-    travelDay: {
-        type: Number
+    travelDate: {
+        type: String
     },
-    travelMonth: {
-        type: Number
-    },
-    travelYear: {
-        type: Number
-    },
-    travelTimeHour: {
-        type: Number
-    },
-    travelTimeMinute: {
-        type: Number
+    travelTime: {
+        type: String
     },
     travelTimeZone: {
         type: Number
@@ -223,6 +215,19 @@ const Visa = new Schema({
     consentAndDeclaration: {
         type: String,
         required: true
+    },
+    detailPayment: {
+        type: String,
+    },
+    statusPayment: {
+        type: String,
+    },
+    idPayment: {
+        type: Number,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
     }
 })
 
