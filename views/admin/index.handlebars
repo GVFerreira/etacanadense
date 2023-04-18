@@ -1,0 +1,46 @@
+<main style="flex: 1 1 0">
+    <section class="section-1 full-width py-4">
+        <div class="container py-3">
+            <h1 class="mb-4">Área administrativa</h1>
+            <div class="card">
+                <div class="card-body">
+                    <h2>Acompanhe as solicitações</h2>
+                    <p class="w-75">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por alguma motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
+                    {{#each visas}}    
+                        <div class="card my-5">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col d-flex align-center">
+                                        <h3 class="m-0 p-0">{{firstName}} {{surname}}</h3>
+                                    </div>
+                                    <div class="col d-flex flex-row justify-content-end gap-3">
+                                        <p>Ações: </p>
+                                        <a href="/visualizar-solicitacao"><i class="bi bi-eye-fill btn btn-primary"></i></a>
+                                        <a href="/editar-solicitacao"><i class="bi bi-pencil-fill btn btn-warning"></i></a>
+                                        <a href="/deletar-solicitacao"><i class="bi bi-x-square-fill btn btn-danger"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Número passaporte: </b>{{numPassport}}
+                                    </div>
+                                    <div class="col">
+                                        <b>E-mail: </b>{{contactEmail}}
+                                    </div>
+                                    <div class="col">
+                                        <b>Telefone: </b>{{contactTel}}
+                                    </div>
+                                    <div class="col">
+                                        <b>Pagamento: </b>{{statusPayment}}
+                                    </div>
+                                </div>                                
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

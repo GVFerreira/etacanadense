@@ -40,6 +40,8 @@ const Visa = mongoose.model("visa")
 
 const nodemailer = require('nodemailer')
 
+const admin = require('./routes/admin')
+const users = require('./routes/users')
 const checkout = require('./routes/checkout')
 
 const flash = require("connect-flash")
@@ -54,7 +56,6 @@ const { stringify } = require('querystring')
 mercadopago.configure({
     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
 })
-
 
 /*SETTINGS*/
 app.use(express.static(path.join(__dirname, "public")))
@@ -240,6 +241,8 @@ app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
 })
 
+app.use('/admin', admin)
+app.use('/users', users)
 app.use('/checkout', checkout)
 
 app.listen(3000, ()=> {

@@ -1,0 +1,41 @@
+<main class="mt-4 mb-5" style="flex: 1 1 0">
+    <section class="section-1 full-width py-5">
+        <div class="container d-flex justify-content-center px-5 py-3">  
+            <div class="card w-50 my-5">
+                <div class="card-header">
+                    <h3 class="text-center">Insira seus dados para acessar o painel.</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/users/login" method="POST">
+                        <label for="email">E-mail:</label>
+                        <input type="email" name="email" class="form-control mb-4" autofocus required>
+
+                        <label for="password">Senha:</label>
+                        <input type="password" name="password" class="form-control mb-4" required>
+
+                        <button type="submit" class="btn btn-success">Entrar</button>
+                    </form>
+                    <br>
+                    <span>Não possui conta? Entre em contato com o administrador do sistema</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<style>
+    @media(max-width: 764px) {
+        main {
+            margin: 0 !important;
+        }
+
+        main .container {
+            margin: 0 !important;
+            padding: 0 1.2rem !important;
+        }
+
+        main .card {
+            width: 100% !important;
+            margin: 1.2rem 0 !important;
+        }
+    }
+</style>
