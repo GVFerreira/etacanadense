@@ -57,12 +57,21 @@ router.post('/process_payment', (req, res) => {
     const status = data.status
     const id = data.id
 
-    res.status(201).json({
-      detail,
-      status,
-      id
-    })
+    Visa.findOne({ numPassport: req.session.aplicacaoStep.numPassport }).then((visa) => {
+      visa.detailPayment = detail
+      visa.statusPayment = status
+      visa.idPayment = id
 
+      res.status(201).json({
+        detail,
+        status,
+        id
+      })
+    }).catch((err) => {
+      req.flash('error_msg', 'Houve um erro grave. Entre em contato com o Suporte. Erro: ' + err)
+      req.session.destroy()
+      res.redirect('/aplicacao?etapa=1')
+    })
   }).catch((error) => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)

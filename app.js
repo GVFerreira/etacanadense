@@ -83,9 +83,10 @@ app.use((req, res, next) => {
 })
 
 //Mongoose
+//mongodb://127.0.0.1:27017/etacanadense
 //mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
     mongoose.set('strictQuery', true)
-    mongoose.connect(`mongodb://127.0.0.1:27017/etacanadense`, {
+    mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
@@ -93,7 +94,6 @@ app.use((req, res, next) => {
     }).catch((err) => {
         console.log(`Erro: ${err}`)
     })
-    
 
 //Mercaado Pago
     mercadopago.configure({
@@ -201,7 +201,10 @@ app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
 
 app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
     console.log(req.session.aplicacaoStep)
-    const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep))
+    const agreeCheck = req.body.agreeCheck
+    const consentAndDeclaration = req.body.consentAndDeclaration
+
+    const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration}))
   
     newVisa.save().then(() => {
         req.flash('success_msg', 'Seus dados foram salvos com sucesso. Efetue o pagamento.')
@@ -218,14 +221,23 @@ app.get('/acompanhar-solicitacao', (req, res) => {
     res.render('acompanhar-solicitacao', {title: 'Acompanhar solicitação - '})
 })
 
-app.post('/consulting-process', (req, res) => {
+app.post('/consultando-solicitacao', (req, res) => {
     if(req.body.codeInsert === undefined || req.body.codeInsert === null || req.body.codeInsert === '') {
-        req.flash('error_msg', `Digite um código`)
+        req.flash('error_msg', 'E-mail ou código inexistente')
         res.redirect('/acompanhar-solicitacao')
     } else {
-        req.flash('success_msg', `Consulta feita`)
-        res.redirect('/acompanhar-solicitacao')
+        Visa.findOne({contactEmail: req.body.codeInsert}).then((search_result) => {
+            res.render('status-solicitacao', { search_result })
+        })
     }
+})
+
+app.get('/contato', (req, res) => {
+    res.render('contato', {title: 'Contato - '})
+})
+
+app.get('/politica-privacidade', (req, res) => {
+    res.render('politica-privacidade', {title: 'Politica de privacidade - '})
 })
 
 app.use('/checkout', checkout)

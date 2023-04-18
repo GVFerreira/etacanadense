@@ -187,8 +187,7 @@ const Visa = new Schema({
         required: true
     },
     criminalOffenceAnywhereDetails: {
-        type: String,
-        required: true
+        type: String
     },
     tuberculosis: {
         type: Number,
@@ -205,8 +204,7 @@ const Visa = new Schema({
         required: true
     },
     canadaDuringStayDetails: {
-        type: String,
-        required: true
+        type: String
     },
     agreeCheck: {
         type: String,
@@ -218,12 +216,15 @@ const Visa = new Schema({
     },
     detailPayment: {
         type: String,
+        default: ''
     },
     statusPayment: {
         type: String,
+        default: ''
     },
     idPayment: {
         type: Number,
+        default: 0
     },
     createdAt: {
         type: Date,

@@ -5,7 +5,7 @@
             <hr>
             <div class="card">
                 <div class="card-body">
-                    <form action="/consulting-process" method="POST">
+                    <form action="/consultando-solicitacao" method="POST">
                         <h2>Verifique o status da sua solicitação.</h2>
                         <p>Informe seu e-mail para consultar</p>
                         <div class="row">
@@ -21,7 +21,19 @@
                     <hr>
                     <section>
                         {{#search_result}}
-                            
+                            <p><b>Nome: </b>{{consentAndDeclaration}}</p>
+                            <p><b>E-mail de contato: </b>{{contactEmail}}</p>
+                            <p>
+                                <b>Status de pagamento: </b>
+                                {{#if statusPayment}}
+                                    <br>{{statusPayment}}
+                                    <br>{{detailPayment}}
+                                    <br>{{idPayment}}
+                                {{else}}
+                                    <span class="alert-danger p-1   ">Pagamento não efetuado</span>
+                                {{/if}}
+                            </p>
+                            <p><b>Aprovado pelo Governo Canadense: </b>{{statusSolicitation}}</p>
                         {{else}}
                             <h4 class="mb-5 text-center" style="color: #F00">Não há nenhum processo com esse código</h4>
                         {{/search_result}}
