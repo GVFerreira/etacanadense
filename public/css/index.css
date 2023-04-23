@@ -191,9 +191,9 @@ main section.section-5 .container a {
 
 @media(min-width: 600px) {
     main section.section-1 {
-        height: 650px;
+        height: 500px;
 
-        background: url('/img/bg-main-index-desktop.webp') no-repeat center center;
+        background: url('/img/bg-main-index-desktop.webp') no-repeat center bottom;
         background-size: cover;
     }
 

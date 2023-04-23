@@ -214,6 +214,15 @@ const Visa = new Schema({
         type: String,
         required: true
     },
+    codeETA: {
+        type: String,
+        required: true
+    },
+    statusETA: {
+        type: String,
+        default: 'Em análise',
+        required: true
+    },
     detailPayment: {
         type: String,
         default: ''

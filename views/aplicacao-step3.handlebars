@@ -10,6 +10,11 @@
         .progress-bar {
             font-size: .6rem !important;
         }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+        }
     }
     
     label {
@@ -360,6 +365,7 @@
                         </label>
                     </div>
                 </div>
+
                 <div id="dynamicUCI"></div>
 
                 <h3 class="mt-4">Informação de emprego</h3>
@@ -391,6 +397,7 @@
                 <h3 class="mt-4">Informação de contato</h3>
 
                 <label for="contactEmail">Endereço de e-mail <span class="text-red">* (obrigatório)</span></label>
+                <small>Este e-mail será utilizado para o envio de atualizações do processo de Autorização de Viagem, apenas.</small>
                 <input type="email" class="form-control mb-3 w-50" id="contactEmail" name="contactEmail" required>
 
                 <label for="contactTel">Celular <span class="text-red">* (obrigatório)</span></label>
@@ -694,7 +701,7 @@
                 <label for="refusedVisaToCanda">Você já teve um visto ou permissão negado, entrada negada ou ordem de deixar o Canadá ou qualquer outro país/território? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="refusedVisaToCanda" id="refusedVisaToCanda1" onchange="showRefused(tihs.value)" value="0" required>
+                        <input class="form-check-input" type="radio" name="refusedVisaToCanda" id="refusedVisaToCanda1" onchange="showRefused(this.value)" value="0" required>
                         <label class="form-check-label" for="refusedVisaToCanda1">
                             Não
                         </label>
@@ -742,7 +749,7 @@
                 </div>
                 <div id="dynamicTuberculosis"></div>
                 
-                <label for="theseConditions">Você tem uma dessas condições?</label>
+                <label for="theseConditions">Você tem uma dessas condições? <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="theseConditions" name="theseConditions" required>
                     <option value="" selected disabled>Por favor selecione</option>
                     <option value="0">Sífilis não tratada</option>
@@ -1703,8 +1710,27 @@
                     </div>
                     <div class="col"></div>
                 </div>
+                <div class="input-group date bootstrap-timepicker w-25 mb-3" id="timePicker">
+                    <input type="text" class="form-control timePicker">
+                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                </div>
             `
-        
+            var firstOpen = true;
+            var time;
+
+            $('#timePicker').datetimepicker({
+                useCurrent: false,
+                format: "hh:mm A"
+            }).on('dp.show', function() {
+                if(firstOpen) {
+                    time = moment().startOf('day');
+                    firstOpen = false;
+                } else {
+                    time = "01:00 PM"
+                }        
+                $(this).data('DateTimePicker').date(time);
+            });
+            
         } else {
             dynamicTravel.innerHTML = ''
         }
@@ -1841,5 +1867,6 @@
 
         }
     }
-
+    
+    
 </script>

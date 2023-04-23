@@ -1,0 +1,40 @@
+<style>
+    .red {
+        color: red;
+    }
+</style>
+<main class="my-5" style="flex: 1 1 0">
+    <section>
+        <div class="container">
+            {{#each errors}}
+                <div class="alert alert-danger">{{text}}</div>
+            {{/each}}
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="p-0 m-0">Editando o usuário</h1>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/editing-user" method="POST">
+                        <input type="hidden" name="id" id="id" value="{{user._id}}">
+
+                        <label for="name">Nome: <span class="red">*</span></label>
+                        <input type="text" name="name" id="name" value="{{user.name}}" class="form-control mb-4" required autofocus>
+
+                        <label for="email">E-mail: <span class="red">*</span></label>
+                        <input type="email" name="email" id="email" value="{{user.email}}" class="form-control mb-4" required>
+
+                        <label for="password">Senha: <span class="red">*</span></label>
+                        <input type="password" name="password" id="password" placeholder="No minímo 4 caracteres" class="form-control mb-4" required>
+
+                        <label for="password2">Confirme a senha: <span class="red">*</span></label>
+                        <input type="password" name="password2" id="password2" placeholder="Digite sua senha novamente" class="form-control mb-4" required>
+
+                        <input type="submit" value="Editar" class="btn btn-success w-25">
+                    </form>
+                        
+                    <a href="/admin/consult-users" class="btn btn-danger w-25 mt-3">Cancelar edição</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

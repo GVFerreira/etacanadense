@@ -21,6 +21,7 @@
     "express-session": "^1.17.3",
     "http2": "^3.3.7",
     "mercadopago": "^1.5.15",
+    "moment": "^2.29.4",
     "mongoose": "^6.10.4",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1",

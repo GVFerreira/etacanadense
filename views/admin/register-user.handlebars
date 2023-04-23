@@ -1,0 +1,36 @@
+<style>
+    .red {
+        color: red;
+    }
+</style>
+<main class="my-5" style="flex: 1 1 0">
+    <section>
+        <div class="container">
+            {{#each errors}}
+                <div class="alert alert-danger">{{text}}</div>
+            {{/each}}
+            <div class="card">
+                <div class="card-header">
+                    <h1>Cadastro de Usuário</h1>
+                </div>
+                <div class="card-body">
+                    <form action="/admin/registering-user" method="POST">
+                        <label for="name">Nome: <span class="red">*</span></label>
+                        <input type="text" name="name" id="name" placeholder="Digite seu nome completo" class="form-control mb-4" required autofocus>
+
+                        <label for="email">E-mail: <span class="red">*</span></label>
+                        <input type="email" name="email" id="email" placeholder="Ex: janedoe@email.com" class="form-control mb-4" required>
+
+                        <label for="password">Senha: <span class="red">*</span></label>
+                        <input type="password" name="password" id="password" placeholder="No minímo 4 caracteres" class="form-control mb-4" required>
+
+                        <label for="password2">Confirme a senha: <span class="red">*</span></label>
+                        <input type="password" name="password2" id="password2" placeholder="Digite sua senha novamente" class="form-control mb-4" required>
+
+                        <input type="submit" value="Cadastrar" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

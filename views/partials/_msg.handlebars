@@ -1,11 +1,20 @@
+<style>
+    #box-alert {
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+    } 
+</style>
 {{#if success_msg}}
-    <div class="container mt-4">
+    <div class="container mt-4" id="box-alert">
         <div class="alert alert-success">{{success_msg}}</div>
     </div>
 {{/if}}
 
 {{#if error_msg}}
-    <div class="container mt-4">
+    <div class="container mt-4" id="box-alert">
         <div class="alert alert-danger">{{error_msg}}</div>
     </div>
 {{/if}}

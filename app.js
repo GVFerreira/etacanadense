@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const session = require("express-session")
 
+const moment = require('moment')
 const handlebars = require('express-handlebars')
 const handle = handlebars.create({
     defaultLayout: 'main',
@@ -37,6 +38,8 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 require('./models/Visa')
 const Visa = mongoose.model("visa")
+require('./models/User')
+const User = mongoose.model("users")
 
 const nodemailer = require('nodemailer')
 
@@ -51,11 +54,18 @@ const path = require('path')
 const dotenv = require('dotenv')
 require('dotenv').config()
 
+
 const mercadopago = require('./config/mercadoPago')
 const { stringify } = require('querystring')
 mercadopago.configure({
     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
 })
+
+/*AUTHENTICATION*/
+const passport = require("passport")
+require("./config/auth")(passport)
+const { isAdmin } = require('./helpers/isAdmin')
+
 
 /*SETTINGS*/
 app.use(express.static(path.join(__dirname, "public")))
@@ -65,6 +75,8 @@ app.use(session({
     saveUninitialized: true
 }))
 app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Handlerbars
 app.engine('handlebars', handle.engine)
@@ -116,6 +128,7 @@ const validarFormulario = (req, res, next) => {
 }
 
 app.get('/', (req, res) => {
+    req.session.destroy()
     const title = "Início - "
     res.render('index', {title})
 })
@@ -145,8 +158,10 @@ app.get('/aplicacao', validarFormulario, (req, res) => {
         const data = req.session.aplicacaoStep
         const canadaVisa = data.canadaVisa
         const nonImmigrateVisa = data.nonImmigrateVisa
-        if ((canadaVisa === "0" && nonImmigrateVisa === "1") || (canadaVisa === "1" && nonImmigrateVisa === "1")) {
+        if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
             let dynamicData = `
+                <h3 class="mt-4">Dados de não-imigrante</h3>
+
                 <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
                 <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
@@ -174,7 +189,6 @@ app.post('/aplicacaoStep1', (req, res) => {
     if(req.session.aplicacaoStep.representativePayed) {
         req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed)
     }
-    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=2')
 })
 
@@ -185,7 +199,6 @@ app.post('/aplicacaoStep2', validarFormulario, (req, res) => {
     req.session.aplicacaoStep.airplane = parseInt(req.session.aplicacaoStep.airplane)
     req.session.aplicacaoStep.canadaVisa = parseInt(req.session.aplicacaoStep.canadaVisa)
     req.session.aplicacaoStep.nonImmigrateVisa = parseInt(req.session.aplicacaoStep.nonImmigrateVisa)
-    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=3')
 })
 
@@ -196,25 +209,51 @@ app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
     req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
     req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
     req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
-    console.log(req.session.aplicacaoStep)
     res.redirect('/aplicacao?etapa=4')
 })
 
 app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
-    console.log(req.session.aplicacaoStep)
-    const agreeCheck = req.body.agreeCheck
-    const consentAndDeclaration = req.body.consentAndDeclaration
+    bcrypt.genSalt(10, (error, salt) => {
+        let code = ''
+        bcrypt.hash(code, salt, (error, hash) => {
+            let codeETA = ''
+            code = hash
+            codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
-    const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration}))
-  
-    newVisa.save().then(() => {
-        req.flash('success_msg', 'Seus dados foram salvos com sucesso. Efetue o pagamento.')
-        res.redirect('/checkout')
-    }).catch((err) => {
-        console.log(err)
-        req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
-        res.redirect('/aplicacao?etapa=1')
-        req.session.destroy()
+            transporter.use('compile', hbs(handlebarOptions))
+
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                to: receiver,
+                replyTo: process.env.MAIL_REPLY,
+                subject,
+                template: 'template-email',
+                context: {}
+            }
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if(err) {
+                    console.log(`Error: ${err}`)
+                } else {
+                    console.log(`Message sent: ${info}`)
+                }
+            })
+
+            const agreeCheck = req.body.agreeCheck
+            const consentAndDeclaration = req.body.consentAndDeclaration
+
+            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA}))
+        
+            newVisa.save().then(() => {
+                req.flash('success_msg', 'Seus dados foram salvos com sucesso. Efetue o pagamento.')
+                res.redirect('/checkout')
+            }).catch((err) => {
+                console.log(err)
+                req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
+                res.redirect('/aplicacao?etapa=1')
+                req.session.destroy()
+            })
+        })      
     })
 })
 
@@ -241,7 +280,7 @@ app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
 })
 
-app.use('/admin', admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

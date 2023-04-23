@@ -1,93 +1,94 @@
 <link rel="stylesheet" href="/css/checkout.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
-<script src="./js/index.js" defer></script>
 <main>
-    <section class="payment-form container dark">
-        <div class="container__payment container">
-            <div class="block-heading">
-                <h2>Pagamento</h2>
-            </div>
-            <div class="form-payment">
-                <div class="payment-details">
-                    <form id="form-checkout">
-                        <input id="mercado-pago-public-key" value="{{mercadoPagoPublicKey}}" type="hidden" />
-                        <h3 class="title">Detalhes do comprador</h3>
-                        <div class="row">
-                            <div class="form-group col">
-                                <input id="form-checkout__cardholderEmail" name="cardholderEmail" type="email" class="form-control mb-2"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-sm-5">
-                                <select id="form-checkout__identificationType" name="identificationType" class="form-select mb-2"></select>
-                            </div>
-                            <div class="form-group col-sm-7">
-                                <input id="form-checkout__identificationNumber" name="docNumber" type="text" class="form-control mb-2"/>
-                            </div>
-                        </div>
-                        <br>
-                        <h3 class="title">Detalhes do cartão de crédito</h3>
-                        <div class="row">
-                            <div class="form-group col-sm-8">
-                                <input id="form-checkout__cardholderName" name="cardholderName" type="text" class="form-control mb-2" />
-                            </div>
-                            <div class="form-group col-sm-4">
-                                <div class="input-group expiration-date">                                            
-                                    <div id="form-checkout__expirationDate" class="form-control h-40 mb-2"></div>
+    <section class="container py-5">
+        <div class="card py-5">
+            <div class="container__payment container">
+                <div class="block-heading">
+                    <h2>Pagamento com Cartão de Crédito</h2>
+                </div>
+                <div class="form-payment">
+                    <div class="payment-details">
+                        <form id="form-checkout">
+                            <input id="mercado-pago-public-key" value="{{mercadoPagoPublicKey}}" type="hidden" />
+                            <h3 class="title">Detalhes do comprador</h3>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <input id="form-checkout__cardholderEmail" name="cardholderEmail" type="email" class="form-control mb-2"/>
                                 </div>
                             </div>
-                            <div class="form-group col-sm-8">
-                                <div id="form-checkout__cardNumber" class="form-control h-40 mb-2"></div>
-                            </div>
-                            <div class="form-group col-sm-4">
-                                <div id="form-checkout__securityCode" class="form-control h-40 mb-2"></div>
-                            </div>
-                            <div id="issuerInput" class="form-group col-sm-12 hidden">
-                                <select id="form-checkout__issuer" name="issuer" class="form-control mb-2"></select>
-                            </div>
-                            <div class="form-group col-sm-12">
-                                <select id="form-checkout__installments" name="installments" type="text" class="form-select mb-2"></select>
-                            </div>
-                            <div class="form-group col-sm-12">
-                                <input type="hidden" id="amount" />
-                                <input type="hidden" id="description" />
-                                <div id="validation-error-messages">
+                            <div class="row">
+                                <div class="form-group col-sm-5">
+                                    <select id="form-checkout__identificationType" name="identificationType" class="form-select mb-2"></select>
                                 </div>
-                                <br>
-                                <button id="form-checkout__submit" type="submit" class="btn btn-primary">Pagar</button>
-                                <br>
-                                <p id="loading-message">Efetuando pagmento. Aguarde, não saia e nem recarregue a página.</p>
+                                <div class="form-group col-sm-7">
+                                    <input id="form-checkout__identificationNumber" name="docNumber" type="text" class="form-control mb-2"/>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                            <br>
+                            <h3 class="title">Detalhes do cartão de crédito</h3>
+                            <div class="row">
+                                <div class="form-group col-sm-8">
+                                    <input id="form-checkout__cardholderName" name="cardholderName" type="text" class="form-control mb-2" />
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <div class="input-group expiration-date">                                            
+                                        <div id="form-checkout__expirationDate" class="form-control h-40 mb-2"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-8">
+                                    <div id="form-checkout__cardNumber" class="form-control h-40 mb-2"></div>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <div id="form-checkout__securityCode" class="form-control h-40 mb-2"></div>
+                                </div>
+                                <div id="issuerInput" class="form-group col-sm-12 hidden">
+                                    <select id="form-checkout__issuer" name="issuer" class="form-control mb-2"></select>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <select id="form-checkout__installments" name="installments" type="text" class="form-select mb-2"></select>
+                                </div>
+                                <div class="form-group col-sm-12">
+                                    <input type="hidden" id="amount" />
+                                    <input type="hidden" id="description" />
+                                    <div id="validation-error-messages">
+                                    </div>
+                                    <br>
+                                    <button id="form-checkout__submit" type="submit" class="btn btn-primary">Pagar com cartão</button>
+                                    <br>
+                                    <p id="loading-message">Efetuando pagmento. Aguarde, não saia e nem recarregue a página.</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-         <div class="container container__result">
-            <div class="block-heading">
-                <h2>Resultado de pagamento</h2>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-                        <div class="items product info product-details">
-                            <div class="row justify-content-md-center">
-                                <div class="col-md-4 product-detail">
-                                    <div class="product-info">
-                                        <div id="fail-response">
-                                            <br/>
-                                            <p class="text-center font-weight-bold">Something went wrong</p>
-                                            <p id="error-message" class="text-center"></p>
-                                            <br/>
-                                        </div>
+            <div class="container container__result">
+                <div class="block-heading">
+                    <h2>Resultado de pagamento</h2>
+                </div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="items product info product-details">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-4 product-detail">
+                                        <div class="product-info">
+                                            <div id="fail-response">
+                                                <br/>
+                                                <p class="text-center font-weight-bold">Something went wrong</p>
+                                                <p id="error-message" class="text-center"></p>
+                                                <br/>
+                                            </div>
 
-                                        <div class="container" id="success-response">
-                                            <br/>
-                                            <p><b>ID: </b><span id="payment-id"></span></p>
-                                            <p><b>Status: </b><span id="payment-status"></span></p>
-                                            <p><b>Detail: </b><span id="payment-detail"></span></p>
-                                            <br/>
+                                            <div class="container" id="success-response">
+                                                <br/>
+                                                <p><b>ID: </b><span id="payment-id"></span></p>
+                                                <p><b>Status: </b><span id="payment-status"></span></p>
+                                                <p><b>Detail: </b><span id="payment-detail"></span></p>
+                                                <br/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -99,6 +100,7 @@
         </div>
     </section>
 </main>
+
 <script>
     window.onload = () => {
         const mercadopago = new MercadoPago('TEST-96adb56a-9ef9-415a-bb5a-1e21fdf7a45e')
@@ -182,7 +184,7 @@
                         identificationType,
                     } = cardForm.getCardFormData()
 
-                    fetch("/checkout/process_payment", {
+                    fetch("/checkout/process_payment_card", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

@@ -1,3 +1,7 @@
+header #nav {
+    display: none !important;
+}
+
 main {
     margin: 4px 0 0px 0;
     background-color: #f6f6f6;
@@ -14,41 +18,31 @@ main {
 }
 
 /* Card Payment Section - Start */
-.payment-form {
-    padding-bottom: 10px;
-    font-family: "Helvetica Neue",Helvetica,sans-serif;
-}
-
-.payment-form.dark {
-    background-color: #f6f6f6;
-}
-
-.payment-form .content {
+.content {
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
     background-color: white;
 }
 
-.payment-form .block-heading {
-    padding-top: 40px;
+.block-heading {
     margin-bottom: 30px;
     text-align: center;
 }
 
-.payment-form .block-heading p {
+.block-heading p {
     text-align: center;
     max-width: 420px;
     margin: auto;
     color: RGBA(0,0,0,0.45);
 }
 
-.payment-form .block-heading h1,
-.payment-form .block-heading h2,
-.payment-form .block-heading h3 {
+.block-heading h1,
+.block-heading h2,
+.block-heading h3 {
     margin-bottom: 1.2rem;
     color: #17233D;
 }
 
-.payment-form .form-payment {
+.form-payment {
     border-top: 2px solid #C6E9FA;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.075);
     background-color: #ffffff;
@@ -57,7 +51,7 @@ main {
     margin: auto;
 }
 
-.payment-form .title {
+.title {
     font-size: 1em;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     margin-bottom: 0.8em;
@@ -65,36 +59,36 @@ main {
     padding-bottom: 8px;
 }
 
-.payment-form .products {
+.products {
     background-color: #f7fbff;
     padding: 25px;
 }
 
-.payment-form .products .item {
+.products .item {
     margin-bottom: 1em;
 }
 
-.payment-form .products .item-name {
+.products .item-name {
     font-weight: 500;
     font-size: 0.9em;
 }
 
-.payment-form .products .item-description {
+.products .item-description {
     font-size: 0.8em;
     opacity: 0.6;
 }
 
-.payment-form .products .item p {
+.products .item p {
     margin-bottom: 0.2em;
 }
 
-.payment-form .products .price {
+.products .price {
     float: right;
     font-weight: 500;
     font-size: 0.9em;
 }
 
-.payment-form .products .total {
+.products .total {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     margin-top: 10px;
     padding-top: 19px;
@@ -102,12 +96,12 @@ main {
     line-height: 1;
 }
 
-.payment-form .payment-details {
+.payment-details {
     padding: 25px 25px 15px;
     height: 100%;
 }
 
-.payment-form .payment-details label {
+.payment-details label {
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 15px;
@@ -115,20 +109,20 @@ main {
     text-transform: uppercase;
 }
 
-.payment-form .payment-details button {
+.payment-details button {
     margin-top: 0.6em;
     font-weight: 500;
     background-color: #009EE3;
     margin-bottom: 10px;
 }
 
-.payment-form .date-separator {
+.date-separator {
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 5px;
 }
 
-.payment-form a, .payment-form a:not([href]) {
+a, a:not([href]) {
     margin: 0;
     padding: 0;
     font-size: 13px;
@@ -136,7 +130,7 @@ main {
     cursor:pointer;
 }
 
-.payment-form a:not([href]):hover{
+a:not([href]):hover{
     color: #3483FA;
     cursor:pointer;
 }
@@ -148,27 +142,27 @@ main {
 }
 
 @media (min-width: 576px) {
-    .payment-form .title {
+    .title {
         font-size: 1.2em;
     }
 
-    .payment-form .products {
+    .products {
         padding: 40px;
     }
 
-    .payment-form .products .item-name {
+    .products .item-name {
         font-size: 1em;
     }
 
-    .payment-form .products .price {
+    .products .price {
         font-size: 1em;
     }
 
-    .payment-form .payment-details {
+    .payment-details {
         padding: 40px 40px 30px;
     }
 
-    .payment-form .payment-details button {
+    .payment-details button {
         margin-top: 1em;
         margin-bottom: 15px;
     }
