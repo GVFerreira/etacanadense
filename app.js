@@ -24,7 +24,7 @@ const handle = handlebars.create({
 
                 // Gera o HTML para o link da página
                 output += `
-                    <a class="btn ${activeClass}" href="/admin/consult-processes?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
+                    <a class="btn ${activeClass}" href="/admin?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
                 `;
             }
 
@@ -42,6 +42,7 @@ require('./models/User')
 const User = mongoose.model("users")
 
 const nodemailer = require('nodemailer')
+const { transporter, handlebarOptions } = require('./helpers/senderMail')
 
 const admin = require('./routes/admin')
 const users = require('./routes/users')
@@ -54,6 +55,7 @@ const path = require('path')
 const dotenv = require('dotenv')
 require('dotenv').config()
 
+const bcrypt = require('bcryptjs')
 
 const mercadopago = require('./config/mercadoPago')
 const { stringify } = require('querystring')
@@ -220,33 +222,35 @@ app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
             code = hash
             codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
-            transporter.use('compile', hbs(handlebarOptions))
+            //transporter.use('compile', hbs(handlebarOptions))
 
-            const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: receiver,
-                replyTo: process.env.MAIL_REPLY,
-                subject,
-                template: 'template-email',
-                context: {}
-            }
+            // const mailOptions = {
+            //     from: `eTA Canadense <${process.env.USER_MAIL}>`,
+            //     to: receiver,
+            //     replyTo: process.env.MAIL_REPLY,
+            //     subject,
+            //     template: 'template-email',
+            //     context: {}
+            // }
 
-            transporter.sendMail(mailOptions, (err, info) => {
-                if(err) {
-                    console.log(`Error: ${err}`)
-                } else {
-                    console.log(`Message sent: ${info}`)
-                }
-            })
+            // transporter.sendMail(mailOptions, (err, info) => {
+            //     if(err) {
+            //         console.log(`Error: ${err}`)
+            //     } else {
+            //         console.log(`Message sent: ${info}`)
+            //     }
+            // })
 
             const agreeCheck = req.body.agreeCheck
             const consentAndDeclaration = req.body.consentAndDeclaration
 
             const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA}))
+
+            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
-                req.flash('success_msg', 'Seus dados foram salvos com sucesso. Efetue o pagamento.')
-                res.redirect('/checkout')
+                req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
+                res.redirect('/checkout/card')
             }).catch((err) => {
                 console.log(err)
                 req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
@@ -263,12 +267,19 @@ app.get('/acompanhar-solicitacao', (req, res) => {
 
 app.post('/consultando-solicitacao', (req, res) => {
     if(req.body.codeInsert === undefined || req.body.codeInsert === null || req.body.codeInsert === '') {
-        req.flash('error_msg', 'E-mail ou código inexistente')
+        req.flash('error_msg', 'Insira um e-mail ou código')
         res.redirect('/acompanhar-solicitacao')
     } else {
-        Visa.findOne({contactEmail: req.body.codeInsert}).then((search_result) => {
-            res.render('status-solicitacao', { search_result })
-        })
+        if (req.body.EmailCod === 'email') {
+            Visa.findOne({contactEmail: req.body.codeInsert}).then((search_result) => {
+                res.render('status-solicitacao', { search_result })
+            })
+        } else {
+            Visa.findOne({codeETA: req.body.codeInsert}).then((search_result) => {
+                res.render('status-solicitacao', { search_result })
+            })
+        }
+        
     }
 })
 

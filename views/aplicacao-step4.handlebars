@@ -327,7 +327,6 @@
                 <hr>
 
                 {{#if nonImmigrateVisa}}
-                {{else}}
                     <h3 class="h4">Dados de Não-Imigrante</h3>
 
                     <label class="mb-2" for="numVisaNonImmigrate">Número do visto de não imigrante nos EUA</label>
@@ -339,7 +338,6 @@
                     <a href="/aplicacao?etapa=3#numVisaNonImmigrate" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                     <hr>
-                    
                 {{/if}}
                 
                 <h3 class="h4">Dados do passaporte do requerente</h3>
@@ -2029,6 +2027,7 @@
     document.getElementById("employmentTitle").value = "{{data.employmentTitle}}"
     document.getElementById("employmentCountry").value = "{{data.employmentCountry}}"
     document.getElementById("employmentFromDateYear").value = "{{data.employmentFromDateYear}}"
+    document.getElementById("addressCountry").value = "{{data.addressCountry}}"
     document.getElementById("travelTimeZone").value = "{{data.travelTimeZone}}"
     document.getElementById("theseConditions").value = "{{data.theseConditions}}"
   }

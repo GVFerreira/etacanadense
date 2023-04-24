@@ -14,13 +14,35 @@ const path = require("path")
 const { connect } = require('http2')
 require('dotenv').config()
 
-router.get('/', (req, res) => {
-    Visa.find().then((visas) => {
-        res.render('admin/index', { visas, title: 'Administrativo - ' })
-    }).catch((err) => {
-        req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
-        res.redirect('/')
-    })
+router.get('/', async (req, res) => {
+    const page = req.query.page || 1
+    const sort = req.query.sort || "DESC"
+    const limit = req.query.limit || 10
+    const filter = req.query.filter || ''
+    const visasPerPage = limit
+    const skip = (page - 1) * visasPerPage
+
+    const totalVisas = await Visa.countDocuments()
+
+    if(filter) {
+        Visa.findOne({numPassport: filter}).sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
+            const totalPages = Math.ceil(totalVisas / visasPerPage)
+            res.render('admin/index', {visas, limit, sort, page, filter, totalPages, totalVisas, title: 'Administrativo - '})
+        }).catch((err) => {
+            req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
+            res.redirect('/')
+        })
+    } else {
+        Visa.find().sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
+            const totalPages = Math.ceil(totalVisas / visasPerPage)
+            res.render('admin/index', {visas, limit, sort, page, totalPages, totalVisas, title: 'Administrativo - '})
+        }).catch((err) => {
+            req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
+            res.redirect('/')
+        })
+    }
+    
+    
 })
 
 router.get("/register-user", (req, res) => {
@@ -97,7 +119,7 @@ router.get('/consult-users', (req, res) => {
     })
 })
 
-router.get('/edit-user/:id' ,(req, res) => {
+router.get('/edit-user/:id', (req, res) => {
     User.findOne({_id: req.params.id}).then((user) => {
         res.render('admin/edit-user', {user: user})
     }).catch((err) => {
@@ -155,6 +177,22 @@ router.get('/delete-user/:id', (req, res) => {
     }).catch((err) => {
         req.flash('error_msg', `Ocorreu um erro: ${err}`)
         res.render('admin/consult-users')
+    })
+})
+
+router.post('/edit-visa/:id', (req, res) => {
+    Visa.findOne({_id: req.params.id}).then((visa) => {
+        visa.statusETA = req.body.statusETA
+        visa.save().then(() => {
+            req.flash("success_msg", "Aplicação atualizada com sucesso")
+            res.redirect('/admin')
+        }).catch((err) => {
+            req.flash("error_msg", `Houve um erro ao atualizar a aplicação. Erro: ${err}` )
+            res.redirect('/admin')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', `Houve um erro ao atualizar a aplicação. Erro: ${err}`)
+        res.redirect('/admin')
     })
 })
 

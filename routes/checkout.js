@@ -29,17 +29,19 @@ mercadopago.configure({
 
 router.get('/card', (req, res) => {
   const title = 'Checkout - '
-  res.status(200).render('checkout/card', {title, mercadoPagoAccessToken})
+  const data = req.session.aplicacaoStep
+  res.render('checkout/card', {title, mercadoPagoAccessToken, data})
 })
 
 router.get('/pix', (req, res) => {
   const title = 'Checkout - '
-  res.status(200).render('checkout/pix', {title, mercadoPagoAccessToken})
+  res.render('checkout/pix', {title, mercadoPagoAccessToken})
 })
 
 router.post('/process_payment_card', (req, res) => {
   const { body } = req
   const { payer } = body
+  console.log(body)
   const paymentData = {
     transaction_amount: 99.00,
     token: body.token,
@@ -62,21 +64,30 @@ router.post('/process_payment_card', (req, res) => {
     const status = data.status
     const id = data.id
 
-    Visa.findOne({ numPassport: req.session.aplicacaoStep.numPassport }).then((visa) => {
-      visa.detailPayment = detail
-      visa.statusPayment = status
-      visa.idPayment = id
+    //Visa.findOne({ codeETA: body.codeETA }).then((visa) => {
+      //visa.statusPayment = data.status
+      //visa.detailPayment = data.status_detail
+      //visa.idPayment = data.id
 
-      res.status(201).json({
-        detail,
-        status,
-        id
-      })
-    }).catch((err) => {
+      //console.log(visa)
+
+      //visa.save().then(() => {
+        if (data.status === 'approved') {
+          res.render('checkout/result-payment', {detail, status, id, title: 'Aprovado - '})
+  
+        } else if (data.status === 'in_process') {
+          res.render('checkout/result-payment', {detail, status, id, title: 'Em análise - '})
+  
+        } else {
+          res.render('checkout/result-payment', {detail, status, id, title: 'Negado - '})
+  
+        }
+      //})
+    /*}).catch((err) => {
       req.flash('error_msg', 'Houve um erro grave. Entre em contato com o Suporte. Erro: ' + err)
       req.session.destroy()
-      res.redirect('/aplicacao?etapa=1')
-    })
+      res.redirect('/aplicacao')
+    })*/
   }).catch((error) => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)

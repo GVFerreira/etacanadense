@@ -46,6 +46,35 @@ footer .container .row .col #nav-social div a {
     color: #FFF;
     width: 72px;
 }
+footer .selos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    margin-bottom: 3rem
+}
+
+footer .selos #google {
+    height: 91.4px;
+    width: auto;
+}
+
+footer .selos div {
+    background-color: #FFF;
+
+    padding: 1rem 1.5rem;
+
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+footer .selos div img {
+    width: 180px;
+}
 
 footer #after-footer {
     display: flex;

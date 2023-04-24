@@ -18,22 +18,59 @@
 <main style="flex: 1 1 0">
     <section class="section-1 full-width py-4">
         <div class="container py-3">
-            <h1 class="mb-4">Área administrativa</h1>
+            <h1 class="mb-4 text-center">Área administrativa</h1>
+            <h2>Acompanhe as solicitações</h2>
+            <p class="w-75 m-0">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por algum motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
+            <p>
+                <a href="/admin/register-user">Registrar usuário</a>
+                <a href="/admin/consult-users">Consultar usuário</a>
+            </p>
             <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <form method="GET" class="mb-2">
+                        <div class="d-flex align-items-end gap-5">
+                            <div>
+                                <label for="sort">Ordem de criação:</label>
+                                <select name="sort" id="sort" class="form-select">
+                                    <option value=""></option>
+                                    <option value="DESC">Recente -> Antigo</option>
+                                    <option value="ASC">Antigo -> Recente</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="limit">Limite por página:</label>
+                                <select name="limit" id="limit" class="form-select">
+                                    <option value=""></option>
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="filter">Buscar pelo passaporte:</label>
+                                <input type="text" name="filter" id="filter" class="form-control" value="{{filter}}">
+                            </div>
+                            <div class="d-none">
+                                <input type="text" name="page" id="page" value="1">
+                            </div>
+                            <input type="submit" value="Filtar" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
                 <div class="card-body">
-                    <h2>Acompanhe as solicitações</h2>
-                    <p class="w-75">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por alguma motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
-                    {{#each visas}}    
+                    {{#visas}}    
                         <div class="card my-5">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col d-flex align-center">
+                                    <div class="col">
                                         <h3 class="m-0 p-0">{{firstName}} {{surname}}</h3>
+                                        <p class="m-0">Criado em: {{#formatDate createdAt}}{{/formatDate}}</p>
                                     </div>
                                     <div class="col d-flex flex-row justify-content-end gap-3">
                                         <p>Ações: </p>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".view{{id}}"><i class="bi bi-eye-fill"></i></button>
-                                        <a href="/edit-visa/{{id}}"><i class="bi bi-pencil-fill btn btn-warning"></i></a>
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".update{{id}}"><i class="bi bi-pencil-fill"></i></button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".delete{{id}}"><i class="bi bi-x-square-fill"></i></button>
                                     </div>
                                 </div>
@@ -44,12 +81,11 @@
                                         <b>Número passaporte: </b>{{numPassport}}
                                     </div>
                                     <div class="col">
-                                        <b>E-mail: </b>{{contactEmail}}
-                                    </div>
-                                    <div class="col">
+                                        <b>E-mail: </b>{{contactEmail}}<br>
                                         <b>Telefone: </b>{{contactTel}}
                                     </div>
                                     <div class="col">
+                                        <b>Status aplicação: </b>{{statusETA}}<br>
                                         <b>Pagamento: </b>{{statusPayment}}
                                     </div>
                                 </div>                                
@@ -1640,18 +1676,47 @@
                         <div class="modal fade delete{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Você tem certeza?</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Você tem certeza?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Os dados da solicitação serão excluídos para sempre. Você deseja prosseguir com a exclusão?</p>
+                                        <p>Cliente: {{firstName}} {{surname}}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                                        <a href="/admin/delete-visa/{{id}}" class="btn btn-danger">Excluir</a>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <p>Os dados da solicitação serão excluídos para sempre. Você deseja prosseguir com a exclusão?</p>
-                                    <p>Cliente: {{firstName}} {{surname}}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
-                                    <a href="/admin/delete-visa/{{id}}" class="btn btn-danger">Excluir</a>
-                                </div>
+                            </div>
+                        </div>
+                        {{!-- --}}
+
+                        {{!-- SOLICITAÇÂO MODAL EXCLUSION --}}
+                        <div class="modal fade update{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Atualize o status da aplicação</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Cliente: {{firstName}} {{surname}}</p>
+                                        <form action="/admin/edit-visa/{{id}}" method="post">
+                                            <label for="statusETA">Status da aplicação</label>
+                                            <select class="form-select mb-3" name="statusETA" id="statusETA" required>
+                                                <option value="Em análise">Em análise</option>
+                                                <option value="Recusado">Recusado</option>
+                                                <option value="Aprovado">Aprovado</option>
+                                            </select>
+
+                                            <input type="submit" class="btn btn-warning" value="Atualizar">
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1670,14 +1735,21 @@
                                 document.getElementById("theseConditions").value = "{{theseConditions}}"
                             }
                         </script>
-                    {{/each}}
-                    <a href="/admin/register-user">Registrar usuário</a>
-                    <a href="/admin/consult-users">Consultar usuário</a>
+                    {{/visas}}
+                    <div class="d-flex flex-column justify-content-center my-2">
+                        <p>Total de solicitações registradas: {{totalVisas}}</p>
+                        <div class="d-flex flex-row justify-content-center gap-3">
+                            {{#pagination page totalPages limit sort}}{{/pagination}}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+<script>
+    document.getElementById('link-logo-home').href = '/admin'
+</script>
 
 <script>
     var elementoPai = document.getElementById("header-container")
@@ -1686,5 +1758,10 @@
         <a href="/users/logout" class="btn btn-danger text-upperccase fw-bold">Sair</a>
     `
     elementoPai.appendChild(novoElementoFilho)
+
+    window.onload = function() {
+        document.getElementById("sort").value = "{{sort}}"
+        document.getElementById("limit").value = "{{limit}}"
+    }
 </script>
 

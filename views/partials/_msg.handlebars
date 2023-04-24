@@ -8,13 +8,19 @@
     } 
 </style>
 {{#if success_msg}}
-    <div class="container mt-4" id="box-alert">
+    <div class="container w-50" id="box-alert">
         <div class="alert alert-success">{{success_msg}}</div>
     </div>
 {{/if}}
 
 {{#if error_msg}}
-    <div class="container mt-4" id="box-alert">
+    <div class="container w-50" id="box-alert">
         <div class="alert alert-danger">{{error_msg}}</div>
     </div>
 {{/if}}
+
+<script>
+    setTimeout(() => {
+        $('#box-alert').fadeOut(500)
+    }, 3000)
+</script>
