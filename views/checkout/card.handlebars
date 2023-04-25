@@ -180,7 +180,7 @@
                         }),
                     }).then((response) => {
                         return response.json
-                    })/*.then((result) => {
+                    }).then((result) => {
                         if(!result.hasOwnProperty("error_message")) {
                            document.getElementById("success-response").style.display = "block"
                             document.getElementById("payment-id").innerText = result.id
@@ -193,7 +193,7 @@
                         
                         $('.container__payment').fadeOut(500)
                         setTimeout(() => { $('.container__result').show(500).fadeIn() }, 500)
-                    })*/.catch(error => {
+                    }).catch(error => {
                         alert(error)
                     })
                 },

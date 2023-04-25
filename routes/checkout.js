@@ -64,6 +64,12 @@ router.post('/process_payment_card', (req, res) => {
     const status = data.status
     const id = data.id
 
+    res.json({
+      detail,
+      status,
+      id
+    })
+
     //Visa.findOne({ codeETA: body.codeETA }).then((visa) => {
       //visa.statusPayment = data.status
       //visa.detailPayment = data.status_detail
@@ -72,16 +78,16 @@ router.post('/process_payment_card', (req, res) => {
       //console.log(visa)
 
       //visa.save().then(() => {
-        if (data.status === 'approved') {
-          res.render('checkout/result-payment', {detail, status, id, title: 'Aprovado - '})
+        // if (data.status === 'approved') {
+        //   res.render('checkout/result-payment', {detail, status, id, title: 'Aprovado - '})
   
-        } else if (data.status === 'in_process') {
-          res.render('checkout/result-payment', {detail, status, id, title: 'Em análise - '})
+        // } else if (data.status === 'in_process') {
+        //   res.render('checkout/result-payment', {detail, status, id, title: 'Em análise - '})
   
-        } else {
-          res.render('checkout/result-payment', {detail, status, id, title: 'Negado - '})
+        // } else {
+        //   res.render('checkout/result-payment', {detail, status, id, title: 'Negado - '})
   
-        }
+        // }
       //})
     /*}).catch((err) => {
       req.flash('error_msg', 'Houve um erro grave. Entre em contato com o Suporte. Erro: ' + err)
