@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "eta-canadense-384823",
+  "private_key_id": "eea18766c9e1e389c09b00f2dff89470dc7f812e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCeh9vH28IrG/UA\naqfQE1zVUpayotcaeT09twJMuuhj6GeYsKBn/3RzHLINAwlr1aVerqqTKxFCoRRy\nG5nFYCorp8CSI8MSz71Mwi3qMvWFop44DJHgZVE/nbiCMDmeI7QOr4L2ZscyA7ak\na/RUl1IsL08FxA5g20jCugPYg930j28oBHYEdecicqB0z2EkD6lh133vSg9RCryz\niWDm09TUtQ8T261gCCcdaKpwxts3Zo3EEo98H9mrxsfPmb1X5YJeYxNmqy7QfDYa\njhC57kGjmu3kqtMSqrQ27KGNIucPKapBNCaUoblYvjJ4f/+tq20U4BIFNBS+mpVx\nWLxdUZrFAgMBAAECggEAEFCxmwxAG7EtIg2X9zdi7LZq+Xf+VMRo+9a/lxd+Trfu\nn32ACKv291ja7zFikRVEB25I8kvyow2SXdr+1JwcwvDpBfFFxIQaOpHaaVm0wHvX\ntjN++N3cgoRQJp/hcifBAmjoPMUfl4Nf0uSkWOdY5uC4jIKcqzWuM5Iyzp/loiNO\nRD79tXR2AkzkBOCtaZt+b1W4inVpzL/EqIGWeKLE3okkflMYcd7GuKQ+2AcFj51H\nKppDJrFV715GzNQ8WRsJZvOudh3NzLcucNnaOHwpITTMgi930B9ow7fkfieZKMz8\nACmGrW/soUI+TrX7owGsFeWK5zNXHxJFNvVyvm7fOQKBgQDa/TDIK/hoBJDEe6jk\nXGnl4SZz/vEbA4LkZwxr/HV2J4wAO3Bq3eZ1v7glXi+IQRu8NtCoyF3L4UlAa/fE\nygmgcAzu3qlPJMDSqZuMv0vYjJ60uvy1ECh5o0ItXdej88PnLup2FipCbfkqKUvX\nW1jNejrJWEjW+ojpvA4x08tCbQKBgQC5Ut6cqdO5JAQQYSjn0ojoDQHGV8ceotBf\nLpktbDSBOSiZ9nxeEyQ5D1ATWQXFZICDzfljHMMj5tqgjyNE11N4alCV5JR/sLRy\nNtEhicwg8QhSq2Jgj6zxRUDfbRKQUlxsSkyxqZvQVUl03RuumU6C4192hDPUDchZ\nU6ApNHjCuQKBgGpUF3SKDQIMfXI5jMbcrDqG+NHHjrAMI2jdNCXWnf3xs8OFGM96\n0OSJY1MZiUDCREI951CcgRZ2W8fg5JvzcXsqDM2K5XBdKxbebX2IgL4zgPfF9t+/\nabet8nrunr6npI5CtGsD1h8NILc89+soGlUirRqIOE3RtdqvicDd0kp9AoGAMY3L\nILD4gCT1QTv5qCNPoFz6AIMwJyz58rmPE+o/D96s0J5sGuubX/aMPuAq/uEkzBmj\nebETLOJpy0z67Ul2dFhZO/tnCc3CMlgeC43BG33X7+ML5y4D3G/cLOIJeLXNKNel\nMkxb8ZUckzccU8+CgtUxjYtEIIue6uPFi78QG2ECgYEAuq3gYvPYCuuKbgUr0MTD\nrobjNcOnbKe66SkFUGtHLgzK5GtebTW1q+GwHLGej3RNBnFajK706Um9CQ5OJyP2\n9qbZbmHll558uggIbiWfjsUJC7PI3vIbufwzqXwb2J8xpcuQBRW+LQ4qao41iRrP\nMK3ekozvROw73njLWPA//tQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "permissao-gustavo@eta-canadense-384823.iam.gserviceaccount.com",
+  "client_id": "100135847930994143955",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/permissao-gustavo%40eta-canadense-384823.iam.gserviceaccount.com"
+}
