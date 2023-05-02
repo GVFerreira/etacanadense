@@ -41,7 +41,6 @@ router.get('/pix', (req, res) => {
 router.post('/process_payment_card', (req, res) => {
   const { body } = req
   const { payer } = body
-  console.log(body)
   const paymentData = {
     transaction_amount: 99.00,
     token: body.token,
@@ -63,6 +62,21 @@ router.post('/process_payment_card', (req, res) => {
     const detail = data.status_detail
     const status = data.status
     const id = data.id
+    
+    const dataAplication = req.session.aplicacaoStep
+    const codeETASession = dataAplication.codeETA
+
+    Visa.findOne({ codeETA: codeETASession }).then((visa) => {
+      visa.statusPayment = data.status
+      visa.detailPayment = data.status_detail
+      visa.idPayment = data.id
+
+      visa.save()
+    }).catch((err) => {
+      req.flash('error_msg', 'Houve um erro grave ao salvar os dados de pagamento')
+      req.session.destroy()
+      res.redirect('/aplicacao')
+    })
 
     res.json({
       detail,
@@ -70,35 +84,10 @@ router.post('/process_payment_card', (req, res) => {
       id
     })
 
-    //Visa.findOne({ codeETA: body.codeETA }).then((visa) => {
-      //visa.statusPayment = data.status
-      //visa.detailPayment = data.status_detail
-      //visa.idPayment = data.id
-
-      //console.log(visa)
-
-      //visa.save().then(() => {
-        // if (data.status === 'approved') {
-        //   res.render('checkout/result-payment', {detail, status, id, title: 'Aprovado - '})
-  
-        // } else if (data.status === 'in_process') {
-        //   res.render('checkout/result-payment', {detail, status, id, title: 'Em análise - '})
-  
-        // } else {
-        //   res.render('checkout/result-payment', {detail, status, id, title: 'Negado - '})
-  
-        // }
-      //})
-    /*}).catch((err) => {
-      req.flash('error_msg', 'Houve um erro grave. Entre em contato com o Suporte. Erro: ' + err)
-      req.session.destroy()
-      res.redirect('/aplicacao')
-    })*/
   }).catch((error) => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)
     res.status(errorStatus).json({ error_message: errorMessage })
-
   })
 
   function validateError(error) {

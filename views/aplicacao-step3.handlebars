@@ -1538,13 +1538,19 @@
                 <label for="travelDate">Quando você pretende viajar para o Canadá? <span class="text-red">* (obrigatório)</span></label>
                 <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" onchange="validNotPresentDay(this)" required>
                 
-
                 <label>Insira o horário de partida do seu voo para o Canadá <span class="text-red">* (obrigatório)</span></label>
                 <div class="row">
-                    <div class="col">
-                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime">
+                    <div class="col-5">
+                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" min="00:00" max="12:00">
                     </div>
-                    <div class="col">
+                    <div class="col-2">
+                        <select class="form-select mb-3" name="travelAmPm" id="travelAmPm" required>
+                            <option value="" selected disabled></option>
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                    <div class="col-5">
                         <select class="form-select mb-3" name="travelTimeZone" id="travelTimeZone" required>
                             <option value="" selected disabled>Selecione o fuso horário</option>
                             <option value="0">Hora do Acre</option>
@@ -1709,10 +1715,6 @@
                         </select>
                     </div>
                     <div class="col"></div>
-                </div>
-                <div class="input-group date bootstrap-timepicker w-25 mb-3" id="timePicker">
-                    <input type="text" class="form-control timePicker">
-                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
                 </div>
             `
             var firstOpen = true;

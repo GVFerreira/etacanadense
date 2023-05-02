@@ -1614,6 +1614,13 @@
                             <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" value="{{data.travelTime}}" disabled required>
                         </div>
                         <div class="col">
+                            <select class="form-select mb-3 w-25" name="travelAmPm" id="travelAmPm" required>
+                                <option value="" selected disabled></option>
+                                <option value="AM">AM</option>
+                                <option value="PM">PM</option>
+                            </select>
+                        </div>
+                        <div class="col">
                             <select class="form-select mb-3" name="travelTimeZone" id="travelTimeZone" disabled required>
                                 <option value="" selected disabled>Selecione o fuso horário</option>
                                 <option value="0">Hora do Acre</option>
@@ -2028,6 +2035,7 @@
     document.getElementById("employmentCountry").value = "{{data.employmentCountry}}"
     document.getElementById("employmentFromDateYear").value = "{{data.employmentFromDateYear}}"
     document.getElementById("addressCountry").value = "{{data.addressCountry}}"
+    document.getElementById("travelAmPm").value = "{{data.travelAmPm}}"
     document.getElementById("travelTimeZone").value = "{{data.travelTimeZone}}"
     document.getElementById("theseConditions").value = "{{data.theseConditions}}"
   }

@@ -12,7 +12,6 @@
                     <div class="payment-details">
                         <form id="form-checkout">
                             <input type="hidden" id="mercado-pago-public-key" value="{{mercadoPagoPublicKey}}">
-                            <input type="text" id="form-checkout__codeETA" name="codeETA" value="RBQZZ">
                             <h3 class="title">Detalhes do comprador</h3>
                             <div class="row">
                                 <div class="form-group col">
@@ -65,6 +64,40 @@
                     </div>
                 </div>
             </div>
+            <div class="container container__result">
+                <div class="block-heading">
+                    <h2>Resultado de pagamento</h2>
+                </div>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12">
+                            <div class="items product info product-details">
+                                <div class="row justify-content-md-center">
+                                    <div class="col-md-4 product-detail">
+                                        <div class="product-info">
+                                            <div id="fail-response">
+                                                <br/>
+                                                <p class="text-center font-weight-bold">Something went wrong</p>
+                                                <p id="error-message" class="text-center"></p>
+                                                <br/>
+                                            </div>
+
+                                            <div class="container" id="success-response">
+                                                <br/>
+                                                <p><b>ID: </b><span id="payment-id"></span></p>
+                                                <p><b>Status: </b><span id="payment-status"></span></p>
+                                                <p><b>Detail: </b><span id="payment-detail"></span></p>
+                                                <br/>
+                                            </div>
+                                            <a href="/" class="btn btn-primary fw-bold text-uppercase">Ir para página inicial</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </main>
@@ -80,9 +113,6 @@
 
         const form = {
             id: "form-checkout",
-            codeETA : {
-                id: "form-checkout__codeETA",
-            },
             cardholderName: {
                 id: "form-checkout__cardholderName",
                 placeholder: "Nome do Titular",
@@ -148,7 +178,6 @@
                         paymentMethodId,
                         issuerId,
                         cardholderEmail: email,
-                        codeETA,
                         amount,
                         token,
                         installments,
@@ -168,7 +197,6 @@
                             transactionAmount: Number(amount),
                             installments: Number(installments),
                             description: productDescription,
-                            codeETA,
                             payer: {
                                 email,
                                 identification: {

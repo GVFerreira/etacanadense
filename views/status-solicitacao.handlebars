@@ -35,11 +35,10 @@
                             <p>
                                 <b>Status de pagamento: </b>
                                 {{#if statusPayment}}
-                                    <br>{{statusPayment}}
-                                    <br>{{detailPayment}}
-                                    <br>{{idPayment}}
+                                    {{statusPayment}}
+                                    <p><b>Motivo: </b>{{detailPayment}}</p>
                                 {{else}}
-                                    <span class="alert-danger p-1   ">Pagamento não efetuado</span>
+                                    <span class="alert-danger p-1">Pagamento não efetuado</span>
                                 {{/if}}
                             </p>
                             <p><b>Aprovado pelo Governo Canadense: </b>{{statusETA}}</p>

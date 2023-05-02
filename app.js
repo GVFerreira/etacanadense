@@ -59,6 +59,7 @@ const bcrypt = require('bcryptjs')
 
 const mercadopago = require('./config/mercadoPago')
 const { stringify } = require('querystring')
+
 mercadopago.configure({
     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
 })
@@ -147,27 +148,26 @@ const validarFormulario = (req, res, next) => {
 
 app.get('/', (req, res) => {
     req.session.destroy()
-    const title = "Início - "
-    res.render('index', {title})
+    res.render('index')
 })
 
 app.get('/aplicacao', validarFormulario, (req, res) => {
     if(!parseInt(req.query.etapa)) {
         const etapa = parseInt(req.query.etapa) || 1
         const title = "Representante - "
-        res.render('aplicacao-step1', {title})
+        res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 1) {
         const etapa = parseInt(req.query.etapa) || 1
         const title = "Representante - "
-        res.render('aplicacao-step1', {title})
+        res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 2) {
         const etapa = parseInt(req.query.etapa) || 2
         const title = "Validação - "
-        res.render('aplicacao-step2', {title})
+        res.render('aplicacao-step2', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 3) {
@@ -186,9 +186,9 @@ app.get('/aplicacao', validarFormulario, (req, res) => {
                 <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
                 <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onchange="validNotPresentDay(this)" required>   
             `
-            res.render('aplicacao-step3', {title, dynamicData})
+            res.render('aplicacao-step3', {title, dynamicData, data})
          } else {
-            res.render('aplicacao-step3', {title})
+            res.render('aplicacao-step3', {title, data})
          }
     }
 
@@ -227,6 +227,12 @@ app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
     req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
     req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
     req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
+    
+    const userTime = req.body.hora 
+
+    const userDate = moment(userTime, "HH:mm").toDate()
+
+    const formattedTime = moment(userDate).format("HH:mm")
     res.redirect('/aplicacao?etapa=4')
 })
 
@@ -270,7 +276,7 @@ app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
             }).catch((err) => {
                 console.log(err)
                 req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
-                res.redirect('/aplicacao?etapa=1')
+                res.redirect('/aplicacao')
                 req.session.destroy()
             })
         })      
@@ -311,6 +317,6 @@ app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
-app.listen(3000, ()=> {
+app.listen(process.env.PORT || 8000, ()=> {
     console.log("SERVER ON!")
 })
