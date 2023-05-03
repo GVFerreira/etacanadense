@@ -12,8 +12,6 @@ main section {
 
 }
 
-
-
 main section.section-1 {
     height: 400px;
 
@@ -130,6 +128,42 @@ main section.section-4 .container .row {
     flex-direction: column;
 }
 
+main section.section-4 .container dl dt {
+    background-color: #FFF;
+
+    width: 100%;
+
+    padding: .5rem;
+    margin-bottom: 1rem;
+
+    border-radius: 5px;
+
+    font-weight: bold;
+    color: #000;
+
+    cursor: pointer;
+}
+
+main section.section-4 .container dl dd {
+    width: 100%;
+    height: 100%;
+    margin: 0 .5rem 1.5rem .5rem;
+}
+main section.section-4 .container dl dd {
+    display: none; 
+}
+main section.section-4 .container dl dt::after {
+    content: '+';
+    margin-left: 10px;
+}
+main section.section-4 .container dl dt.ativo::after {
+    content: '-';
+}
+main section.section-4 .container dl dd.ativo {
+    display: block;
+    animation: slideDown .5s forwards;
+}
+
 main section.section-5 {
     background-color: #FFF;
 
@@ -213,5 +247,43 @@ main section.section-5 .container a {
         
         display: flex;
         flex-direction: row;
+    }
+}
+
+@media(max-width: 600px) {
+    main section.section-4 {
+        justify-content: center !important;
+        align-items: center !important;
+        flex-direction: column !important;
+    }
+
+    main section.section-4 .container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    main section.section-4 .container #countryAll {
+        display: none;
+    }
+
+    main section.section-4 .container #countryAccordion dl {
+        width: 100% !important;
+    }
+
+    main section.section-4 .container #countryAccordion dl #europe {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    main section.section-4 .container #countryAccordion dl dt {
+        width: 100% !important;
+    }
+
+    main section.section-4 .container #countryAccordion {
+        display: block !important;
     }
 }

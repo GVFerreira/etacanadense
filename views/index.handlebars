@@ -65,7 +65,7 @@
     <section class="section-4 full-width py-3">
         <div class="container py-5">
             <h2 class="w-100 mb-4">Países permitidos</h2>
-            <div class="row">
+            <div class="row" id="countryAll">
                 <div class="col">
                     <p>Alemanha</p>
                     <p>Andorra</p>
@@ -121,6 +121,74 @@
                     <p>Suíça</p>
                 </div>
             </div>
+            <div style="display: none" id="countryAccordion">
+                <dl class="js-accordion w-100">
+                    <dt>América do Sul</dt>
+                    <dd>
+                        <p>Brasil</p>
+                        <p>Chile</p>
+                    </dd>
+
+                    <dt>Europa</dt>
+                    <dd id="europe">
+                        <p>Alemanha</p>
+                        <p>Andorra</p>
+                        <p>Áustria</p>
+                        <p>Bélgica</p>
+                        <p>Croácia</p>
+                        <p>Chipre</p>
+                        <p>Dinamarca</p>
+                        <p>Eslováquia</p>
+                        <p>Eslovênia</p>
+                        <p>Espanha</p>
+                        <p>Estônia</p>
+                        <p>Finlândia</p>
+                        <p>França</p>
+                        <p>Grécia</p>
+                        <p>Holanda</p>
+                        <p>Hungria</p>
+                        <p>Islândia</p>
+                        <p>Irlanda</p>
+                        <p>Itália</p>
+                        <p>Letônia</p>
+                        <p>Liechtenstein</p>
+                        <p>Lituânia</p>
+                        <p>Luxemburgo</p>
+                        <p>Mônaco</p>
+                        <p>Noruega</p>
+                        <p>Polônia</p>
+                        <p>Portugal</p>
+                        <p>República Checa</p>
+                        <p>São Marino</p>
+                        <p>Suécia</p>
+                        <p>Suíça</p>
+                    </dd>
+                    
+                    <dt>Ásia</dt>
+                    <dd>
+                        <p>Brunei</p>
+                        <p>Coréia do Sul</p>
+                        <p>Japão</p>
+                        <p>Singapura</p>
+                    </dd>
+                    
+                    <dt>Oceania</dt>
+                    <dd>
+                        <p>Austrália</p>
+                        <p>Ilhas Salomão</p>
+                        <p>Nova Zelândia</p>
+                        <p>Papua Nova Guiné</p>
+                        <p>Samoa</p>
+                    </dd>
+
+                    <dt>América Central</dt>
+                    <dd>
+                        <p>Antigua e Barbuda</p>
+                        <p>Bahamas</p>
+                        <p>Barbados</p>
+                    </dd>
+                </dl>
+            </div>
         </div>
     </section>
 
@@ -165,5 +233,6 @@
       });
     }
   }
+  
   initAccordion();
 </script>

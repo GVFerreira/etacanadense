@@ -60,22 +60,22 @@
                 <h3 class="mt-4">Dados do passaporte do requerente</h3>
                 
                 <label class="mb-2" for="numPassport">Número do passaporte <span class="text-red">* (obrigatório)</span></label>
-                <input type="text" class="form-control w-50 mb-3" name="numPassport" id="numPassport" required>
+                <input type="text" class="form-control w-50 mb-3" name="numPassport" id="numPassport" value="{{data.numPassport}}" required>
 
                 <label class="mb-2" for="doiPassport">Data de emissão do passaporte <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="doiPassport" id="doiPassport" onchange="validPresentDay(this)" required>
+                <input type="date" class="form-control mb-3 w-25" name="doiPassport" id="doiPassport" onchange="validPresentDay(this)" value="{{data.doiPassport}}" required>
 
                 <label class="mb-2" for="doePassport">Data de expiração do passaporte <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="doePassport" id="doePassport" onchange="validNotPresentDay(this)" required>
+                <input type="date" class="form-control mb-3 w-25" name="doePassport" id="doePassport" onchange="validNotPresentDay(this)" value="{{data.doePassport}}" required>
 
                 <label class="mb-2" for="firstName">Nome <span class="text-red">* (obrigatório)</span></label>
-                <input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" required>
+                <input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" value="{{data.firstName}}" required>
 
                 <label class="mb-2" for="surname">Sobrenome(s) <span class="text-red">* (obrigatório)</span></label>
-                <input type="text" class="form-control w-50 mb-3" name="surname" id="surname" required>
+                <input type="text" class="form-control w-50 mb-3" name="surname" id="surname" value="{{data.surname}}" required>
 
                 <label class="mb-2" for="dateBirthday">Data de Nascimento <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="dateBirthday" id="dateBirthday" onchange="validPresentDay(this)" required>
+                <input type="date" class="form-control mb-3 w-25" name="dateBirthday" id="dateBirthday" onchange="validPresentDay(this)" value="{{data.dateBirthday}}" required>
 
                 <label class="mb-2" for="gender">Gênero <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="gender" id="gender" required>
@@ -335,7 +335,7 @@
                 </select>
                 
                 <label class="mb-2" for="cityBirth">Cidade/município de nascimento <span class="text-red">* (obrigatório)</span></label>
-                <input type="text" id="cityBirth" name="cityBirth" class="form-control w-50 mb-3" required>
+                <input type="text" id="cityBirth" name="cityBirth" class="form-control w-50 mb-3" value="{{data.cityBirth}}" required>
 
                 <h3 class="mt-4">Dados pessoais do requerente</h3>
 
@@ -398,31 +398,31 @@
 
                 <label for="contactEmail">Endereço de e-mail <span class="text-red">* (obrigatório)</span></label>
                 <small>Este e-mail será utilizado para o envio de atualizações do processo de Autorização de Viagem, apenas.</small>
-                <input type="email" class="form-control mb-3 w-50" id="contactEmail" name="contactEmail" required>
+                <input type="email" class="form-control mb-3 w-50" id="contactEmail" name="contactEmail" value="{{data.contactEmail}}" required>
 
                 <label for="contactTel">Celular <span class="text-red">* (obrigatório)</span></label>
-                <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" required>
+                <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" value="{{data.contactTel}}" required>
 
                 <h3 class="mt-4">Endereço residencial</h3>
 
                 <div class="row">
                     <div class="col">
                         <label for="addressName">Endereço <span class="text-red">* (obrigatório)</span></label>
-                        <input type="text" class="form-control mb-3" id="addressName" name="addressName" required>
+                        <input type="text" class="form-control mb-3" id="addressName" name="addressName" value="{{data.addressName}}" required>
                     </div>
                     <div class="col">
                         <label for="addressNumber">Número <span class="text-red">* (obrigatório)</span></label>
-                        <input type="text" class="form-control mb-3" id="addressNumber" name="addressNumber" required>
+                        <input type="text" class="form-control mb-3" id="addressNumber" name="addressNumber" value="{{data.addressNumber}}" required>
                     </div>
                 </div>
 
                 <label for="addressComplement">Complemento</label>
-                <input type="text" class="form-control mb-3 w-50" id="addressComplement" name="addressComplement">
+                <input type="text" class="form-control mb-3 w-50" id="addressComplement" name="addressComplement" value="{{data.addressComplement}}">
 
                 <div class="row">
                     <div class="col">
                         <label for="addressCity">Cidade/município <span class="text-red">* (obrigatório)</span></label>
-                        <input type="text" class="form-control mb-3" id="addressCity" name="addressCity">
+                        <input type="text" class="form-control mb-3" id="addressCity" name="addressCity" value="{{data.addressCity}}">
                     </div>
                     <div class="col">
                         <label for="addressCountry">País <span class="text-red">* (obrigatório)</span></label>
@@ -778,7 +778,7 @@
         if(value === '1') {
             dynamicUCI.innerHTML += `
                 <label for="personalUCI">Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão</label>
-                <input type="text" class="form-control mb-3 w-50" id="personalUCI" name="personalUCI">
+                <input type="text" class="form-control mb-3 w-50" id="personalUCI" name="personalUCI" value="{{data.personalUCI}}">
             `
         } else {
              dynamicUCI.innerHTML = ''
@@ -1536,12 +1536,12 @@
         if(parseInt(value)) {
             dynamicTravel.innerHTML += `
                 <label for="travelDate">Quando você pretende viajar para o Canadá? <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" onchange="validNotPresentDay(this)" required>
+                <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" onchange="validNotPresentDay(this)" value={{data.travelDate}} required>
                 
                 <label>Insira o horário de partida do seu voo para o Canadá <span class="text-red">* (obrigatório)</span></label>
                 <div class="row">
                     <div class="col-5">
-                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" min="00:00" max="12:00">
+                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" min="00:00" max="12:00" value="{{data.travelTime}}">
                     </div>
                     <div class="col-2">
                         <select class="form-select mb-3" name="travelAmPm" id="travelAmPm" required>
@@ -1717,22 +1717,7 @@
                     <div class="col"></div>
                 </div>
             `
-            var firstOpen = true;
-            var time;
 
-            $('#timePicker').datetimepicker({
-                useCurrent: false,
-                format: "hh:mm A"
-            }).on('dp.show', function() {
-                if(firstOpen) {
-                    time = moment().startOf('day');
-                    firstOpen = false;
-                } else {
-                    time = "01:00 PM"
-                }        
-                $(this).data('DateTimePicker').date(time);
-            });
-            
         } else {
             dynamicTravel.innerHTML = ''
         }
@@ -1745,7 +1730,7 @@
         if (parseInt(value)) {
             dynamicRefused.innerHTML += `
                 <label for="refusedVisaToCandaDetails">Para cada recusa, por favor, indique o país que lhe recusou o visto ou autorização, ou que lhe negou a entrada, bem como os motivos apresentados pelo país. <span class="text-red">* (obrigatório)</span></label>
-                <textarea rows="5" class="form-control mb-3 w-50"  id="refusedVisaToCandaDetails" name="refusedVisaToCandaDetails" maxlength="500" required></textarea>
+                <textarea rows="5" class="form-control mb-3 w-50"  id="refusedVisaToCandaDetails" name="refusedVisaToCandaDetails" maxlength="500" required>{{data.refusedVisaToCandaDetails}}</textarea>
             `
         }
     }
@@ -1757,7 +1742,7 @@
         if(parseInt(value)) {
             dynamicCriminal.innerHTML += `
             <label for="criminalOffenceAnywhereDetails">Para cada prisão, acusação ou condenação, indique onde (cidade, país), quando (mês/ano), a natureza do delito e a sentença. <span class="text-red">* (obrigatório)</span></label>
-            <textarea rows="5" class="form-control mb-3 w-50" id="criminalOffenceAnywhereDetails" name="criminalOffenceAnywhereDetails" maxlength="500" required></textarea>
+            <textarea rows="5" class="form-control mb-3 w-50" id="criminalOffenceAnywhereDetails" name="criminalOffenceAnywhereDetails" maxlength="500" required>{{data.criminalOffenceAnywhereDetails}}</textarea>
             `
         }
     }
@@ -1870,5 +1855,13 @@
         }
     }
     
-    
+    window.onload = function() {
+        document.getElementById("gender").value = "{{data.gender}}"
+        document.getElementById("countryBirth").value = "{{data.countryBirth}}"
+        document.getElementById("maritalStatus").value = "{{data.maritalStatus}}"
+        document.getElementById("occupation").value = "{{data.occupation}}"
+        document.getElementById("addressCountry").value = "{{data.addressCountry}}"
+        document.getElementById("travelAmPm").value = "{{data.travelAmPm}}"
+        document.getElementById("travelTimeZone").value = "{{data.travelTimeZone}}"
+    }
 </script>
