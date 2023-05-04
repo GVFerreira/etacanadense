@@ -115,10 +115,10 @@ app.use((req, res, next) => {
 })
 
 //Mongoose
-//mongodb://127.0.0.1:27017/etacanadense
-//mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority
+    const dbDEV = `mongodb://127.0.0.1:27017/etacanadense`
+    const dbPROD = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
     mongoose.set('strictQuery', true)
-    mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
+    mongoose.connect(dbDEV, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
