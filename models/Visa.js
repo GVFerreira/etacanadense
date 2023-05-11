@@ -121,7 +121,7 @@ const Visa = new Schema({
         required: true
     },
     employmentTitle: {
-        type: Number
+        type: String
     },
     employmentCompanyName: {
         type: String

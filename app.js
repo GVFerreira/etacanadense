@@ -43,6 +43,7 @@ const User = mongoose.model("users")
 
 const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('./helpers/senderMail')
+const hbs = require('nodemailer-express-handlebars')
 
 const admin = require('./routes/admin')
 const users = require('./routes/users')
@@ -244,25 +245,6 @@ app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
             code = hash
             codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
-            //transporter.use('compile', hbs(handlebarOptions))
-
-            // const mailOptions = {
-            //     from: `eTA Canadense <${process.env.USER_MAIL}>`,
-            //     to: receiver,
-            //     replyTo: process.env.MAIL_REPLY,
-            //     subject,
-            //     template: 'template-email',
-            //     context: {}
-            // }
-
-            // transporter.sendMail(mailOptions, (err, info) => {
-            //     if(err) {
-            //         console.log(`Error: ${err}`)
-            //     } else {
-            //         console.log(`Message sent: ${info}`)
-            //     }
-            // })
-
             const agreeCheck = req.body.agreeCheck
             const consentAndDeclaration = req.body.consentAndDeclaration
 
@@ -271,6 +253,23 @@ app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
             req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
+                transporter.use('compile', hbs(handlebarOptions))
+
+                const mailOptions = {
+                    from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                    to: req.session.aplicacaoStep.contactEmail,
+                    subject: 'Sua solicitação foi enviada com sucesso',
+                    template: 'template-email',
+                    //context: {}
+                }
+
+                transporter.sendMail(mailOptions, (err, info) => {
+                    if(err) {
+                        console.log(`Error: ${err}`)
+                    } else {
+                        console.log(`Message sent: ${info}`)
+                    }
+                })
                 req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
                 res.redirect('/checkout/card')
             }).catch((err) => {
@@ -311,6 +310,30 @@ app.get('/contato', (req, res) => {
 
 app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
+})
+
+app.get('/teste', (req, res) => {
+    res.render('teste')
+})
+
+app.post('/teste', (req, res) => {
+    const mailOptions = {
+        from: `eTA Canadense <${process.env.USER_MAIL}>`,
+        to: req.body.email,
+        subject: 'Sua solicitação foi enviada com sucesso',
+        template: 'template-email',
+        context: {
+            menssagem: 'Testando email'
+        }
+    }
+
+    transporter.sendMail(mailOptions, (err, info) => {
+        if(err) {
+            console.log(`Error: ${err}`)
+        } else {
+            console.log(`Message sent: ${info}`)
+        }
+    })
 })
 
 app.use('/admin', /*isAdmin,*/ admin)
