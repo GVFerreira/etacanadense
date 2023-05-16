@@ -316,22 +316,28 @@ app.get('/teste', (req, res) => {
     res.render('teste')
 })
 
-app.post('/teste', (req, res) => {
+app.post('/teste',async (req, res) => {
+    transporter.use('compile', hbs(handlebarOptions))
+
     const mailOptions = {
         from: `eTA Canadense <${process.env.USER_MAIL}>`,
         to: req.body.email,
-        subject: 'Sua solicitação foi enviada com sucesso',
+        subject: 'Confirmação de Recebimento - Autorização Canadense',
         template: 'template-email',
         context: {
-            menssagem: 'Testando email'
+            message: 'Esse é um e-mail teste'
         }
     }
 
     transporter.sendMail(mailOptions, (err, info) => {
         if(err) {
-            console.log(`Error: ${err}`)
+            console.log(err)
+            req.flash('error_msg', `Houve um erro ao enviar este e-mail: ${err}`)
+            res.redirect('/')
         } else {
-            console.log(`Message sent: ${info}`)
+            console.log(info)
+            req.flash('success_msg', `Envio feito com sucesso para ${receiver}`)
+            res.redirect('/')
         }
     })
 })
