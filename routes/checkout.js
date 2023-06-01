@@ -6,6 +6,9 @@ const Visa = mongoose.model("visa")
 const mercadopago = require('mercadopago')
 const dotenv = require('dotenv')
 dotenv.config()
+const bodyParser = require('body-parser')
+router.use(bodyParser.urlencoded({extended: true}))
+router.use(bodyParser.json())
 
 
 const mercadoPagoPublicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY;
@@ -56,9 +59,9 @@ router.post('/process_payment_card', (req, res) => {
       }
     }
   }
-
-  mercadopago.payment.save(paymentData).then((response) => {
-    const { response: data } = response
+  
+  mercadopago.payment.create(paymentData).then((response) => {
+    const { body: data } = response
     const detail = data.status_detail
     const status = data.status
     const id = data.id
@@ -71,23 +74,26 @@ router.post('/process_payment_card', (req, res) => {
       visa.detailPayment = data.status_detail
       visa.idPayment = data.id
 
-      visa.save()
+      return visa.save()
+    }).then(() => {
+      const responseData = {
+        detailPayment,
+        statusPayment,
+        idPayment,
+      }
+
+      return res.status(200).json(responseData)
     }).catch((err) => {
+      console.error(err)
       req.flash('error_msg', 'Houve um erro grave ao salvar os dados de pagamento')
       req.session.destroy()
-      res.redirect('/aplicacao')
-    })
-
-    res.json({
-      detail,
-      status,
-      id
+      return res.redirect('/aplicacao')
     })
 
   }).catch((error) => {
-    console.log(error)
+    console.error(error)
     const { errorMessage, errorStatus }  = validateError(error)
-    res.status(errorStatus).json({ error_message: errorMessage })
+    return res.status(errorStatus).json({ error_message: errorMessage })
   })
 
   function validateError(error) {

@@ -135,7 +135,7 @@ app.use((req, res, next) => {
     })
 
 const validarFormulario = (req, res, next) => {
-    const etapaAnterior = req.query.etapa ? teste = parseInt(req.query.etapa) - 1 : 0
+    const etapaAnterior = req.query.etapa ? parseInt(req.query.etapa) - 1 : 0
     if (etapaAnterior > 0) {
         const dadosEtapaAnterior = req.session[`aplicacaoStep`]
         if (!dadosEtapaAnterior) {
@@ -152,27 +152,24 @@ app.get('/', (req, res) => {
     res.render('index')
 })
 
-app.get('/aplicacao', validarFormulario, (req, res) => {
+app.get('/aplicacao', (req, res) => {
     if(!parseInt(req.query.etapa)) {
-        const etapa = parseInt(req.query.etapa) || 1
+        const etapa = 1
         const title = "Representante - "
         res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 1) {
-        const etapa = parseInt(req.query.etapa) || 1
         const title = "Representante - "
         res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 2) {
-        const etapa = parseInt(req.query.etapa) || 2
         const title = "Validação - "
         res.render('aplicacao-step2', {title, data: req.session.aplicacaoStep})
     }
 
     if(parseInt(req.query.etapa) === 3) {
-        const etapa = parseInt(req.query.etapa) || 3
         const title = "Documentos - "
         const data = req.session.aplicacaoStep
         const canadaVisa = data.canadaVisa
@@ -221,7 +218,7 @@ app.post('/aplicacaoStep2', validarFormulario, (req, res) => {
     res.redirect('/aplicacao?etapa=3')
 })
 
-app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
+app.post('/aplicacaoStep3', validarFormulario, (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
     req.session.aplicacaoStep.appliedToCanada = parseInt(req.session.aplicacaoStep.appliedToCanada)
     req.session.aplicacaoStep.travelWhen = parseInt(req.session.aplicacaoStep.travelWhen)
@@ -237,7 +234,7 @@ app.post('/aplicacaoStep3',  validarFormulario, (req, res) => {
     res.redirect('/aplicacao?etapa=4')
 })
 
-app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
+app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
     bcrypt.genSalt(10, (error, salt) => {
         let code = ''
         bcrypt.hash(code, salt, (error, hash) => {
@@ -258,20 +255,26 @@ app.post('/aplicacaoStep4',  validarFormulario, (req, res) => {
                 const mailOptions = {
                     from: `eTA Canadense <${process.env.USER_MAIL}>`,
                     to: req.session.aplicacaoStep.contactEmail,
-                    subject: 'Sua solicitação foi enviada com sucesso',
+                    subject: 'Confirmação de Recebimento - Autorização Canadense',
                     template: 'template-email',
-                    //context: {}
+                    context: {
+                        message: 'Esse é um e-mail teste'
+                    }
                 }
 
                 transporter.sendMail(mailOptions, (err, info) => {
                     if(err) {
-                        console.log(`Error: ${err}`)
+                        console.error(err)
+                        req.flash('error_msg', `Houve um erro ao enviar este e-mail: ${err}`)
+                        req.session.destroy()
+                        res.redirect('/aplicacao')
                     } else {
-                        console.log(`Message sent: ${info}`)
+                        console.log(info)
+                        req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
+                        res.redirect('/checkout/card')
                     }
                 })
-                req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
-                res.redirect('/checkout/card')
+                
             }).catch((err) => {
                 console.log(err)
                 req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
@@ -310,36 +313,6 @@ app.get('/contato', (req, res) => {
 
 app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
-})
-
-app.get('/teste', (req, res) => {
-    res.render('teste')
-})
-
-app.post('/teste',async (req, res) => {
-    transporter.use('compile', hbs(handlebarOptions))
-
-    const mailOptions = {
-        from: `eTA Canadense <${process.env.USER_MAIL}>`,
-        to: req.body.email,
-        subject: 'Confirmação de Recebimento - Autorização Canadense',
-        template: 'template-email',
-        context: {
-            message: 'Esse é um e-mail teste'
-        }
-    }
-
-    transporter.sendMail(mailOptions, (err, info) => {
-        if(err) {
-            console.log(err)
-            req.flash('error_msg', `Houve um erro ao enviar este e-mail: ${err}`)
-            res.redirect('/')
-        } else {
-            console.log(info)
-            req.flash('success_msg', `Envio feito com sucesso para ${receiver}`)
-            res.redirect('/')
-        }
-    })
 })
 
 app.use('/admin', /*isAdmin,*/ admin)

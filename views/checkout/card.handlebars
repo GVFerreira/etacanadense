@@ -207,7 +207,7 @@
                             
                         }),
                     }).then((response) => {
-                        return response.json
+                        return response.json()
                     }).then((result) => {
                         if(!result.hasOwnProperty("error_message")) {
                            document.getElementById("success-response").style.display = "block"
@@ -280,19 +280,5 @@
                 payButton.removeAttribute('disabled')
             }
         }
-
-        // Handle transitions
-        /*document.getElementById('checkout-btn').addEventListener('click', function(){
-            $('.container__cart').fadeOut(500)
-            setTimeout(() => {
-                loadCardForm()
-                $('.container__payment').show(500).fadeIn()
-            }, 500)
-        })
-
-        document.getElementById('go-back').addEventListener('click', function(){
-            $('.container__payment').fadeOut(500)
-            setTimeout(() => { $('.container__cart').show(500).fadeIn() }, 500)
-        })*/
     }
 </script>
