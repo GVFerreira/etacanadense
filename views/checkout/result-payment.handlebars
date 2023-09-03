@@ -37,3 +37,18 @@
         </div>
     </section>
 </main>
+<script>
+    const status = document.getElementById('payment-status')
+    const detail = document.getElementById('payment-detail')
+    const id = document.getElementById('payment-id')
+    const queryString = window.location.search
+    const params = new URLSearchParams(queryString);
+
+    const statusValue = params.get('status')
+    const detailValue = params.get('detail')
+    const idValue = params.get('id')
+
+    status.innerText = statusValue
+    detail.innerText = detailValue
+    id.innerText = idValue
+</script>

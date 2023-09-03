@@ -1,0 +1,345 @@
+<link rel="stylesheet" href="/css/checkout.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<main>
+    <section class="container py-5">
+        <div class="card py-5 px-3 container__cart">
+            <h1 class="fs-2 text-center mb-5">
+                Está página está protegida por todas as etapas de segurança do
+                <span class="px-2"><img src="/img/mercadopago-logo.webp" alt="Loogotipo - Mercado Pago" id="mercadopago" style="width: 8rem"></span>
+            </h1>
+            <div class="accordion w-75 m-auto" id="accordionExample">
+                <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="fs-3 accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Cartão de crédito
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <form id="form-checkout">
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="form-checkout__cardNumber" class="form-control mb-3" style="height: 2.3rem"></div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div id="form-checkout__securityCode" class="form-control mb-3" style="height: 2.3rem"></div>
+                                                <select id="form-checkout__issuer" class="form-select mb-3"></select>
+                                            </div>
+                                            <div class="col">
+                                                <div id="form-checkout__expirationDate" class="form-control mb-3" style="height: 2.3rem"></div>
+                                                <select id="form-checkout__installments" class="form-select mb-3"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="form-checkout__cardholderName" class="form-control mb-3">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <select id="form-checkout__identificationType" class="form-select mb-3"></select>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
+                                            </div>
+                                        </div>
+                                        <input type="email" id="form-checkout__cardholderEmail" class="form-control mb-3">
+                                    </div>
+                                </div>
+                                <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
+                                <progress value="0" class="progress-bar" style="display: none !important;"></progress>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGAMENTO COM PIX -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            PIX
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                        <div class="accordion-body container__payment">                      
+                            <form id="form-checkout-pix">
+                                <div>
+                                    <div>
+                                        <label for="payerFirstName">Nome</label>
+                                        <input id="form-checkout__payerFirstName" name="payerFirstName" type="text">
+                                    </div>
+                                    <div>
+                                        <label for="payerLastName">Sobrenome</label>
+                                        <input id="form-checkout__payerLastName" name="payerLastName" type="text">
+                                    </div>
+                                    <div>
+                                        <label for="email">E-mail</label>
+                                        <input id="form-checkout__payerEmail" name="email" type="text">
+                                    </div>
+                                    <div>
+                                        <label for="identificationType">Tipo de documento</label>
+                                        <select id="form-checkout-pix__identificationType" name="identificationType" type="text"></select>
+                                    </div>
+                                    <div>
+                                        <label for="identificationNumber">Número do documento</label>
+                                        <input id="form-checkout__identificationNumber" name="identificationNumber" type="text">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>
+                                        <button type="submit" id="checkout-btn-pix">Pagar como PIX</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="shopping-cart dark">
+        <div class="container container__result">
+            <div class="block-heading">
+                <h2>Payment Result</h2>
+                <p>This is an example of a Mercado Pago integration</p>
+            </div>
+            <div class="content">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div class="items product info product-details">
+                            <div class="row justify-content-md-center">
+                                <div class="col-md-4 product-detail">
+                                    <div class="product-info">
+                                        <div id="fail-response">
+                                            <br/>
+                                            <p class="text-center font-weight-bold">Something went wrong</p>
+                                            <p id="error-message" class="text-center"></p>
+                                            <br/>
+                                        </div>
+
+                                        <div id="success-response">
+                                            <br/>
+                                            <p><b>ID: </b><span id="payment-id"></span></p>
+                                            <p><b>Status: </b><span id="payment-status"></span></p>
+                                            <p><b>Detail: </b><span id="payment-detail"></span></p>
+                                            <br/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pix-code-section" class="container text-center m-4">
+                <p>Scan the following QR Code to complete the payment:</p>
+                <img src="" id="qr-code-image" width="250px">
+                <p class="m-3">Or you can also use the following code as copy and paste:</p>
+                <p id="pix-code" style="font-size: 14px;"></p>
+            </div>
+        </div>
+    </section>
+</main>
+<script defer>
+    const mercadopago = new MercadoPago('TEST-96adb56a-9ef9-415a-bb5a-1e21fdf7a45e')
+
+    const cardForm = mercadopago.cardForm({
+        amount: "99.0",
+        iframe: true,
+        form: {
+            id: "form-checkout",
+            cardNumber: {
+                id: "form-checkout__cardNumber",
+                placeholder: "Número do cartão",
+            },
+            expirationDate: {
+                id: "form-checkout__expirationDate",
+                placeholder: "MM/YY",
+            },
+            securityCode: {
+                id: "form-checkout__securityCode",
+                placeholder: "Código de segurança",
+            },
+            cardholderName: {
+                id: "form-checkout__cardholderName",
+                placeholder: "Titular do cartão",
+            },
+            issuer: {
+                id: "form-checkout__issuer",
+                placeholder: "Banco emissor",
+            },
+            installments: {
+                id: "form-checkout__installments",
+                placeholder: "Parcelas",
+            },        
+            identificationType: {
+                id: "form-checkout__identificationType",
+                placeholder: "Tipo de documento",
+            },
+            identificationNumber: {
+                id: "form-checkout__identificationNumber",
+                placeholder: "Número do documento",
+            },
+            cardholderEmail: {
+                id: "form-checkout__cardholderEmail",
+                placeholder: "E-mail",
+            }
+        },
+        callbacks: {
+            onFormMounted: (error) => {
+                if (error) return console.warn("Form Mounted handling error: ", error)
+                console.log("Form mounted")
+            },
+            onSubmit: (event) => {
+                event.preventDefault()
+
+                const {
+                    paymentMethodId: payment_method_id,
+                    issuerId: issuer_id,
+                    cardholderEmail: email,
+                    amount,
+                    token,
+                    installments,
+                    identificationNumber,
+                    identificationType,
+                } = cardForm.getCardFormData()
+
+                fetch("/checkout/process-payment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        token,
+                        issuer_id,
+                        payment_method_id,
+                        transaction_amount: Number(amount),
+                        installments: Number(installments),
+                        description: "Descrição do produto",
+                        payer: {
+                            email,
+                            identification: {
+                                type: identificationType,
+                                number: identificationNumber
+                            }
+                        }
+                    })
+                })
+            },
+            onFetching: (resource) => {
+                console.log("Fetching resource: ", resource)
+
+                // Animate progress bar
+                const progressBar = document.querySelector(".progress-bar")
+                progressBar.removeAttribute("value")
+
+                return () => {
+                    progressBar.setAttribute("value", "0")
+                }
+            }
+        }
+    })
+</script>
+
+<script defer>
+    (async function getIdentificationTypes() {
+      try {
+        const identificationTypes = await mercadopago.getIdentificationTypes()
+        const identificationTypeElement = document.getElementById('form-checkout-pix__identificationType')
+
+        createSelectOptions(identificationTypeElement, identificationTypes)
+
+      } catch (e) {
+        return console.error('Error getting identificationTypes: ', e)
+      }
+    })();
+
+    function createSelectOptions(elem, options, labelsAndKeys = { label: "name", value: "id" }) {
+      const { label, value } = labelsAndKeys
+
+      elem.options.length = 0
+
+      const tempOptions = document.createDocumentFragment()
+
+      options.forEach((option) => {
+        const optValue = option[value]
+        const optLabel = option[label]
+
+        const opt = document.createElement('option')
+        opt.value = optValue
+        opt.textContent = optLabel
+
+        tempOptions.appendChild(opt)
+      })
+
+      elem.appendChild(tempOptions)
+    }
+
+    document.getElementById("form-checkout-pix").addEventListener("submit", function(e) {
+        e.preventDefault()
+        sendPayment()
+    })
+
+    function sendPayment() {
+        const payerFirstName = document.getElementById("form-checkout__payerFirstName").value
+        const payerLastName = document.getElementById("form-checkout__payerLastName").value
+        const payerEmail = document.getElementById("form-checkout__payerEmail").value
+
+        const identificationType = document.getElementById("form-checkout__identificationType").value
+        const identificationNumber = document.getElementById("form-checkout__identificationNumber").value
+
+        fetch("/process-payment-pix", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                transactionAmount: 99.0,
+                description: 'Solicitação de Autorização de Viagem - Canadá',
+                payer: {
+                    firstName: payerFirstName,
+                    lastName: payerLastName,
+                    email: payerEmail,
+                    identification: {
+                        type: identificationType,
+                        number: identificationNumber,
+                    }
+                },
+            }),
+        }).then((response) => {
+            return response.json()
+        }).then((result) => {
+            if(!result.hasOwnProperty("error_message")) {
+                document.getElementById("payment-id").innerText = result.id
+                document.getElementById("payment-status").innerText = result.status
+                document.getElementById("payment-detail").innerText = result.detail
+                document.getElementById("qr-code-image").src = `data:image/jpeg;base64,${result.qrCodeBase64}`
+                document.getElementById("pix-code").innerText = result.qrCode
+
+                document.getElementById("success-response").style.display = "block"
+                document.getElementById("pix-code-section").style.display = "block"
+            } else {
+                document.getElementById("error-message").innerText = result.error_message
+                document.getElementById("fail-response").style.display = "block"
+            }
+
+            $('.container__payment').fadeOut(500)
+            setTimeout(() => {
+                $('.container__result').show(500).fadeIn();
+            }, 500)
+
+        }).catch((error) => {
+            console.log(error)
+            alert("Unexpected error\n"+JSON.stringify(error))
+        })
+    };
+
+    // Handle transitions
+    document.getElementById('checkout-btn-pix').addEventListener('click', () => {
+        $('.container__cart').fadeOut(500)
+        setTimeout(() => {
+            $('.container__payment').show(500).fadeIn()
+        }, 500)
+    })
+</script>
