@@ -39,7 +39,8 @@ router.get('/', (req, res) => {
 router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
-  const paymentData = {
+
+  mercadopago.payment.create({
     transaction_amount: 99.00,
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
@@ -53,34 +54,29 @@ router.post('/process-payment', (req, res) => {
         number: payer.identification.docNumber
       }
     }
-  }
+  }).then(response => {
+    const { response: data } = response
 
-  mercadopago.payment.create(paymentData).then(response => {
-    const { status, status_detail, id } = response.body
-    console.log(status, status_detail, id)
+    res.status(201).json({
+      detail: data.status_detail,
+      status: data.status,
+      id: data.id
+    })
 
-    if (status === 'approved') {
-      console.log('boa1')
-      res.redirect(`/checkout/result-payment?status=${status}&detail=${status_detail}&id=${id}`)
-    } else if (status === 'in_process' || status === 'rejected') {
-      console.log('boa2')
-      res.redirect(`/checkout/result-payment?status=${status}&detail=${status_detail}&id=${id}`)
-    } else {
-      // Lide com outros status conforme necessário
-      res.redirect('/checkout/error')
-    }
   }).catch(error => {
-    console.error(error)
-    res.redirect('/checkout/error')
+    console.log(error)
+    const { errorMessage, errorStatus }  = validateError(error)
+    res.status(errorStatus).json({ error_message: errorMessage })
+
   })
 })
 
-router.post('/process-payment-pix', (req, res) => {
+router.post("/process-payment-pix", (req, res) => {
   const requestBody = req.body
-  const paymentData = {
+  const data = {
     payment_method_id: "pix",
-    description: requestBody.description,
-    transaction_amount: Number(requestBody.transactionAmount),
+    description: 'Solicitação de Autorização de Viagem - Canadá',
+    transaction_amount: 99.00,
     payer: {
       email: requestBody.payer.email,
       first_name: requestBody.payer.firstName,
@@ -90,9 +86,9 @@ router.post('/process-payment-pix', (req, res) => {
         number: requestBody.payer.identification.number,
       }
     }
-  }
-  
-  mercadopago.payment.create(paymentData).then((data) => {
+  };
+
+  mercadopago.payment.create(data).then((data) => {
     const { response } = data
 
     res.status(201).json({
@@ -102,7 +98,8 @@ router.post('/process-payment-pix', (req, res) => {
       qrCode: response.point_of_interaction.transaction_data.qr_code,
       qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
     })
-  }).catch( (error) => {
+
+  }).catch((error) => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)
     res.status(errorStatus).json({ error_message: errorMessage })

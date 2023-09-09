@@ -271,7 +271,7 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
                     } else {
                         console.log(info)
                         req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
-                        res.redirect('/checkout/card')
+                        res.redirect('/checkout')
                     }
                 })
                 
@@ -315,7 +315,7 @@ app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
 })
 
-app.use('/admin', /*isAdmin,*/ admin)
+app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
