@@ -59,22 +59,17 @@ require('dotenv').config()
 const bcrypt = require('bcryptjs')
 
 const mercadopago = require('./config/mercadoPago')
-const { stringify } = require('querystring')
-
-mercadopago.configure({
-    access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
-})
-
-const keyFilename = './eta-canadense-384823-eea18766c9e1.json'
-
-const { Datastore } = require('@google-cloud/datastore')
-
-const { DatastoreStore } = require('@google-cloud/connect-datastore')
-
-const datastore = new Datastore({
-    projectId: 'eta-canadense-384823',
-    keyFilename
-})
+// const { stringify } = require('querystring')
+// mercadopago.configure({
+//     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
+// })
+// const keyFilename = './eta-canadense-384823-eea18766c9e1.json'
+// const { Datastore } = require('@google-cloud/datastore')
+// const { DatastoreStore } = require('@google-cloud/connect-datastore')
+// const datastore = new Datastore({
+//     projectId: 'eta-canadense-384823',
+//     keyFilename
+// })
 
 
 /*AUTHENTICATION*/
@@ -86,10 +81,10 @@ const { isAdmin } = require('./helpers/isAdmin')
 /*SETTINGS*/
 app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
-    store: new DatastoreStore({
-        dataset: datastore,
-        kind: 'express-sessions',
-    }),
+    // store: new DatastoreStore({
+    //     dataset: datastore,
+    //     kind: 'express-sessions',
+    // }),
     secret: '123123123123123',
     resave: false,
     saveUninitialized: true
@@ -119,7 +114,7 @@ app.use((req, res, next) => {
     const dbDEV = `mongodb://127.0.0.1:27017/etacanadense`
     const dbPROD = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
     mongoose.set('strictQuery', true)
-    mongoose.connect(dbDEV, {
+    mongoose.connect(dbPROD, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
@@ -319,6 +314,6 @@ app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
-app.listen(process.env.PORT || 8000, ()=> {
+app.listen(process.env.PORT || 8080, ()=> {
     console.log("SERVER ON!")
 })
