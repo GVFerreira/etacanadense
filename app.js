@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const session = require("express-session")
 
@@ -58,6 +59,8 @@ require('dotenv').config()
 
 const bcrypt = require('bcryptjs')
 
+const cookieParser = require('cookie-parser')
+
 const mercadopago = require('./config/mercadoPago')
 // const { stringify } = require('querystring')
 // mercadopago.configure({
@@ -78,6 +81,9 @@ const { isAdmin } = require('./helpers/isAdmin')
 
 
 /*SETTINGS*/
+app.use(cors({
+    origin: 'http://etacanadense.com.br'
+}))
 app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
     // store: new DatastoreStore({
@@ -85,15 +91,13 @@ app.use(session({
     //     kind: 'express-sessions',
     // }),
     secret: '123123123123123',
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }))
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(cors({
-    origin: 'http://etacanadense.com.br'
-}))
+
 
 //Handlerbars
 app.engine('handlebars', handle.engine)
@@ -111,6 +115,7 @@ app.use((req, res, next) => {
     res.locals.user = req.user || null
     next()
 })
+app.use(cookieParser())
 
 //Mongoose
     const dbDEV = `mongodb://127.0.0.1:27017/etacanadense`
@@ -144,9 +149,18 @@ const validarFormulario = (req, res, next) => {
     next()
 }
 
+app.post('/accept-policy', (req, res, next) => {
+    //Setar cookie de aceite de política por 1 ano
+    res.cookie('policyAccepted', true, { maxAge: 31536000000 })
+    res.redirect('/')
+})
+
+
 app.get('/', (req, res) => {
     req.session.destroy()
-    res.render('index')
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
+    res.render('index', {showPolicyPopup})
 })
 
 app.get('/aplicacao', (req, res) => {
@@ -315,6 +329,10 @@ app.get('/politica-privacidade', (req, res) => {
 app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
+
+app.use((req, res) => {
+    res.status(404).render("erro404", {title: "Error 404 - "})
+})
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT, ()=> {

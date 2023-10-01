@@ -18,6 +18,30 @@
         <title>{{title}}eTA Canadense</title>
     </head>
     <body style="display: flex; flex-direction: column; min-height: 100vh">
+        {{#if showPolicyPopup}}
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"></div>
+            <div class="modal-dialog modal-sm policy-popup">
+                <div class="modal-content bg-light text-dark">
+                <div class="modal-header">
+                    <h6 class="modal-title p-0" id="staticBackdropLabel">Política de privacidade e cookies</h6>
+                </div>
+                <div class="modal-body">
+                    <p>Ao continuar navegando neste site, você concorda com a nossa política de privacidade e cookies.</p>
+                    <form action="/accept-policy" method="post">
+                        <button type="submit" class="btn btn-success">Aceitar</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+            <style>
+            .policy-popup {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 999;
+            }
+            </style>
+        {{/if}}
         {{>_header}}
         {{#if error}}
             <div class="container">
