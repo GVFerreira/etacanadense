@@ -12,8 +12,8 @@
 
                         <label for="password">Senha:</label>
                         <div class="input-group mb-5">
-                            <input type="password" name="password" id="password" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" required>
-                            <button class="btn p-0" onclick="showPassword(event)" id="buttonShow"></button>
+                            <input type="password" name="password" id="password" class="form-control" aria-label="Recipient's password" aria-describedby="basic-addon2" required>
+                            <span class="input-group-text" onclick="showPassword(event)" id="basic-addon2" style="cursor: pointer"></span>
                         </div>
 
                         <button type="submit" class="btn btn-success">Entrar</button>
@@ -43,9 +43,9 @@
     }
 </style>
 <script>
-    const buttonShow = document.getElementById('buttonShow')
+    const buttonShow = document.getElementById('basic-addon2')
     buttonShow.innerHTML = `
-        <span class="input-group-text" id="basic-addon2"><i class="bi bi-eye-fill"></i></span>
+        <i class="bi bi-eye-slash-fill"></i>
     `
     function showPassword(event) {
         event.preventDefault()
@@ -54,14 +54,10 @@
 
         if(inputPassword.type === 'password') {
             inputPassword.setAttribute("type", "text")
-            buttonShow.innerHTML = `
-                <span class="input-group-text" id="basic-addon2"><i class="bi bi-eye-slash-fill"></i></span>
-            ` 
+            buttonShow.innerHTML = '<i class="bi bi-eye-fill"></i>'
         } else {
             inputPassword.setAttribute("type", "password")
-            buttonShow.innerHTML = `
-                <span class="input-group-text" id="basic-addon2"><i class="bi bi-eye-fill"></i></span>
-            `
+            buttonShow.innerHTML = '<i class="bi bi-eye-slash-fill"></i></span>'
         }
     }
 </script>

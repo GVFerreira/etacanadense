@@ -71,7 +71,6 @@ const mercadopago = require('./config/mercadoPago')
 //     keyFilename
 // })
 
-
 /*AUTHENTICATION*/
 const passport = require("passport")
 require("./config/auth")(passport)
@@ -92,6 +91,9 @@ app.use(session({
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(cors({
+    origin: 'http://etacanadense.com.br'
+}))
 
 //Handlerbars
 app.engine('handlebars', handle.engine)
@@ -314,6 +316,7 @@ app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
-app.listen(process.env.PORT || 8080, ()=> {
-    console.log("SERVER ON!")
+const PORT = process.env.PORT || 8080
+app.listen(PORT, ()=> {
+    console.log("SERVER ON! PORT: " + PORT)
 })

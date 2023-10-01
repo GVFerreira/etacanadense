@@ -6,9 +6,9 @@
         <div class="card py-5 px-3 container__cart">
             <h1 class="fs-2 text-center mb-5">
                 Está página está protegida por todas as etapas de segurança do
-                <span class="px-2"><img src="/img/mercadopago-logo.webp" alt="Loogotipo - Mercado Pago" id="mercadopago" style="width: 8rem"></span>
+                <span class="px-2"><img src="/img/mercadopago-logo.webp" alt="Loogotipo - Mercado Pago" id="mercadopago-logo" style="width: 8rem"></span>
             </h1>
-            <div class="accordion w-75 m-auto" id="accordionExample">
+            <div class="accordion w-md-75 m-auto" id="accordionExample">
                 <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
@@ -20,7 +20,7 @@
                         <div class="accordion-body">
                             <form id="form-checkout">
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-12 col-md-6">
                                         <div id="form-checkout__cardNumber" class="form-control mb-3" style="height: 2.3rem"></div>
                                         <div class="row">
                                             <div class="col">
@@ -33,7 +33,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-12 col-md-6">
                                         <input type="text" id="form-checkout__cardholderName" class="form-control mb-3">
                                         <div class="row">
                                             <div class="col-4">
@@ -48,7 +48,6 @@
                                 </div>
                                 <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
                                 <p id="loading-message" style="display: none">Efetuando pagamento, aguarde...</p>
-                                <progress value="0" class="progress-bar" style="display: none !important;"></progress>
                             </form>
                         </div>
                     </div>
@@ -64,22 +63,22 @@
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div class="accordion-body container__payment">                      
                             <form id="form-checkout-pix">
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control" placeholder="Nome">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
                                     </div>
-                                    <div class="col">
-                                        <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control" placeholder="Sobrenome">
+                                    <div class="col-12 col-md-6">
+                                        <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-3">
+                                    <div class="col-4 col-md-3">
                                         <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
                                             <option value="CPF">CPF</option>
                                             <option value="CNPJ">CNPJ</option>
                                         </select>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-8 col-md-9">
                                         <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
                                     </div>
                                 </div>
@@ -118,11 +117,18 @@
                                                 <h3 class="fw-normal mb-3"><b>Status: </b><span id="payment-status"></span></h3>
                                                 <p><b>ID: </b><span id="payment-id"></span></p>
                                                 <p><b>Detail: </b><span id="payment-detail"></span></p>
-                                                <div id="pix-code-section" class="container text-center m-4">
+                                                <div id="pix-code-section" class="container text-center my-4">
                                                     <p>Escaneie o QR Code com seu aplicativo bancário para seguir com o pagamento:</p>
                                                     <img src="" id="qr-code-image" width="250px">
                                                     <p class="m-3">Ou você pode copiar e colar o código também:</p>
-                                                    <p id="pix-code" style="font-size: 14px;"></p>
+                                                    <div class="input-group mb-3" id="btnCopy" style="cursor: pointer">
+                                                        <span class="input-group-text btn btn-primary d-flex justify-content-center align-items-center" id="basic-addon1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6ZM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"/>
+                                                            </svg>
+                                                        </span>
+                                                        <input type="text" id="pix-code" class="form-control form-control-plaintext ps-2" readonly aria-label="pix-code" aria-describedby="basic-addon1">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,6 +141,7 @@
             </div>
         </div>
     </section>
+
 </main>
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
@@ -326,10 +333,10 @@
         }).then(result => {
             if(!result.hasOwnProperty("error_message")) {
                 document.getElementById("payment-id").innerText = result.id
-                document.getElementById("payment-status").innerText = result.status
+                document.getElementById("payment-status").innerText = result.status ? 'Pendente' : ''
                 document.getElementById("payment-detail").innerText = result.detail
                 document.getElementById("qr-code-image").src = `data:image/jpeg;base64,${result.qrCodeBase64}`
-                document.getElementById("pix-code").innerText = result.qrCode
+                document.getElementById("pix-code").value = result.qrCode
 
                 document.getElementById("success-response").style.display = "block"
                 document.getElementById("pix-code-section").style.display = "block"
@@ -354,4 +361,12 @@
             $('.container__payment').show(500).fadeIn()
         }, 500)
     })
+
+    //Clipboard copy
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+        const text = document.getElementById("pix-code").value
+        await navigator.clipboard.writeText(text)
+    })
+    
+
 </script>

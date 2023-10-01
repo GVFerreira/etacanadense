@@ -53,15 +53,12 @@ const Visa = new Schema({
     },
     airplane: {
         type: Number,
-        required: true
     },
     canadaVisa: {
         type: Number,
-        required: true
     },
     nonImmigrateVisa: {
         type: Number,
-        required: true
     },
     numVisaNonImmigrate: {
         type: String

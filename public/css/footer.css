@@ -1,6 +1,5 @@
 footer {
     background-color: #17233D;
-
     color: #FFF;
 }
 
@@ -14,7 +13,6 @@ footer .container .row {
 
 footer .container .row .col nav ul {
     padding: 0;
-
     list-style: none;
 }
 
@@ -31,49 +29,51 @@ footer .container .row .col #nav-social {
     flex-wrap: wrap;
 }
 
-footer .container .row .col #nav-social div {
+footer .container .row .col #nav-social a {
     margin-bottom: 1.2rem;
-
+    color: #FFF;
     width: 48% !important;
-
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     gap: .8rem
 }
 
-footer .container .row .col #nav-social div a {
-    color: #FFF;
+footer .container .row .col #nav-social div span {
     width: 72px;
 }
-footer .selos {
+
+footer .wrapper-selos {
+    width: 100% !important;
+    display: flex;
+    justify-content: space-around;
+}
+
+footer .wrapper-selos .selos {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 1rem;
-
-    margin-bottom: 3rem
+    margin-bottom: 3rem;
+    width: 100%;
 }
 
 footer .selos #google {
-    height: 91.4px;
-    width: auto;
+    width: 42%;
 }
 
-footer .selos div {
+footer .selos #mercadopago {
     background-color: #FFF;
-
     padding: 1rem 1.5rem;
-
     border-radius: 5px;
-
     display: flex;
     flex-direction: column;
+    width: 50%;
 }
 
-footer .selos div img {
-    width: 180px;
+footer .ilha-bonaire {
+    text-align: center;
 }
 
 footer #after-footer {
@@ -81,7 +81,6 @@ footer #after-footer {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     border-top: 2px solid #FFF;
 }
 
@@ -113,5 +112,19 @@ footer #after-footer a {
 
     footer .container .row .col #nav-social div {
         justify-content: start;
+    }
+
+    footer .wrapper-selos {
+        display: flex;
+        justify-content: center;
+        width: 100% !important;
+    }
+
+    footer .wrapper-selos .selos {
+        width: 50% !important;
+    }
+
+    footer .container .ilha-bonaire {
+        text-align: center;
     }
 }

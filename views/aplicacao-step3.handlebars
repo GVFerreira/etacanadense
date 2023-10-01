@@ -401,7 +401,8 @@
                 <input type="email" class="form-control mb-3 w-50" id="contactEmail" name="contactEmail" value="{{data.contactEmail}}" required>
 
                 <label for="contactTel">Celular <span class="text-red">* (obrigatório)</span></label>
-                <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" value="{{data.contactTel}}" required>
+                <small>Digite apenas os números, sem o uso de caracteres especiais.</small>
+                <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" value="{{data.contactTel}}" maxlength="11" required>
 
                 <h3 class="mt-4">Endereço residencial</h3>
 
