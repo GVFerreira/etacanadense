@@ -334,7 +334,7 @@ app.use((req, res) => {
     res.status(404).render("erro404", {title: "Error 404 - "})
 })
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3030
 app.listen(PORT, ()=> {
     console.log("SERVER ON! PORT: " + PORT)
 })
