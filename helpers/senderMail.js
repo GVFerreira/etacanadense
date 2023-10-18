@@ -6,8 +6,8 @@ require('dotenv').config()
 
 module.exports = {
     transporter: nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: '587',
+        host: process.env.HOSTNAME_MAIL,
+        port: process.env.PORT_MAIL,
         secure: false,
         auth: {
             user: process.env.USER_MAIL,

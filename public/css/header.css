@@ -5,6 +5,9 @@ header {
     display: flex;
     align-items: center;
     z-index: 100;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
 }
 
 header .container {
@@ -52,7 +55,15 @@ header .container #nav #menu #lista ul li a p {
     margin: 0 !important;
 }
 
+header .container #nav #menu #lista ul li a p:hover{
+    border-bottom: 1px solid #FFF;
+}
+
 @media(max-width: 991px) {
+    header {
+        position: sticky;
+        top: 0;
+    }
     header .container #nav #menu {
         display: block;
         position: absolute;
@@ -68,6 +79,7 @@ header .container #nav #menu #lista ul li a p {
         border-radius: 0 0 5px 5px;
         box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
     }
+
     header .container #nav #menu #lista {
         justify-content: start;
     }
@@ -90,7 +102,7 @@ header .container #nav #menu #lista ul li a p {
         margin: 0.8rem;
         text-decoration: none
     }
-
+    
     header .container #nav #menu #lista ul li a p {
         color: #FFFFFF;
         margin: 0.8rem 0 !important;

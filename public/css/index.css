@@ -4,13 +4,17 @@ h1 {
 h2 {
     font-size: 2rem;
 }
-main {
+.btn {
+    letter-spacing: 0.05rem;
+}
+
+/* main {
 
 }
 
 main section {
 
-}
+} */
 
 main section.section-1 {
     height: 400px;
@@ -40,6 +44,23 @@ main section.section-1 .container p {
     font-size: 1.5rem;
 }
 
+main section.section-1 .container .btn {
+    animation: swing 2s infinite ease-in-out;
+}
+
+@keyframes swing {
+    0% {
+        transform: translateY(0);
+
+    }
+    50% {
+        transform: translateY(10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
 main section.section-2 {
     background: url('/img/silhouette-city.webp') no-repeat right bottom;
     background-size: contain;
@@ -59,9 +80,9 @@ main section.section-2 .container {
     color: #FFF;
 }
 
-main section.section-2 .container button {
+/* main section.section-2 .container button {
 
-}
+} */
 
 main section.section-3 {
     background-color: #FFF;
@@ -106,10 +127,6 @@ main section.section-3 .container ul li div p {
     margin: 0;
 }
 
-main section.section-3 .container a {
-    background-color: #72060F !important;
-}
-
 main section.section-4 {
     background-color: #E6E8F8;
 
@@ -128,7 +145,7 @@ main section.section-4 .container {
 main section.section-4 .container .row {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     flex-direction: column;
 }
 
@@ -177,6 +194,10 @@ main section.section-5 .container {
     flex-direction: column;
 }
 
+main section.section-5 .container dl {
+    width: 75%;
+}
+
 main section.section-5 .container dl dt {
     background-color: #E6E8F8;
 
@@ -216,10 +237,9 @@ main section.section-5 .container dl dd.ativo {
         opacity: 1;
     }
 }
-
+/* 
 main section.section-5 .container a {
-    background-color: #000719 !important;
-}
+} */
 
 @media(min-width: 600px) {
     main section.section-1 {
@@ -232,6 +252,10 @@ main section.section-5 .container a {
     main section.section-3 .container ul {
         display: flex;
         flex-direction: row;
+    }
+
+    main section.section-3 .container ul li{
+        width: 33%;
     }
 
     main section.section-4 .container .row {
@@ -283,5 +307,9 @@ main section.section-5 .container a {
 
     main section.section-4 .container #countryAccordion {
         display: block !important;
+    }
+
+    main section.section-5 .container dl {
+        width: 100%;
     }
 }
