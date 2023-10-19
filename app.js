@@ -322,8 +322,38 @@ app.get('/contato', (req, res) => {
     res.render('contato', {title: 'Contato - '})
 })
 
+app.post('/contact-form', (req, res) => {
+    transporter.use('compile', hbs(handlebarOptions))
+
+    const mailOptions = {
+        from: `eTA Canadense <${process.env.USER_MAIL}>`,
+        to: req.body.email,
+        subject: 'Formulário de Contato',
+        template: 'template-email',
+        context: {
+            message: 'Esse é um e-mail teste'
+        }
+    }
+
+    transporter.sendMail(mailOptions, (err, info) => {
+        if(err) {
+            console.error(err)
+            req.flash('error_msg', `Houve um erro ao enviar este formulário: ${err}`)
+            res.redirect('/contato')
+        } else {
+            console.log(info)
+            req.flash('success_msg', `Formulário enviado com sucesso. Em breve nossa equipe entrará em contato.`)
+            res.redirect('/contato')
+        }
+    })
+})
+
 app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
+})
+
+app.get("/teste", (req, res) => {
+    res.render('teste')
 })
 
 app.use('/admin', isAdmin, admin)
@@ -333,6 +363,7 @@ app.use('/checkout', checkout)
 app.use((req, res) => {
     res.status(404).render("erro404", {title: "Error 404 - "})
 })
+
 
 const PORT = process.env.PORT || 3030
 app.listen(PORT, ()=> {
