@@ -43,7 +43,7 @@
                                                 <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
                                             </div>
                                         </div>
-                                        <input type="email" id="form-checkout__cardholderEmail" class="form-control mb-3">
+                                        <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
                                     </div>
                                 </div>
                                 <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
@@ -82,7 +82,7 @@
                                         <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
                                     </div>
                                 </div>
-                                <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail">
+                                <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}">
                                 <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                             </form>
                             <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
@@ -145,14 +145,14 @@
 </main>
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
-    const mercadopago = new MercadoPago('TEST-96adb56a-9ef9-415a-bb5a-1e21fdf7a45e')
+    const mercadopago = new MercadoPago('APP_USR-c02a3b7f-decb-4520-b92f-b6c7261ab617')
 
     function loadCardForm(){
         const payButton = document.getElementById("form-checkout__submit")
         const validationErrorMessages= document.getElementById('validation-error-messages')
 
         const cardForm = mercadopago.cardForm({
-            amount: "99.0",
+            amount: "147.0",
             iframe: true,
             form: {
                 id: "form-checkout",
@@ -316,7 +316,7 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                transactionAmount: 99.0,
+                transactionAmount: 147.00,
                 description: 'Solicitação de Autorização de Viagem - Canadá',
                 payer: {
                     firstName: payerFirstName,

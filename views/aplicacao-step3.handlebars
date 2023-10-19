@@ -60,6 +60,9 @@
                 <h3 class="mt-4">Dados do passaporte do requerente</h3>
                 
                 <label class="mb-2" for="numPassport">Número do passaporte <span class="text-red">* (obrigatório)</span></label>
+                <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumPassport">
+                    <i class="bi bi-question-circle-fill btn"></i>
+                </a>
                 <input type="text" class="form-control w-50 mb-3" name="numPassport" id="numPassport" value="{{data.numPassport}}" required>
 
                 <label class="mb-2" for="doiPassport">Data de emissão do passaporte <span class="text-red">* (obrigatório)</span></label>
@@ -769,7 +772,41 @@
     </section>
     
     {{!-- MODAIS--}}
-    <section></section>
+    <section>
+        {{!-- MODAL PARA EXPLICAR ONDE ENCONTRAR O NÚMERO DE NÃO-IMIGRANTE --}}
+        <div class="modal fade" id="documentModalNumVisaNonImmigrate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h5 class="modal-title bg-dark" id="exampleModalLabel">Ajuda - Onde encontrar meu número de Não-imigrante?</h5>
+                </div>
+                <div class="modal-body">
+                    <img src="/img/numVisaNonImmigrate.jpg" alt="Exemplo de um passaporte" width="100%">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        {{!-- MODAL PARA EXPLICAR ONDE ENCONTRAR O NÚMERO DO PASSAPORTE --}}
+        <div class="modal fade" id="documentModalNumPassport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h5 class="modal-title bg-dark" id="exampleModalLabel">Ajuda - Onde encontrar meu número de Não-imigrante?</h5>
+                </div>
+                <div class="modal-body">
+                    <img src="/img/passportNumber.jpg" alt="Exemplo de um passaporte" width="100%">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 <script>
     function showUCI(value) {

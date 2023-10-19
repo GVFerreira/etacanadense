@@ -90,7 +90,7 @@ app.use(session({
     //     dataset: datastore,
     //     kind: 'express-sessions',
     // }),
-    secret: '123123123123123',
+    secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true
 }))
@@ -132,7 +132,7 @@ app.use(cookieParser())
 
 //Mercaado Pago
     mercadopago.configure({
-        access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874',
+        access_token: process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN,
         sandbox: true,
     })
 
@@ -160,7 +160,8 @@ app.get('/', (req, res) => {
     req.session.destroy()
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
-    res.render('index', {showPolicyPopup})
+    const metaDescription = "Garanta sua entrada no Canadá de forma descomplicada e segura com o eTA (Autorização Eletrônica de Viagem). Nosso processo de solicitação online simplifica sua jornada. Solicite seu eTA agora e aproveite uma viagem tranquila ao Canadá" 
+    res.render('index', {showPolicyPopup, metaDescription})
 })
 
 app.get('/aplicacao', (req, res) => {
@@ -190,6 +191,9 @@ app.get('/aplicacao', (req, res) => {
                 <h3 class="mt-4">Dados de não-imigrante</h3>
 
                 <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
+                <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
+                    <i class="bi bi-question-circle-fill btn"></i>
+                </a>
                 <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
                 <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
@@ -350,6 +354,10 @@ app.post('/contact-form', (req, res) => {
 
 app.get('/politica-privacidade', (req, res) => {
     res.render('politica-privacidade', {title: 'Politica de privacidade - '})
+})
+
+app.get('/termos-condicoes', (req, res) => {
+    res.render('termos-condicoes', {title: 'Termos e Condições - '})
 })
 
 app.get("/teste", (req, res) => {

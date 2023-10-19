@@ -41,7 +41,7 @@ router.post('/process-payment', (req, res) => {
   const { payer } = body
 
   mercadopago.payment.create({
-    transaction_amount: 99.00,
+    transaction_amount: 147.00,
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
     installments: Number(body.installments),
@@ -76,7 +76,7 @@ router.post("/process-payment-pix", (req, res) => {
   const data = {
     payment_method_id: "pix",
     description: 'Solicitação de Autorização de Viagem - Canadá',
-    transaction_amount: 99.00,
+    transaction_amount: 147.00,
     payer: {
       email: requestBody.payer.email,
       first_name: requestBody.payer.firstName,
