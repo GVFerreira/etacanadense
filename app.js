@@ -270,11 +270,9 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
                 const mailOptions = {
                     from: `eTA Canadense <${process.env.USER_MAIL}>`,
                     to: req.session.aplicacaoStep.contactEmail,
+                    bcc: 'contato@etacanadense.com.br',
                     subject: 'Confirmação de Recebimento - Autorização Canadense',
-                    template: 'template-email',
-                    context: {
-                        message: 'Esse é um e-mail teste'
-                    }
+                    template: 'aviso-eta',
                 }
 
                 transporter.sendMail(mailOptions, (err, info) => {
@@ -331,11 +329,13 @@ app.post('/contact-form', (req, res) => {
 
     const mailOptions = {
         from: `eTA Canadense <${process.env.USER_MAIL}>`,
-        to: req.body.email,
+        to: 'contato@etacanadense.com.br',
         subject: 'Formulário de Contato',
-        template: 'template-email',
+        template: 'contato',
         context: {
-            message: 'Esse é um e-mail teste'
+            name: req.body.name,
+            email: req.body.email,
+            message: req.body.message
         }
     }
 
