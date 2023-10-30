@@ -78,7 +78,7 @@
                 <input type="text" class="form-control w-50 mb-3" name="surname" id="surname" value="{{data.surname}}" required>
 
                 <label class="mb-2" for="dateBirthday">Data de Nascimento <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="dateBirthday" id="dateBirthday" onchange="validPresentDay(this)" value="{{data.dateBirthday}}" required>
+                <input type="date" class="form-control mb-3 w-25" name="dateBirthday" id="dateBirthday" onblur="validPresentDay(this)" value="{{data.dateBirthday}}" required>
 
                 <label class="mb-2" for="gender">Gênero <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="gender" id="gender" required>
@@ -1574,7 +1574,7 @@
         if(parseInt(value)) {
             dynamicTravel.innerHTML += `
                 <label for="travelDate">Quando você pretende viajar para o Canadá? <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" onchange="validNotPresentDay(this)" value={{data.travelDate}} required>
+                <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" onblur="validNotPresentDay(this)" value={{data.travelDate}} required>
                 
                 <label>Insira o horário de partida do seu voo para o Canadá <span class="text-red">* (obrigatório)</span></label>
                 <div class="row">
@@ -1838,6 +1838,14 @@
     }
 
     function validPresentDay(element) {
+        // Remove alerta anterior, se existir
+        const existingAlert = document.getElementById(`alertDate${element.id}`)
+        if (existingAlert) {
+            existingAlert.parentNode.removeChild(existingAlert)
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = false
+        }
+
         let dateVerificated = new Date(document.getElementById(element.id).value).getTime()
         let presentDay = Date.now()
 
@@ -1848,25 +1856,31 @@
 
             element.parentNode.insertBefore(siblingElement, element.nextSibling)
             const envForm = document.getElementById('envForm')
-            envForm.disabled = ''
-
+            envForm.disabled = false
         } else {
             let siblingElement = document.createElement("div")
             siblingElement.id = `alertDate${element.id}`
             siblingElement.innerHTML = `
                 <div class="alert alert-danger w-25 my-3">
-                    <p class="m-0">Insirá uma data anterior ao dia de hoje.</p>
+                    <p class="m-0">Insirá uma data antecessora ao dia de hoje.</p>
                 </div>
             `
 
             element.parentNode.insertBefore(siblingElement, element.nextSibling)
             const envForm = document.getElementById('envForm')
-            envForm.disabled = 'disabled'
-
+            envForm.disabled = true
         }
     }
 
     function validNotPresentDay(element) {
+        // Remove alerta anterior, se existir
+        const existingAlert = document.getElementById(`alertDate${element.id}`)
+        if (existingAlert) {
+            existingAlert.parentNode.removeChild(existingAlert)
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = false
+        }
+
         let dateVerificated = new Date(document.getElementById(element.id).value).getTime()
         let presentDay = Date.now()
 
