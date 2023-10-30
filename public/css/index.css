@@ -46,6 +46,7 @@ main section.section-1 .container p {
 
 main section.section-1 .container .btn {
     animation: swing .75s linear;
+    animation-delay: 200ms;
 }
 
 @keyframes swing {

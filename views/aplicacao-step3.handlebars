@@ -66,10 +66,10 @@
                 <input type="text" class="form-control w-50 mb-3" name="numPassport" id="numPassport" value="{{data.numPassport}}" required>
 
                 <label class="mb-2" for="doiPassport">Data de emissão do passaporte <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="doiPassport" id="doiPassport" onchange="validPresentDay(this)" value="{{data.doiPassport}}" required>
+                <input type="date" class="form-control mb-3 w-25" name="doiPassport" id="doiPassport" onblur="validPresentDay(this)" value="{{data.doiPassport}}" required>
 
                 <label class="mb-2" for="doePassport">Data de expiração do passaporte <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="doePassport" id="doePassport" onchange="validNotPresentDay(this)" value="{{data.doePassport}}" required>
+                <input type="date" class="form-control mb-3 w-25" name="doePassport" id="doePassport" onblur="validNotPresentDay(this)" value="{{data.doePassport}}" required>
 
                 <label class="mb-2" for="firstName">Nome <span class="text-red">* (obrigatório)</span></label>
                 <input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" value="{{data.firstName}}" required>
@@ -1849,6 +1849,7 @@
             element.parentNode.insertBefore(siblingElement, element.nextSibling)
             const envForm = document.getElementById('envForm')
             envForm.disabled = ''
+
         } else {
             let siblingElement = document.createElement("div")
             siblingElement.id = `alertDate${element.id}`

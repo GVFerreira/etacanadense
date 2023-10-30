@@ -61,6 +61,7 @@ footer .wrapper-selos .selos {
 
 footer .selos #google {
     width: 42%;
+    height: auto;
 }
 
 footer .selos #mercadopago {
@@ -70,6 +71,7 @@ footer .selos #mercadopago {
     display: flex;
     flex-direction: column;
     width: 50%;
+    height: auto;
 }
 
 footer .ilha-bonaire {

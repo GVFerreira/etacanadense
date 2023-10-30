@@ -168,12 +168,20 @@ app.get('/aplicacao', (req, res) => {
     if(!parseInt(req.query.etapa)) {
         const etapa = 1
         const title = "Representante - "
-        res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
+        res.render('aplicacao-step1', {
+            title,
+            data: req.session.aplicacaoStep,
+            metaDescription: 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
+        })
     }
 
     if(parseInt(req.query.etapa) === 1) {
         const title = "Representante - "
-        res.render('aplicacao-step1', {title, data: req.session.aplicacaoStep})
+        res.render('aplicacao-step1', {
+            title,
+            data: req.session.aplicacaoStep,
+            metaDescription: 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
+        })
     }
 
     if(parseInt(req.query.etapa) === 2) {
@@ -197,7 +205,7 @@ app.get('/aplicacao', (req, res) => {
                 <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
                 <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onchange="validNotPresentDay(this)" required>   
+                <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
             `
             res.render('aplicacao-step3', {title, dynamicData, data})
          } else {
@@ -299,7 +307,10 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
 })
 
 app.get('/acompanhar-solicitacao', (req, res) => {
-    res.render('acompanhar-solicitacao', {title: 'Acompanhar solicitação - '})
+    res.render('acompanhar-solicitacao', {
+        title: 'Acompanhar solicitação - ',
+        metaDescription: 'Acompanhe o status de sua solicitação de eTA em tempo real. Fique atualizado sobre o progresso e a aprovação de sua Autorização Eletrônica de Viagem para o Canadá.'
+    })
 })
 
 app.post('/consultando-solicitacao', (req, res) => {
@@ -321,7 +332,10 @@ app.post('/consultando-solicitacao', (req, res) => {
 })
 
 app.get('/contato', (req, res) => {
-    res.render('contato', {title: 'Contato - '})
+    res.render('contato', {
+        title: 'Contato - ',
+        metaDescription: 'Entre em contato conosco para todas as suas dúvidas e necessidades relacionadas à Autorização Eletrônica de Viagem para o Canadá. Estamos aqui para ajudar a tornar sua viagem o mais tranquila possível.'
+    })
 })
 
 app.post('/contact-form', (req, res) => {
@@ -352,16 +366,25 @@ app.post('/contact-form', (req, res) => {
     })
 })
 
+app.get('/artigos', (req, res) => {
+    res.render('artigos', {
+        title: 'Artigos - ',
+        metaDescription: 'Explore nosso catálogo de artigos informativos sobre viagens ao Canadá, Autorização Eletrônica de Viagem e dicas úteis para uma visita perfeita.'
+    })
+})
+
 app.get('/politica-privacidade', (req, res) => {
-    res.render('politica-privacidade', {title: 'Politica de privacidade - '})
+    res.render('politica-privacidade', {
+        title: 'Politica de privacidade - ',
+        metaDescription: 'Saiba como protegemos seus dados pessoais. Leia nossa Política de Privacidade para entender nosso compromisso com a segurança e a confidencialidade.'
+    })
 })
 
 app.get('/termos-condicoes', (req, res) => {
-    res.render('termos-condicoes', {title: 'Termos e Condições - '})
-})
-
-app.get("/teste", (req, res) => {
-    res.render('teste')
+    res.render('termos-condicoes', {
+        title: 'Termos e Condições - ',
+        metaDescription: 'Conheça nossos Termos e Condições para solicitação e uso da Autorização Eletrônica de Viagem para o Canadá. Garanta que sua viagem esteja em conformidade com as regras e regulamentos'
+    })
 })
 
 app.use('/admin', isAdmin, admin)
@@ -371,7 +394,6 @@ app.use('/checkout', checkout)
 app.use((req, res) => {
     res.status(404).render("erro404", {title: "Error 404 - "})
 })
-
 
 const PORT = process.env.PORT || 3030
 app.listen(PORT, ()=> {
