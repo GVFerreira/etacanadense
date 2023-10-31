@@ -33,7 +33,8 @@ mercadopago.configure({
 router.get('/', (req, res) => {
   const title = 'Checkout - '
   const data = req.session.aplicacaoStep
-  res.render('checkout/index', {title, mercadoPagoAccessToken, data})
+  const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
+  res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
 })
 
 router.post('/process-payment', (req, res) => {

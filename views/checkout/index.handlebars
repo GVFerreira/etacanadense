@@ -145,7 +145,7 @@
 </main>
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
-    const mercadopago = new MercadoPago('APP_USR-c02a3b7f-decb-4520-b92f-b6c7261ab617')
+    const mercadopago = new MercadoPago('{{publicKey}}')
 
     function loadCardForm(){
         const payButton = document.getElementById("form-checkout__submit")
