@@ -118,10 +118,8 @@ app.use((req, res, next) => {
 app.use(cookieParser())
 
 //Mongoose
-    const dbDEV = `mongodb://127.0.0.1:27017/etacanadense`
-    const dbPROD = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bbkeaad.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
     mongoose.set('strictQuery', true)
-    mongoose.connect(dbPROD, {
+    mongoose.connect(process.env.DB_STRING_CONNECT, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
@@ -270,7 +268,9 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
 
             const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA}))
 
-            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
+            const visaID = newVisa._id
+
+            req.session.aplicacaoStep = Object.assign({}, {visaID}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
                 transporter.use('compile', hbs(handlebarOptions))
@@ -278,7 +278,7 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
                 const mailOptions = {
                     from: `eTA Canadense <${process.env.USER_MAIL}>`,
                     to: req.session.aplicacaoStep.contactEmail,
-                    bcc: 'contato@etacanadense.com.br',
+                    // bcc: 'contato@etacanadense.com.br',
                     subject: `Confirmação de Recebimento Código ${req.session.aplicacaoStep.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                     template: 'aviso-eta',
                 }
@@ -387,7 +387,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', isAdmin, admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

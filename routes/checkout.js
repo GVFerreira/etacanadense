@@ -33,6 +33,7 @@ mercadopago.configure({
 router.get('/', (req, res) => {
   const title = 'Checkout - '
   const data = req.session.aplicacaoStep
+  console.log(data)
   const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
   res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
 })
@@ -57,12 +58,40 @@ router.post('/process-payment', (req, res) => {
     }
   }).then(response => {
     const { response: data } = response
+    const sessionData = req.session.aplicacaoStep
 
-    res.status(201).json({
-      detail: data.status_detail,
-      status: data.status,
-      id: data.id
-    })
+    Visa.findOne({_id: sessionData.visaID})
+      .then((visa) => {
+        visa.detailPayment = data.status_detail
+        visa.statusPayment = data.status
+        visa.idPayment = data.id
+
+        visa
+          .save()
+          .then(() => {
+            res.status(200).json({
+              detail: data.status_detail,
+              status: data.status,
+              id: data.id
+            })
+          })
+          .catch((e) => {
+            console.log(e)
+            res.status(409).json({
+              detail: data.status_detail,
+              status: data.status,
+              id: data.id
+            })
+          })
+      })
+      .catch((e) => {
+        console.log(e)
+        res.status(409).json({
+          detail: data.detail,
+          status: data.status,
+          id: data.id
+        })
+      })
 
   }).catch(error => {
     console.log(error)

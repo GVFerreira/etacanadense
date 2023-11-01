@@ -108,7 +108,7 @@
                                     <div class="col-md-8 product-detail">
                                         <div class="product-info py-3">
                                             <div id="fail-response">
-                                                <p class="text-center font-weight-bold">Algo de errado aconteceu. Se seu pagameento foi efetuado, entre em contato com o suporte.</p>
+                                                <p class="text-center font-weight-bold">Algo de errado aconteceu. Se seu pagamento foi efetuado, entre em contato com o suporte.</p>
                                                 <p id="error-message" class="text-center"></p>
                                             </div>
 
@@ -225,6 +225,7 @@
                             transactionAmount: Number(amount),
                             installments: Number(installments),
                             description: "Solicitação de Autorização de Viagem - Canadá",
+                            cardholderUserID: "{{data.id}}",
                             payer: {
                                 email,
                                 identification: {

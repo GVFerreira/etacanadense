@@ -1901,16 +1901,14 @@
         }
     }
     
-    window.onload = function() {
+    window.onload = () => {
         const gender = document.getElementById("gender")
-        if(gender) {
-            if(gender !== "") {
-                gender.value = "{{data.gender}}"
-            }
-        }
+        if(gender)
+            if(gender !== "") gender.value = "{{data.gender}}"
+    
 
         const countryBirth = document.getElementById("countryBirth")
-        if(countryBirth) {
+        if(countryBirth)
             if(countryBirth !== "") countryBirth.value = "{{data.countryBirth}}"
 
         const maritalStatus = document.getElementById("maritalStatus")
