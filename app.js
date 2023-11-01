@@ -278,7 +278,7 @@ app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
                 const mailOptions = {
                     from: `eTA Canadense <${process.env.USER_MAIL}>`,
                     to: req.session.aplicacaoStep.contactEmail,
-                    // bcc: 'contato@etacanadense.com.br',
+                    bcc: 'contato@etacanadense.com.br',
                     subject: `Confirmação de Recebimento Código ${req.session.aplicacaoStep.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                     template: 'aviso-eta',
                 }
