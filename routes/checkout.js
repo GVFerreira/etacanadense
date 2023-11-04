@@ -149,6 +149,9 @@ router.post('/webhooks', (req, res) => {
   const { body } = req
   const { data: payment_data } = body
 
+  console.log(body)
+  console.log(payment_data)
+
   if(body.action === "payment.updated") {
     Visa
     .findOne({
