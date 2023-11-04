@@ -129,14 +129,49 @@ router.post("/process-payment-pix", (req, res) => {
 
   mercadopago.payment.create(data).then((data) => {
     const { response } = data
+    const sessionData = req.session.aplicacaoStep
 
-    res.status(201).json({
-      id: response.id,
-      status: response.status,
-      detail: response.status_detail,
-      qrCode: response.point_of_interaction.transaction_data.qr_code,
-      qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
-    })
+    Visa
+      .findOne({
+        _id: sessionData.visaID
+      })
+      .then((visa) => {
+        visa.detailPayment = response.status_detail
+        visa.statusPayment = response.status
+        visa.idPayment = response.id
+
+        visa
+          .save()
+          .then(() => {
+            res.status(200).json({
+              id: response.id,
+              status: response.status,
+              detail: response.status_detail,
+              qrCode: response.point_of_interaction.transaction_data.qr_code,
+              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+            })
+          })
+          .catch((e) => {
+            console.log(e)
+            res.status(409).json({
+              id: response.id,
+              status: response.status,
+              detail: response.status_detail,
+              qrCode: response.point_of_interaction.transaction_data.qr_code,
+              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+            })
+          })
+      })
+      .catch((e) => {
+        console.log(e)
+        res.status(409).json({
+          id: response.id,
+          status: response.status,
+          detail: response.status_detail,
+          qrCode: response.point_of_interaction.transaction_data.qr_code,
+          qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+        })
+      })
 
   }).catch((error) => {
     console.log(error)
