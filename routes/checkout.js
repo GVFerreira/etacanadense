@@ -41,13 +41,15 @@ router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
 
-  mercadopago.payment.create({
+  mercadopago.payment
+  .create({
     transaction_amount: 147.00,
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
     installments: Number(body.installments),
     payment_method_id: body.paymentMethodId,
     issuer_id: body.issuerId,
+    notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
     payer: {
       email: payer.email,
       identification: {
@@ -55,11 +57,15 @@ router.post('/process-payment', (req, res) => {
         number: payer.identification.docNumber
       }
     }
-  }).then(response => {
+  })
+  .then(response => {
     const { response: data } = response
     const sessionData = req.session.aplicacaoStep
 
-    Visa.findOne({_id: sessionData.visaID})
+    Visa
+      .findOne({
+        _id: sessionData.visaID
+      })
       .then((visa) => {
         visa.detailPayment = data.status_detail
         visa.statusPayment = data.status
@@ -92,7 +98,8 @@ router.post('/process-payment', (req, res) => {
         })
       })
 
-  }).catch(error => {
+  })
+  .catch(error => {
     console.log(error)
     const { errorMessage, errorStatus }  = validateError(error)
     res.status(errorStatus).json({ error_message: errorMessage })
@@ -106,6 +113,7 @@ router.post("/process-payment-pix", (req, res) => {
     payment_method_id: "pix",
     description: 'Solicitação de Autorização de Viagem - Canadá',
     transaction_amount: 147.00,
+    notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
     payer: {
       email: requestBody.payer.email,
       first_name: requestBody.payer.firstName,
@@ -133,6 +141,24 @@ router.post("/process-payment-pix", (req, res) => {
     const { errorMessage, errorStatus }  = validateError(error)
     res.status(errorStatus).json({ error_message: errorMessage })
   })
+})
+
+router.post('/webhooks', (req, res) => {
+  const idPayment_webhook = ""
+
+  console.log(req.body)
+  res.status(200).send("OK")
+
+  // Visa
+  //   .findOne({
+  //     idPayment: idPayment_webhook
+  //   })
+  //   .then((visa) => {
+
+  //   })
+  //   .catch((e) => {
+
+  //   })
 })
 
 router.get('/result-payment', (req, res) => {

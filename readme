@@ -1,3 +1,5 @@
 Comentar as variavéis de produção e descomentar as variáveis de desenvolvimento
 
 Remover comentário do e-mail em cópia (bcc:)
+
+Comentar o isAdmin na rota na declaração na rota admin no app.js
