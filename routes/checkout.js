@@ -43,7 +43,8 @@ router.post('/process-payment', (req, res) => {
 
   mercadopago.payment
   .create({
-    transaction_amount: 147.00,
+    transaction_amount: 0.1, //testes
+    // transaction_amount: 147.00, //produção
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
     installments: Number(body.installments),
@@ -112,7 +113,8 @@ router.post("/process-payment-pix", (req, res) => {
   const data = {
     payment_method_id: "pix",
     description: 'Solicitação de Autorização de Viagem - Canadá',
-    transaction_amount: 147.00,
+    transaction_amount: 0.10, //testes
+    // transaction_amount: 147.00, //produção
     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
     payer: {
       email: requestBody.payer.email,
@@ -144,21 +146,35 @@ router.post("/process-payment-pix", (req, res) => {
 })
 
 router.post('/webhooks', (req, res) => {
-  const idPayment_webhook = ""
+  const { body } = req
+  const { data: payment_data } = body
 
-  console.log(req.body)
+  if(body.action === "payment.updated") {
+    Visa
+    .findOne({
+      idPayment: payment_data.id
+    })
+    .then((visa) => {
+      visa.detailPayment = payment_data.detail
+      visa.statusPayment = payment_data.status
+
+      visa
+        .save()
+        .then(() => {
+          res.status(200).end()
+        })
+        .catch((e) => {
+          console.error(e)
+          res.status(409).end()
+        })
+    })
+    .catch((e) => {
+      console.error(e)
+      res.status(409).end()
+    })
+  }
+  
   res.status(200).send("OK")
-
-  // Visa
-  //   .findOne({
-  //     idPayment: idPayment_webhook
-  //   })
-  //   .then((visa) => {
-
-  //   })
-  //   .catch((e) => {
-
-  //   })
 })
 
 router.get('/result-payment', (req, res) => {
