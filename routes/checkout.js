@@ -185,12 +185,15 @@ router.post('/webhooks', (req, res) => {
   const { data: data_webhook } = body
 
   if(body.action === "payment.updated") {
-    fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {method: "GET", 'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`})
+    fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {
+      method: "GET",
+      'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+    })
       .then((response) => response.json())
       .then((data) => {
         Visa
         .findOne({
-          idPayment: data.id
+          idPayment: data_webhook.id
         })
         .then((visa) => {
           visa.detailPayment = data.status_detail
