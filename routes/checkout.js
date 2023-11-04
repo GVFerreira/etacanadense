@@ -181,6 +181,7 @@ router.post("/process-payment-pix", (req, res) => {
 })
 
 router.post('/webhooks', (req, res) => {
+  res.status(200)
   const { body } = req
   const { data: data_webhook } = body
 
@@ -196,6 +197,8 @@ router.post('/webhooks', (req, res) => {
           idPayment: data_webhook.id
         })
         .then((visa) => {
+          console.log(visa)
+          console.log(data)
           visa.detailPayment = data.status_detail
           visa.statusPayment = data.status
     
@@ -214,8 +217,11 @@ router.post('/webhooks', (req, res) => {
           res.status(409).end()
         })
       })
+      .catch((e) => {
+        console.log("Erro:")
+        console.error(e)
+      })
   }
-  res.status(200).send("OK")
 
 })
 
