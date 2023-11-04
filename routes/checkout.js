@@ -147,37 +147,38 @@ router.post("/process-payment-pix", (req, res) => {
 
 router.post('/webhooks', (req, res) => {
   const { body } = req
-  const { data: payment_data } = body
-
-  console.log(body)
-  console.log(payment_data)
+  const { data: data_webhook } = body
 
   if(body.action === "payment.updated") {
-    Visa
-    .findOne({
-      idPayment: payment_data.id
-    })
-    .then((visa) => {
-      visa.detailPayment = payment_data.detail
-      visa.statusPayment = payment_data.status
-
-      visa
-        .save()
-        .then(() => {
-          res.status(200).end()
+    fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {method: "GET", 'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`})
+      .then((response) => response.json())
+      .then((data) => {
+        Visa
+        .findOne({
+          idPayment: data.id
+        })
+        .then((visa) => {
+          visa.detailPayment = data.status_detail
+          visa.statusPayment = data.status
+    
+          visa
+            .save()
+            .then(() => {
+              res.status(200).end()
+            })
+            .catch((e) => {
+              console.error(e)
+              res.status(409).end()
+            })
         })
         .catch((e) => {
           console.error(e)
           res.status(409).end()
         })
-    })
-    .catch((e) => {
-      console.error(e)
-      res.status(409).end()
-    })
+      })
   }
-  
   res.status(200).send("OK")
+
 })
 
 router.get('/result-payment', (req, res) => {
