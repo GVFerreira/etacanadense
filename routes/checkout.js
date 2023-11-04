@@ -180,15 +180,16 @@ router.post("/process-payment-pix", (req, res) => {
   })
 })
 
-router.post('/webhooks', (req, res) => {
-  res.status(200)
+router.post('/webhooks', (req, res, next) => {
   const { body } = req
   const { data: data_webhook } = body
 
   if(body.action === "payment.updated") {
     fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {
       method: "GET",
-      'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+      headers: {
+        'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+      }
     })
       .then((response) => response.json())
       .then((data) => {
@@ -223,6 +224,7 @@ router.post('/webhooks', (req, res) => {
       })
   }
 
+  res.status(200).send("OK")
 })
 
 router.get('/result-payment', (req, res) => {
