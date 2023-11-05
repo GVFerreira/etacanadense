@@ -4,6 +4,7 @@ const app = express()
 const session = require("express-session")
 
 const moment = require('moment')
+
 const handlebars = require('express-handlebars')
 const handle = handlebars.create({
     defaultLayout: 'main',
@@ -13,7 +14,10 @@ const handle = handlebars.create({
     },
     helpers: {
         formatDate: (date) => {
-            return moment(date).format('DD/MM/YYYY hh:mm')
+            const dataBanco = new Date(date)
+            const dataFormatada = dataBanco.toLocaleString()
+            return dataFormatada
+            // return moment(date).format('DD/MM/YYYY hh:mm')
         },
         pagination: (page, totalPages, limit, sort) => {
             let output = '';
