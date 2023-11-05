@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
     const totalVisas = await Visa.countDocuments()
 
     if(filter) {
-        Visa.findOne({numPassport: filter}).sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
+        Visa.find({numPassport: filter}).sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
             const totalPages = Math.ceil(totalVisas / visasPerPage)
             res.render('admin/index', {visas, limit, sort, page, filter, totalPages, totalVisas, title: 'Administrativo - '})
         }).catch((err) => {
@@ -41,8 +41,6 @@ router.get('/', async (req, res) => {
             res.redirect('/')
         })
     }
-    
-    
 })
 
 router.get("/register-user", (req, res) => {

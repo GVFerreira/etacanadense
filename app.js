@@ -62,17 +62,7 @@ const bcrypt = require('bcryptjs')
 const cookieParser = require('cookie-parser')
 
 const mercadopago = require('./config/mercadoPago')
-// const { stringify } = require('querystring')
-// mercadopago.configure({
-//     access_token: 'TEST-7703581273948303-040210-09008d0ef878c5f0c346329e85b0ac55-718885874'
-// })
-// const keyFilename = './eta-canadense-384823-eea18766c9e1.json'
-// const { Datastore } = require('@google-cloud/datastore')
-// const { DatastoreStore } = require('@google-cloud/connect-datastore')
-// const datastore = new Datastore({
-//     projectId: 'eta-canadense-384823',
-//     keyFilename
-// })
+
 
 /*AUTHENTICATION*/
 const passport = require("passport")
@@ -86,10 +76,6 @@ app.use(cors({
 }))
 app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
-    // store: new DatastoreStore({
-    //     dataset: datastore,
-    //     kind: 'express-sessions',
-    // }),
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true

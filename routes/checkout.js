@@ -43,8 +43,8 @@ router.post('/process-payment', (req, res) => {
 
   mercadopago.payment
   .create({
-    transaction_amount: 0.01, //testes
-    // transaction_amount: 147.00, //produção
+    // transaction_amount: 0.01, //testes
+    transaction_amount: 147.00, //produção
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
     installments: Number(body.installments),
@@ -113,8 +113,8 @@ router.post("/process-payment-pix", (req, res) => {
   const data = {
     payment_method_id: "pix",
     description: 'Solicitação de Autorização de Viagem - Canadá',
-    transaction_amount: 0.01, //testes
-    // transaction_amount: 147.00, //produção
+    // transaction_amount: 0.01, //testes
+    transaction_amount: 147.00, //produção
     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
     payer: {
       email: requestBody.payer.email,
@@ -198,8 +198,6 @@ router.post('/webhooks', (req, res, next) => {
           idPayment: data_webhook.id
         })
         .then((visa) => {
-          console.log(visa)
-          console.log(data)
           visa.detailPayment = data.status_detail
           visa.statusPayment = data.status
     
