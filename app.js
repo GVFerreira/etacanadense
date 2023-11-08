@@ -107,6 +107,13 @@ app.use((req, res, next) => {
 })
 app.use(cookieParser())
 
+app.use((req, res, next) => {
+    if (!req.session.aplicacaoStep) {
+      req.session.aplicacaoStep = {} // Inicialize o objeto aplicacaoStep
+    }
+    next()
+})
+
 //Mongoose
     mongoose.set('strictQuery', true)
     mongoose.connect(process.env.DB_STRING_CONNECT, {
@@ -123,19 +130,6 @@ app.use(cookieParser())
         access_token: process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN,
         sandbox: true,
     })
-
-const validarFormulario = (req, res, next) => {
-    const etapaAnterior = req.query.etapa ? parseInt(req.query.etapa) - 1 : 0
-    if (etapaAnterior > 0) {
-        const dadosEtapaAnterior = req.session[`aplicacaoStep`]
-        if (!dadosEtapaAnterior) {
-        req.flash('error_msg', 'Você não pode acessar a próxima etapa')
-        res.redirect(`/aplicacao?etapa=${etapaAnterior}`)
-        return
-        }
-    }
-    next()
-}
 
 app.post('/accept-policy', (req, res, next) => {
     //Setar cookie de aceite de política por 1 ano
@@ -154,16 +148,6 @@ app.get('/', (req, res) => {
 
 app.get('/aplicacao', (req, res) => {
     if(!parseInt(req.query.etapa)) {
-        const etapa = 1
-        const title = "Representante - "
-        res.render('aplicacao-step1', {
-            title,
-            data: req.session.aplicacaoStep,
-            metaDescription: 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
-        })
-    }
-
-    if(parseInt(req.query.etapa) === 1) {
         const title = "Representante - "
         res.render('aplicacao-step1', {
             title,
@@ -173,39 +157,58 @@ app.get('/aplicacao', (req, res) => {
     }
 
     if(parseInt(req.query.etapa) === 2) {
-        const title = "Validação - "
-        res.render('aplicacao-step2', {title, data: req.session.aplicacaoStep})
+        const sessionaData = req.session.aplicacaoStep
+        if('representative' in sessionaData ) {
+            const title = "Validação - "
+            res.render('aplicacao-step2', {title, data: req.session.aplicacaoStep})
+        } else {
+            req.flash('error_msg', 'Os campos na etapa 1 devem ser preenchidos.')
+            res.redirect(`/aplicacao`)
+        }
+
     }
 
     if(parseInt(req.query.etapa) === 3) {
-        const title = "Documentos - "
-        const data = req.session.aplicacaoStep
-        const canadaVisa = data.canadaVisa
-        const nonImmigrateVisa = data.nonImmigrateVisa
-        if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
-            let dynamicData = `
-                <h3 class="mt-4">Dados de não-imigrante</h3>
+        const sessionaData = req.session.aplicacaoStep
+        if('document' in sessionaData) {
+            const title = "Documentos - "
+            const data = req.session.aplicacaoStep
+            const canadaVisa = data.canadaVisa
+            const nonImmigrateVisa = data.nonImmigrateVisa
+            if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
+                let dynamicData = `
+                    <h3 class="mt-4">Dados de não-imigrante</h3>
 
-                <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
-                <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
-                    <i class="bi bi-question-circle-fill btn"></i>
-                </a>
-                <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
+                    <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
+                        <i class="bi bi-question-circle-fill btn"></i>
+                    </a>
+                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
-                <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
-                <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
-            `
-            res.render('aplicacao-step3', {title, dynamicData, data})
-         } else {
-            res.render('aplicacao-step3', {title, data})
-         }
+                    <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
+                    <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
+                `
+                res.render('aplicacao-step3', {title, dynamicData, data})
+            } else {
+                res.render('aplicacao-step3', {title, dynamicData: '', data})
+            }
+        } else {
+            req.flash('error_msg', 'Os campos na etapa 2 devem ser preenchidos.')
+            res.redirect(`/aplicacao?etapa=2`)
+        }
+        
     }
 
     if(parseInt(req.query.etapa) === 4) {
-        const etapa = parseInt(req.query.etapa) || 4
-        const title = "Conferência - "
-        const data = req.session.aplicacaoStep
-        res.render('aplicacao-step4', {title, data})
+        const sessionaData = req.session.aplicacaoStep
+        if('numPassport' in sessionaData) {
+            const title = "Conferência - "
+            const data = req.session.aplicacaoStep
+            res.render('aplicacao-step4', {title, data})
+        } else {
+            req.flash('error_msg', 'Os campos na etapa 3 devem ser preenchidos.')
+            res.redirect(`/aplicacao?etapa=3`)
+        }
     }
 
 })
@@ -219,7 +222,7 @@ app.post('/aplicacaoStep1', (req, res) => {
     res.redirect('/aplicacao?etapa=2')
 })
 
-app.post('/aplicacaoStep2', validarFormulario, (req, res) => {
+app.post('/aplicacaoStep2', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
     req.session.aplicacaoStep.passportBrazil = parseInt(req.session.aplicacaoStep.passportBrazil)
     req.session.aplicacaoStep.residentUSCIS = parseInt(req.session.aplicacaoStep.residentUSCIS)
@@ -229,14 +232,13 @@ app.post('/aplicacaoStep2', validarFormulario, (req, res) => {
     res.redirect('/aplicacao?etapa=3')
 })
 
-app.post('/aplicacaoStep3', validarFormulario, (req, res) => {
+app.post('/aplicacaoStep3', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
     req.session.aplicacaoStep.appliedToCanada = parseInt(req.session.aplicacaoStep.appliedToCanada)
     req.session.aplicacaoStep.travelWhen = parseInt(req.session.aplicacaoStep.travelWhen)
     req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
     req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
     req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
-    
     const userTime = req.body.hora 
 
     const userDate = moment(userTime, "HH:mm").toDate()
@@ -245,7 +247,7 @@ app.post('/aplicacaoStep3', validarFormulario, (req, res) => {
     res.redirect('/aplicacao?etapa=4')
 })
 
-app.post('/aplicacaoStep4', validarFormulario, async (req, res) => {
+app.post('/aplicacaoStep4', async (req, res) => {
     bcrypt.genSalt(10, (error, salt) => {
         let code = ''
         bcrypt.hash(code, salt, (error, hash) => {

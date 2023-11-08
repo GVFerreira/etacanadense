@@ -31,12 +31,163 @@ mercadopago.configure({
 })
 
 router.get('/', (req, res) => {
-  const title = 'Checkout - '
-  const data = req.session.aplicacaoStep
-  const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
-  res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
+  const sessionaData = req.session.aplicacaoStep
+  if('visaID' in sessionaData) {
+    const title = 'Checkout - '
+    const data = req.session.aplicacaoStep
+    const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
+    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
+  } else {
+      req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+      res.redirect(`/aplicacao?etapa=4`)
+  }
 })
 
+// FUNCIONANDO
+// router.post('/process-payment', (req, res) => {
+//   const { body } = req
+//   const { payer } = body
+
+//   mercadopago.payment
+//   .create({
+//     // transaction_amount: 0.01, //testes
+//     transaction_amount: 147.00, //produção
+//     token: body.token,
+//     description: 'Solicitação de Autorização de Viagem - Canadá',
+//     installments: Number(body.installments),
+//     payment_method_id: body.paymentMethodId,
+//     issuer_id: body.issuerId,
+//     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
+//     payer: {
+//       email: payer.email,
+//       identification: {
+//         type: payer.identification.docType,
+//         number: payer.identification.docNumber
+//       }
+//     }
+//   })
+//   .then(response => {
+//     const { response: data } = response
+//     const sessionData = req.session.aplicacaoStep
+
+//     Visa
+//       .findOne({
+//         _id: sessionData.visaID
+//       })
+//       .then((visa) => {
+//         visa.detailPayment = data.status_detail
+//         visa.statusPayment = data.status
+//         visa.idPayment = data.id
+
+//         visa
+//           .save()
+//           .then(() => {
+//             res.status(200).json({
+//               detail: data.status_detail,
+//               status: data.status,
+//               id: data.id
+//             })
+//           })
+//           .catch((e) => {
+//             console.log(e)
+//             res.status(409).json({
+//               detail: data.status_detail,
+//               status: data.status,
+//               id: data.id
+//             })
+//           })
+//       })
+//       .catch((e) => {
+//         console.log(e)
+//         res.status(409).json({
+//           detail: data.detail,
+//           status: data.status,
+//           id: data.id
+//         })
+//       })
+
+//   })
+//   .catch(error => {
+//     console.log(error)
+//     const { errorMessage, errorStatus }  = validateError(error)
+//     res.status(errorStatus).json({ error_message: errorMessage })
+
+//   })
+// })
+
+// router.post("/process-payment-pix", (req, res) => {
+//   const requestBody = req.body
+//   const data = {
+//     payment_method_id: "pix",
+//     description: 'Solicitação de Autorização de Viagem - Canadá',
+//     // transaction_amount: 0.01, //testes
+//     transaction_amount: 147.00, //produção
+//     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
+//     payer: {
+//       email: requestBody.payer.email,
+//       first_name: requestBody.payer.firstName,
+//       last_name: requestBody.payer.lastName,
+//       identification: {
+//         type: requestBody.payer.identification.type,
+//         number: requestBody.payer.identification.number,
+//       }
+//     }
+//   };
+
+//   mercadopago.payment.create(data).then((data) => {
+//     const { response } = data
+//     const sessionData = req.session.aplicacaoStep
+
+//     Visa
+//       .findOne({
+//         _id: sessionData.visaID
+//       })
+//       .then((visa) => {
+//         visa.detailPayment = response.status_detail
+//         visa.statusPayment = response.status
+//         visa.idPayment = response.id
+
+//         visa
+//           .save()
+//           .then(() => {
+//             res.status(200).json({
+//               id: response.id,
+//               status: response.status,
+//               detail: response.status_detail,
+//               qrCode: response.point_of_interaction.transaction_data.qr_code,
+//               qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+//             })
+//           })
+//           .catch((e) => {
+//             console.log(e)
+//             res.status(409).json({
+//               id: response.id,
+//               status: response.status,
+//               detail: response.status_detail,
+//               qrCode: response.point_of_interaction.transaction_data.qr_code,
+//               qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+//             })
+//           })
+//       })
+//       .catch((e) => {
+//         console.log(e)
+//         res.status(409).json({
+//           id: response.id,
+//           status: response.status,
+//           detail: response.status_detail,
+//           qrCode: response.point_of_interaction.transaction_data.qr_code,
+//           qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+//         })
+//       })
+
+//   }).catch((error) => {
+//     console.log(error)
+//     const { errorMessage, errorStatus }  = validateError(error)
+//     res.status(errorStatus).json({ error_message: errorMessage })
+//   })
+// })
+
+//TESTE
 router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
@@ -83,28 +234,21 @@ router.post('/process-payment', (req, res) => {
           })
           .catch((e) => {
             console.log(e)
-            res.status(409).json({
-              detail: data.status_detail,
-              status: data.status,
-              id: data.id
-            })
+            req.flash('error_msg', 'Falha ao processar o pagamento, tente novamente. Se o erro persistir entre em contato com o suporte.')
+            res.redirect('/checkout')
           })
       })
       .catch((e) => {
         console.log(e)
-        res.status(409).json({
-          detail: data.detail,
-          status: data.status,
-          id: data.id
-        })
+        req.flash('error_msg', 'Falha ao processar o pagamento, tente novamente. Se o erro persistir entre em contato com o suporte.')
+        res.redirect('/checkout')
       })
 
   })
-  .catch(error => {
-    console.log(error)
-    const { errorMessage, errorStatus }  = validateError(error)
+  .catch((e) => {
+    console.log(e)
+    const { errorMessage, errorStatus }  = validateError(e)
     res.status(errorStatus).json({ error_message: errorMessage })
-
   })
 })
 
@@ -225,9 +369,37 @@ router.post('/webhooks', (req, res, next) => {
   res.status(200).send("OK")
 })
 
-router.get('/result-payment', (req, res) => {
-  const { status, detail, id } = req.query
-  res.render('checkout/result-payment', { status, detail, id })
+router.get('/obrigado', (req, res) => {
+  const sessionaData = req.session.aplicacaoStep
+  if('visaID' in sessionaData) {
+    const { status, status_detail, transaction_id } = req.query
+    res.render('checkout/obrigado', { status, status_detail, transaction_id })
+  } else {
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
+  }
+})
+
+router.get('/recusado', (req, res) => {
+  const sessionaData = req.session.aplicacaoStep
+  if('visaID' in sessionaData) {
+    const { status, status_detail, transaction_id } = req.query
+    res.render('checkout/recusado', { status, status_detail, transaction_id })
+  } else {
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
+  }
+})
+
+router.get('/em_processo', (req, res) => {
+  const sessionaData = req.session.aplicacaoStep
+  if('visaID' in sessionaData) {
+    const { status, status_detail, transaction_id } = req.query
+    res.render('checkout/em_processo', { status, status_detail, transaction_id })
+  } else {
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
+  }
 })
 
 router.get('/error', (req, res) => {

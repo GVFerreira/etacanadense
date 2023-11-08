@@ -1,7 +1,7 @@
 Comentar as variavéis de produção e descomentar as variáveis de desenvolvimento
 
-Remover comentário do e-mail em cópia (bcc:)
+Comentar a linha do e-mail em cópia (bcc:) no app.js
 
 Comentar o isAdmin na rota na declaração na rota admin no app.js
 
-trocar o valor de compra
+trocar o valor de compra no checkout.js

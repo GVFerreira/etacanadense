@@ -1,0 +1,32 @@
+<main>
+    <section class="container d-flex justify-content-center align-items-center" style="margin: 7rem auto">
+        <div class="container__result">
+            <div class="card">
+                <div class="card-header block-heading">
+                    <h2 class="m-0 p-0 text-center">Resultado de pagamento</h2>
+                </div>
+                <div class="card-body px-5 content">
+                    <div class="items product info product-details px-5">
+                        <div class="product-info py-3 px-5">
+                            <div id="success-response px-5">
+                                <h3 class="text-center alert alert-danger fw-bold text-uppercase w-50 mb-5 mx-auto">Pagamento negado</h3>
+                                <p>Lamentamos informar que o pagamento associado à sua aplicação foi negado. Entendemos que isso pode ser decepcionante, mas existem várias razões pelas quais isso pode ter ocorrido.</p>
+                                <p>Por favor, verifique se as informações de pagamento fornecidas estão corretas e que você possui fundos suficientes na forma de pagamento selecionada. Além disso, certifique-se de que não haja restrições ou bloqueios em sua conta de pagamento.</p>
+                                <p>Se você acredita que houve um erro ou tem alguma dúvida, não hesite em entrar em contato com nossa equipe de suporte. Estamos aqui para ajudar a esclarecer qualquer problema que você possa ter <a href="mailto:contato@etacanadense.com.br">contato@etacanadense.com.br</a>.</p>
+                                <p>Para tentar novamente, <a href="/">clique aqui</a>.</p>
+
+                                <p class="small"><b>ID: </b>{{transaction_id }}</p>
+                                <p class="small"><b>Detalhe: </b>{{status_detail}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<style>
+    header #nav {
+        display: none !important;
+    }
+</style>

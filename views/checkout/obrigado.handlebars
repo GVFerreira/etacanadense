@@ -1,0 +1,38 @@
+<main>
+    <section class="container d-flex justify-content-center align-items-center" style="margin: 7rem auto">
+        <div class="container__result">
+            <div class="card">
+                <div class="card-header block-heading">
+                    <h2 class="m-0 p-0 text-center">Resultado de pagamento</h2>
+                </div>
+                <div class="card-body px-5 content">
+                    <div class="items product info product-details px-5">
+                        <div class="product-info py-3 px-5">
+                            <div id="success-response px-5">
+                                <h3 class="text-center alert alert-success fw-bold text-uppercase w-50 mb-5 mx-auto">Pagamento aprovado</h3>
+                                <p>Seu pagamento foi aprovado. Aguarde até que sua aplicação de Autorização Eletrônica seja feita.</p>
+                                <p>Seu processo de aplicação foi concluído com sucesso. Agradecemos por escolher nossos serviços.</p>
+                                <p>Caso sua aplicação seja aprovada, você receberá o documento por e-mail. Certifique-se de verificar sua caixa de entrada regularmente para garantir que você receba as informações importantes assim que estiverem disponíveis.</p>
+                                <p>Agradecemos por confiar em nós e desejamos a você o melhor em sua jornada.</p>
+                                <p class="small"><b>ID: </b>{{transaction_id }}</p>
+                                <p class="small"><b>Detalhe: </b>{{status_detail}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<style>
+    header #nav {
+        display: none !important;
+    }
+</style>
+<script>
+    //Clipboard copy
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+        const text = document.getElementById("pix-code").value
+        await navigator.clipboard.writeText(text)
+    })
+</script>

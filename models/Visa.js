@@ -102,6 +102,9 @@ const Visa = new Schema({
         type: String,
         required: true
     },
+    nationalitiesExtra: {
+        type: String
+    },
     maritalStatus: {
         type: String,
         required: true
@@ -152,6 +155,10 @@ const Visa = new Schema({
         type: String
     },
     addressCity: {
+        type: String,
+        required: true
+    },
+    addressState: {
         type: String,
         required: true
     },
@@ -232,8 +239,8 @@ const Visa = new Schema({
         default: ''
     },
     idPayment: {
-        type: Number,
-        default: 0
+        type: String,
+        default: ''
     },
     createdAt: {
         type: Date,

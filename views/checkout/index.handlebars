@@ -2,146 +2,138 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <main>
-    <section class="container__payment container py-5">
-        <div class="card py-5 px-3 container__cart">
-            <h1 class="fs-2 text-center mb-5">
-                Está página está protegida por todas as etapas de segurança do
-                <span class="px-2"><img src="/img/mercadopago-logo.webp" alt="Loogotipo - Mercado Pago" id="mercadopago-logo" style="width: 8rem"></span>
-            </h1>
-            <div class="accordion w-md-75 m-auto" id="accordionExample">
-                <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingOne">
-                        <button class="fs-3 accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Cartão de crédito
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <form id="form-checkout">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <div id="form-checkout__cardNumber" class="form-control mb-3" style="height: 2.3rem"></div>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div id="form-checkout__securityCode" class="form-control mb-3" style="height: 2.3rem"></div>
-                                                <select id="form-checkout__issuer" class="form-select mb-3"></select>
-                                            </div>
-                                            <div class="col">
-                                                <div id="form-checkout__expirationDate" class="form-control mb-3" style="height: 2.3rem"></div>
-                                                <select id="form-checkout__installments" class="form-select mb-3"></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <input type="text" id="form-checkout__cardholderName" class="form-control mb-3">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <select id="form-checkout__identificationType" class="form-select mb-3"></select>
-                                            </div>
-                                            <div class="col-8">
-                                                <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
-                                            </div>
-                                        </div>
-                                        <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
-                                    </div>
-                                </div>
-                                <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
-                                <p id="loading-message" style="display: none">Efetuando pagamento, aguarde...</p>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGAMENTO COM PIX -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingTwo">
-                        <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            PIX
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                        <div class="accordion-body container__payment">                      
-                            <form id="form-checkout-pix">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-4 col-md-3">
-                                        <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
-                                            <option value="CPF">CPF</option>
-                                            <option value="CNPJ">CNPJ</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-8 col-md-9">
-                                        <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
-                                    </div>
-                                </div>
-                                <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}">
-                                <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
-                            </form>
-                            <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="container">
+        <div class="py-5 text-center">
+            <img class="d-block mx-auto mb-4" src="/img/mercadopago-logo.webp" alt="" width="auto" height="57">
+            <h1>Checkout</h1>
+            <p class="lead">
+                Está página está protegida por todas as etapas de segurança do Mercado Pago
+            </p>
         </div>
-    </section>
 
-    {{!-- Resultado de pagamento --}}
-    <section class="shopping-cart my-5">
-        <div class="container container__result">
-            <div class="card">
-                <div class="card-header block-heading">
-                    <h2 class="m-0 p-0">Resultado de pagamento</h2>
+        <div class="row g-5">
+            <div class="col-md-6 col-lg-5 order-md-last">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary">Sua compra</span>
+                </h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                        <div>
+                            <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
+                            <small class="text-muted">Permissão para viajar ao Canadá</small>
+                        </div>
+                        <span class="text-muted">R$ 147,00</span>
+                    </li>
+                    {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
+                    {{!-- <li class="list-group-item d-flex justify-content-between bg-light">
+                        <div class="text-success">
+                        <h6 class="my-0">Promo code</h6>
+                        <small>EXAMPLECODE</small>
+                        </div>
+                        <span class="text-success">−$5</span>
+                    </li> --}}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total (R$)</span>
+                        <strong>147,00</strong>
+                    </li>
+                </ul>
+
+                {{!-- INPUT VALIDAÇÃO DE CÓDIGO PROMOCIONAL --}}
+                {{!-- <form class="card p-2">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Promo code">
+                    <button type="submit" class="btn btn-secondary">Redeem</button>
                 </div>
-                <div class="card-body content">
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12">
-                            <div class="items product info product-details">
-                                <div class="row justify-content-center">
-                                    <div class="col-md-8 product-detail">
-                                        <div class="product-info py-3">
-                                            <div id="fail-response">
-                                                <p class="text-center font-weight-bold">Algo de errado aconteceu. Se seu pagamento foi efetuado, entre em contato com o suporte.</p>
-                                                <p id="error-message" class="text-center"></p>
-                                            </div>
+                </form> --}}
+            </div>
+            <div class="col-md-6 col-lg-7">
+                <h4 class="mb-3">Métodos de pagamento</h4>
 
-                                            <div id="success-response">
-                                                <div id="payment-main-status" class="mb-4 d-flex justify-content-center"></div>
-                                                <h3 class="fw-normal mb-3"><b>Status: </b><span id="payment-status"></span></h3>
-                                                <p><b>ID: </b><span id="payment-id"></span></p>
-                                                <p><b>Detail: </b><span id="payment-detail"></span></p>
-                                                <div id="pix-code-section" class="container text-center my-4">
-                                                    <p>Escaneie o QR Code com seu aplicativo bancário para seguir com o pagamento:</p>
-                                                    <img src="" id="qr-code-image" width="250px">
-                                                    <p class="m-3">Ou você pode copiar e colar o código também:</p>
-                                                    <div class="input-group mb-3" id="btnCopy" style="cursor: pointer">
-                                                        <span class="input-group-text btn btn-primary d-flex justify-content-center align-items-center" id="basic-addon1">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6ZM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"/>
-                                                            </svg>
-                                                        </span>
-                                                        <input type="text" id="pix-code" class="form-control form-control-plaintext ps-2" readonly aria-label="pix-code" aria-describedby="basic-addon1">
-                                                    </div>
+                <div class="accordion w-md-75 m-auto" id="accordionExample">
+                    <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="fs-3 accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Cartão de crédito
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <form id="form-checkout">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div id="form-checkout__cardNumber" class="form-control mb-3" style="height: 2.3rem"></div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div id="form-checkout__securityCode" class="form-control mb-3" style="height: 2.3rem"></div>
+                                                    <select id="form-checkout__issuer" class="form-select mb-3"></select>
+                                                </div>
+                                                <div class="col">
+                                                    <div id="form-checkout__expirationDate" class="form-control mb-3" style="height: 2.3rem"></div>
+                                                    <select id="form-checkout__installments" class="form-select mb-3"></select>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-12 col-md-6">
+                                            <input type="text" id="form-checkout__cardholderName" class="form-control mb-3">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <select id="form-checkout__identificationType" class="form-select mb-3"></select>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
+                                                </div>
+                                            </div>
+                                            <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
+                                        </div>
                                     </div>
-                                </div>
+                                    <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
+                                    <p id="loading-message" style="display: none">Efetuando pagamento, aguarde...</p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAGAMENTO COM PIX -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Pix QR Code
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div class="accordion-body container__payment">                      
+                                <form id="form-checkout-pix">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4 col-md-3">
+                                            <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
+                                                <option value="CPF">CPF</option>
+                                                <option value="CNPJ">CNPJ</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-8 col-md-9">
+                                            <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
+                                        </div>
+                                    </div>
+                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}">
+                                    <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
+                                </form>
+                                <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
+    </div>
 </main>
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
@@ -225,7 +217,6 @@
                             transactionAmount: Number(amount),
                             installments: Number(installments),
                             description: "Solicitação de Autorização de Viagem - Canadá",
-                            cardholderUserID: "{{data.id}}",
                             payer: {
                                 email,
                                 identification: {
@@ -234,42 +225,29 @@
                                 }
                             }
                         })
-                    }).then((response) => {
-                        return response.json()
-                    }).then((result) => {
-                        if(!result.hasOwnProperty("error_message")) {
-                            document.getElementById("success-response").style.display = "block"
-                            if (result.status == 'approved') {
-                                document.getElementById("payment-main-status").innerHTML = `<h3 class="alert alert-success fw-bold text-uppercase m-0">Aprovado</h3>`
-                                document.getElementById("payment-id").innerText = result.id
-                                document.getElementById("payment-detail").innerText = result.detail
-                                document.getElementById("payment-status").innerHTML = 'Seu pagamento foi aprovado. Aguarde até que sua aplicação de Autorização Eletrônica seja feita.'
-
-                            } else if (result.status == 'rejected') {
-                                document.getElementById("payment-main-status").innerHTML = `<h3 class="alert alert-danger fw-bold text-uppercase m-0">Não aprovado</h3>`
-                                document.getElementById("payment-id").innerText = result.id
-                                document.getElementById("payment-detail").innerText = result.detail
-                                document.getElementById("payment-status").innerHTML = 'Seu pagamento não foi aprovado. Preencha sua solicitação novamente, por favor. Guarde o ID abaixo.'
-                            } else {
-                                document.getElementById("payment-main-status").innerHTML = `<h3 class="alert alert-warning fw-bold text-uppercase m-0">Pendente</h3>`
-                                document.getElementById("payment-id").innerText = result.id
-                                document.getElementById("payment-detail").innerText = result.detail
-                                document.getElementById("payment-status").innerHTML = 'Seu pagamento está pendente de aprovação. Não faça outra solicitação até que essa seja concluída. Guarde o ID abaixo.'
-                            }
-                            
-                        } else {
-                            document.getElementById("error-message").textContent = result.error_message
-                            document.getElementById("fail-response").style.display = "block"
-                        }
-        
-                        $('.container__payment').fadeOut(500)
-                        setTimeout(() => {
-                            $('.container__result').show(500).fadeIn()
-                        }, 500)
-
-                    }).catch(error => {
-                        alert("Unexpected error\n"+JSON.stringify(error))
                     })
+                        .then((response) => {
+                            return response.json()
+                        })
+                        .then((response) => {
+                            console.log(response)
+                            switch(response.status) {
+                                case 'approved':
+                                    window.location.href = `/checkout/obrigado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
+                                    break
+                                
+                                case 'rejected':
+                                    window.location.href = `/checkout/recusado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
+                                    break
+                                
+                                default:
+                                    window.location.href = `/checkout/em_processo?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
+                            }
+                        })
+                        .catch(e => {
+                            console.error(e)
+                            alert(e)
+                        })
                 },
                 onFetching: (resource) => {
                     console.log("Fetching resource: ", resource)
@@ -345,29 +323,8 @@
                 document.getElementById("error-message").innerText = result.error_message
                 document.getElementById("fail-response").style.display = "block"
             }
-
-            $('.container__payment').fadeOut(500)
-            setTimeout(() => {
-                $('.container__result').show(500).fadeIn()
-            }, 500)
         }).catch(error => {
             alert("Unexpected error\n"+JSON.stringify(error))
         })
     }
-
-    // Handle transitions
-    document.getElementById('submit-checkout-pix').addEventListener('click', () => {
-        $('.container__cart').fadeOut(500)
-        setTimeout(() => {
-            $('.container__payment').show(500).fadeIn()
-        }, 500)
-    })
-
-    //Clipboard copy
-    document.getElementById('btnCopy').addEventListener('click', async () => {
-        const text = document.getElementById("pix-code").value
-        await navigator.clipboard.writeText(text)
-    })
-    
-
 </script>

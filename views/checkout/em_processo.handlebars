@@ -1,0 +1,31 @@
+<main>
+    <section class="container d-flex justify-content-center align-items-center" style="margin: 7rem auto">
+        <div class="container__result">
+            <div class="card">
+                <div class="card-header block-heading">
+                    <h2 class="m-0 p-0 text-center">Resultado de pagamento</h2>
+                </div>
+                <div class="card-body px-5 content">
+                    <div class="items product info product-details px-5">
+                        <div class="product-info py-3 px-5">
+                            <div id="success-response px-5">
+                                <h3 class="text-center alert alert-warning fw-bold text-uppercase w-50 mb-5 mx-auto">Pagamento em análise</h3>
+                                <p>O pagamento associado à sua aplicação está atualmente em processo de análise. Este procedimento é necessário para garantir a segurança e integridade de todas as transações.</p>
+                                <p>Nossa equipe especializada está revisando os detalhes do pagamento e tomará as medidas necessárias para concluir a análise o mais breve possível. Normalmente, esse processo é concluído em um curto período de tempo e você poddrá consultar o pagamento em "<a href="/acompanhar-solicitacao">Acompanhar solicitação</a>".</p>
+                                <p>Se você tiver alguma dúvida ou precisar de informações adicionais, nossa equipe de suporte estará disponível para ajudá-lo. Ente em contato atáves do e-mail <a href="mailto:contato@etacanadense.com.br">contato@etacanadense.com.br</a></p>
+
+                                <p class="small"><b>ID: </b>{{transaction_id }}</p>
+                                <p class="small"><b>Detalhe: </b>{{status_detail}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<style>
+    header #nav {
+        display: none !important;
+    }
+</style>
