@@ -1787,17 +1787,10 @@
                 
                 <label>Insira o horário de partida do seu voo para o Canadá <span class="text-red">* (obrigatório)</span></label>
                 <div class="row">
-                    <div class="col-5">
-                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" min="00:00" max="12:00" value="{{data.travelTime}}">
+                    <div class="col-6">
+                        <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" min="00:00" max="24:00" value="{{data.travelTime}}">
                     </div>
-                    <div class="col-2">
-                        <select class="form-select mb-3" name="travelAmPm" id="travelAmPm" required>
-                            <option value="" selected disabled></option>
-                            <option value="AM">AM</option>
-                            <option value="PM">PM</option>
-                        </select>
-                    </div>
-                    <div class="col-5">
+                    <div class="col-6">
                         <select class="form-select mb-3" name="travelTimeZone" id="travelTimeZone" required>
                             <option value="" disabled>Selecione o fuso horário</option>
                             <option value="0">Horário do Acre</option>
@@ -2146,10 +2139,6 @@
         const addressCountry = document.getElementById("addressCountry")
         if(addressCountry)
             if(addressCountry) addressCountry.value = "{{data.addressCountry}}"
-
-        const travelAmPm = document.getElementById("travelAmPm")
-        if(travelAmPm)
-            if(travelAmPm) travelAmPm.value = "{{data.travelAmPm}}"
 
         const travelTimeZone = document.getElementById("travelTimeZone")
         if(travelTimeZone)

@@ -2,7 +2,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <main>
-    <div class="container">
+    <div class="container container__payment">
         <div class="py-5 text-center">
             <img class="d-block mx-auto mb-4" src="/img/mercadopago-logo.webp" alt="" width="auto" height="57">
             <h1>Checkout</h1>
@@ -127,6 +127,51 @@
                                     <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                                 </form>
                                 <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container container__result">
+        <div class="card">
+            <div class="card-header block-heading">
+                <h2 class="m-0 p-0">Resultado de pagamento</h2>
+            </div>
+            <div class="card-body content">
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div class="items product info product-details">
+                            <div class="row justify-content-center">
+                                <div class="col-md-8 product-detail">
+                                    <div class="product-info py-3">
+                                        <div id="fail-response">
+                                            <p class="text-center font-weight-bold">Algo de errado aconteceu. Se seu pagamento foi efetuado, entre em contato com o suporte.</p>
+                                            <p id="error-message" class="text-center"></p>
+                                        </div>
+
+                                        <div id="success-response">
+                                            <div id="payment-main-status" class="mb-4 d-flex justify-content-center"></div>
+                                            <h3 class="fw-normal mb-3"><b>Status: </b><span id="payment-status"></span></h3>
+                                            <p><b>ID: </b><span id="payment-id"></span></p>
+                                            <p><b>Detail: </b><span id="payment-detail"></span></p>
+                                            <div id="pix-code-section" class="container text-center my-4">
+                                                <p>Escaneie o QR Code com seu aplicativo bancário para seguir com o pagamento:</p>
+                                                <img src="" id="qr-code-image" width="250px">
+                                                <p class="m-3">Ou você pode copiar e colar o código também:</p>
+                                                <div class="input-group mb-3" id="btnCopy" style="cursor: pointer">
+                                                    <span class="input-group-text btn btn-primary d-flex justify-content-center align-items-center" id="basic-addon1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6ZM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"/>
+                                                        </svg>
+                                                    </span>
+                                                    <input type="text" id="pix-code" class="form-control form-control-plaintext ps-2" readonly aria-label="pix-code" aria-describedby="basic-addon1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -327,4 +372,19 @@
             alert("Unexpected error\n"+JSON.stringify(error))
         })
     }
+
+    document.getElementById('submit-checkout-pix').addEventListener('click', () => {
+        $('.container__payment').fadeOut(500)
+        setTimeout(() => {
+            $('.container__result').show(500).fadeIn()
+        }, 500)
+    })
+
+    //Clipboard copy
+    document.getElementById('btnCopy').addEventListener('click', async () => {
+        const text = document.getElementById("pix-code").value
+        await navigator.clipboard.writeText(text)
+        alert('Código PIX copiado com sucesso')
+    })
+    
 </script>

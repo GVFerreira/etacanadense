@@ -176,9 +176,6 @@ const Visa = new Schema({
     travelTime: {
         type: String
     },
-    travelAmPm: {
-        type: String
-    },
     travelTimeZone: {
         type: Number
     },

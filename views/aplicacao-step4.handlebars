@@ -1329,7 +1329,7 @@
                 <label for="addressCity">Cidade/município</label>
                 <input type="text" class="form-control mb-3 w-50" id="addressCity" name="addressCity" value="{{data.addressCity}}" disabled required>
 
-                <label class="mb-2" for="addressState">Estado/Região <span class="text-red">* (obrigatório)</span></label>
+                <label class="mb-2" for="addressState">Estado/Região</label>
                 <input type="text" class="form-control w-50 mb-3" id="addressState" name="addressState"  value="{{data.addressState}}" disabled required>
 
                 <label for="addressCountry">País</label>
@@ -1610,12 +1610,6 @@
                     <div class="row">
                         <div class="col">
                             <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" value="{{data.travelTime}}" disabled required>
-                        </div>
-                        <div class="col">
-                            <select class="form-select mb-3 w-25" name="travelAmPm" id="travelAmPm" disabled required>
-                                <option value="AM">AM</option>
-                                <option value="PM">PM</option>
-                            </select>
                         </div>
                         <div class="col">
                             <select class="form-select mb-3" name="travelTimeZone" id="travelTimeZone" disabled required>
@@ -2045,9 +2039,6 @@
 
             const addressCountry = document.getElementById("addressCountry")
             if(addressCountry) addressCountry.value = "{{data.addressCountry}}"
-
-            const travelAmPm = document.getElementById("travelAmPm")
-            if(travelAmPm) travelAmPm.value = "{{data.travelAmPm}}"
 
             const travelTimeZone = document.getElementById("travelTimeZone")
             if(travelTimeZone) travelTimeZone.value = "{{data.travelTimeZone}}"

@@ -495,7 +495,7 @@
                                         <h3 class="h5">Dados pessoais do requerente</h3>
 
                                         <label for="nationalitiesExtra">Nacionalidade adicional</label>
-                                        <input type="text" name="nationalitiesExtra" id="nationalitiesExtra" class="form-control mb-3" value="{{nationalitiesExtra}}" disabled>
+                                        <textarea name="nationalitiesExtra" id="nationalitiesExtra" class="form-control mb-3" rows="3" disabled>{{nationalitiesExtra}}</textarea>
 
                                         <label for="maritalStatus">Estado civil</label>
                                         <select class="form-control w-50 mb-3" name="maritalStatus" id="maritalStatus{{id}}" disabled >
@@ -1154,8 +1154,13 @@
 
                                         <label for="addressComplement">Complemento</label>
                                         <input type="text" class="form-control mb-3 w-50" id="addressComplement" name="addressComplement" value="{{addressComplement}}" disabled>
+                                        
                                         <label for="addressCity">Cidade/município</label>
                                         <input type="text" class="form-control mb-3" id="addressCity" name="addressCity" value="{{addressCity}}" disabled >
+
+                                        <label class="mb-2" for="addressState">Estado/Região</label>
+                                        <input type="text" class="form-control w-50 mb-3" id="addressState" name="addressState"  value="{{addressState}}" disabled>
+                                        
                                         <label for="addressCountry">País</label>
                                         <select class="form-control mb-3" id="addressCountry" name="addressCountry{{id}}" disabled >
                                             <option>Selecione</option>
@@ -1412,183 +1417,171 @@
                                         {{#if travelWhen}}
                                             <br><p class="d-inline alert-success p-1">Sim</p><br>
 
-                                            <label for="travelDate">Quando você pretende viajar para o Canadá?</label>
+                                            <label for="travelDate" class="mt-3">Quando você pretende viajar para o Canadá?</label>
                                             <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" value="{{travelDate}}" disabled >
 
-                                            <label class="mt-3">Insira o horário de partida do seu voo para o Canadá</label>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <input type="time" class="form-control mb-3" name="travelTime" id="travelTime" value="{{travelTime}}" disabled >
-                                                </div>
-                                                <div class="col">
-                                                    <select class="form-select mb-3 w-25" name="travelAmPm" id="travelAmPm{{id}}" required>
-                                                        <option value=""></option>
-                                                        <option value="AM">AM</option>
-                                                        <option value="PM">PM</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col">
-                                                    <select class="form-control mb-3" name="travelTimeZone" id="travelTimeZone{{id}}" disabled >
-                                                        <option value="" disabled>Selecione o fuso horário</option>
-                                                        <option value="0">Horário do Acre</option>
-                                                        <option value="1">Horário do Afeganistão</option>
-                                                        <option value="2">Horário do Alasca</option>
-                                                        <option value="3">Horário de Alma-Ata</option>
-                                                        <option value="4">Horário Amazonas</option>
-                                                        <option value="5">Tempo de Anadyr</option>
-                                                        <option value="6">Horário de Aqtau</option>
-                                                        <option value="7">Horário Aqtobe</option>
-                                                        <option value="8">Horário da Arábia</option>
-                                                        <option value="9">Horário da Argentina</option>
-                                                        <option value="10">Horário da Armênia</option>
-                                                        <option value="11">Horário do Atlântico</option>
-                                                        <option value="12">Horário Central Australiana (Território do Norte)</option>
-                                                        <option value="13">Horário Central Australiana (Sul da Austrália)</option>
-                                                        <option value="14">Horário Central Australiana (Sul da Austrália/Nova Gales do Sul)</option>
-                                                        <option value="15">Horário do Centro-Oeste Australiano</option>
-                                                        <option value="16">Horário do Leste Australiano (Nova Gales do Sul)</option>
-                                                        <option value="17">Horário do Leste Australiano (Queensland)</option>
-                                                        <option value="18">Horário do Leste Australiano (Tasmânia)</option>
-                                                        <option value="19">Horário do Leste Australiano (Victoria)</option>
-                                                        <option value="20">Horário Ocidental Australiana</option>
-                                                        <option value="21">Horário do Azerbaijão</option>
-                                                        <option value="22">Horário dos Açores</option>
-                                                        <option value="23">Horário de Bangladesh</option>
-                                                        <option value="24">Horário do Butão</option>
-                                                        <option value="25">Horário da Bolívia</option>
-                                                        <option value="26">Horário de Bougainville</option>
-                                                        <option value="27">Horário de Brasília</option>
-                                                        <option value="28">Horário britânico</option>
-                                                        <option value="29">Horário de Brunei</option>
-                                                        <option value="30">Horário de Cabo Verde</option>
-                                                        <option value="31">Horário da África Central</option>
-                                                        <option value="32">Horário da Europa Central</option>
-                                                        <option value="33">Horário da Indonésia Central</option>
-                                                        <option value="35">Horário do Chamorro</option>
-                                                        <option value="36">Horário de Chatham</option>
-                                                        <option value="37">Horário do Chile</option>
-                                                        <option value="38">Horário da China</option>
-                                                        <option value="39">Horário de Choibalsan</option>
-                                                        <option value="40">Horário da Ilha Christmas</option>
-                                                        <option value="41">Horário do Chuuk</option>
-                                                        <option value="42">Horário das Ilhas Cocos</option>
-                                                        <option value="43">Horário da Colômbia</option>
-                                                        <option value="44">Horário Ilha Cook</option>
-                                                        <option value="46">Horário de Cuba</option>
-                                                        <option value="47">Horário de Davis</option>
-                                                        <option value="48">Horário de Dumont-d'Urville</option>
-                                                        <option value="49">Horário do Leste da Indonésia</option>
-                                                        <option value="50">Horário Ilha de Páscoa</option>
-                                                        <option value="51">Horário da África Oriental</option>
-                                                        <option value="52">Horário da Europa Oriental</option>
-                                                        <option value="53">Horário do Leste da Groenlândia</option>
-                                                        <option value="54">Horário do Leste</option>
-                                                        <option value="55">Horário do Equador</option>
-                                                        <option value="56">Horário de Ilhas Malvinas</option>
-                                                        <option value="57">Horário de Fernando de Noronha</option>
-                                                        <option value="58">Horário de Fiji</option>
-                                                        <option value="59">Horário da Guiana Francesa</option>
-                                                        <option value="60">Horário das Terras Austrais e Antárticas Francesas</option>
-                                                        <option value="61">Horário de Galápagos</option>
-                                                        <option value="62">Horário do Gambier</option>
-                                                        <option value="63">Horário da Geórgia</option>
-                                                        <option value="64">Horário Média de Gana</option>
-                                                        <option value="65">Horário de Ilha Gilberto</option>
-                                                        <option value="66">Horário de Greenwich</option>
-                                                        <option value="67">Horário do Golfo</option>
-                                                        <option value="68">Horário da Guiana</option>
-                                                        <option value="69">Horário do Havaí</option>
-                                                        <option value="70">Horário de Hong Kong</option>
-                                                        <option value="72">Horário da Índia</option>
-                                                        <option value="73">Horário do Território do Oceano Índico</option>
-                                                        <option value="74">Horário da Indochina</option>
-                                                        <option value="75">Horário do Irã</option>
-                                                        <option value="76">Horário da Irlanda</option>
-                                                        <option value="77">Horário de Irkutsk</option>
-                                                        <option value="78">Horário de Israel</option>
-                                                        <option value="79">Horário do Japão</option>
-                                                        <option value="80">Horário do Quirguistão</option>
-                                                        <option value="81">Horário de Kiribati</option>
-                                                        <option value="82">Horário da Coréia</option>
-                                                        <option value="83">Horário de Kosrae</option>
-                                                        <option value="84">Horário de Krasnoyarsk</option>
-                                                        <option value="85">Horário de Ilha Linha</option>
-                                                        <option value="86">Horário de Lorde Howe</option>
-                                                        <option value="87">Horário da Ilha Macquarie</option>
-                                                        <option value="88">Horário de Magadan</option>
-                                                        <option value="89">Horário da Malásia</option>
-                                                        <option value="90">Horário das Maldivas</option>
-                                                        <option value="91">Horário das Marquesas</option>
-                                                        <option value="92">Horário das Ilhas Marshall</option>
-                                                        <option value="93">Horário das Maurícias</option>
-                                                        <option value="94">Horário de Mawson</option>
-                                                        <option value="95">Horário de Moscou</option>
-                                                        <option value="96">Horário de Mountain</option>
-                                                        <option value="97">Horário de Mianmar</option>
-                                                        <option value="98">Horário de Nauru</option>
-                                                        <option value="99">Horário do Nepal</option>
-                                                        <option value="100">Horário da Nova Caledônia</option>
-                                                        <option value="101">Horário da Nova Zelândia</option>
-                                                        <option value="102">Horário da Terra Nova</option>
-                                                        <option value="103">Horário de Niue</option>
-                                                        <option value="104">Horário de Norfolk</option>
-                                                        <option value="105">Horário de Novosibirsk</option>
-                                                        <option value="106">Horário de Omsk</option>
-                                                        <option value="107">Horário de Oral</option>
-                                                        <option value="108">Horário do Paquistão</option>
-                                                        <option value="109">Horário de Palau</option>
-                                                        <option value="110">Horário de Papua Nova Guiné</option>
-                                                        <option value="111">Horário do Paraguai</option>
-                                                        <option value="112">Horário do Peru</option>
-                                                        <option value="113">Horário de Petropavlovsk-Kamchatski</option>
-                                                        <option value="114">Horário das Filipinas</option>
-                                                        <option value="115">Horário de Ilha Fênix</option>
-                                                        <option value="116">Horário de Pierre &amp; Miquelon</option>
-                                                        <option value="117">Horário de Pitcairn</option>
-                                                        <option value="118">Horário do Ponape</option>
-                                                        <option value="119">Horário de Qyzylorda</option>
-                                                        <option value="121">Horário de Rothera</option>
-                                                        <option value="122">Horário de Sakhalin</option>
-                                                        <option value="123">Horário de Samara</option>
-                                                        <option value="124">Horário de Samoa</option>
-                                                        <option value="125">Horário das Seicheles</option>
-                                                        <option value="126">Horário de Cingapura</option>
-                                                        <option value="127">Horário da Ilha Salomão</option>
-                                                        <option value="128">Horário da África do Sul</option>
-                                                        <option value="129">Horário da Geórgia do Sul</option>
-                                                        <option value="130">Horário de Srednekolymsk</option>
-                                                        <option value="131">Horário do Suriname</option>
-                                                        <option value="132">Horário de Syowa</option>
-                                                        <option value="133">Horário do Taiti</option>
-                                                        <option value="134">Horário do Tajiquistão</option>
-                                                        <option value="135">Horário de Timor-Leste</option>
-                                                        <option value="136">Horário de Tokelau</option>
-                                                        <option value="137">Horário de Tonga</option>
-                                                        <option value="138">Horário do Troll</option>
-                                                        <option value="139">Horário do Turquemenistão</option>
-                                                        <option value="140">Horário de Tuvalu</option>
-                                                        <option value="141">Horário de Ulaanbaatar</option>
-                                                        <option value="142">Horário do Uruguai</option>
-                                                        <option value="143">Horário de Ust-Nera</option>
-                                                        <option value="144">Horário do Uzbequistão</option>
-                                                        <option value="145">Horário de Vanuatu</option>
-                                                        <option value="146">Horário da Venezuela</option>
-                                                        <option value="147">Horário de Vladivostok</option>
-                                                        <option value="148">Horário de Vostok</option>
-                                                        <option value="149">Horário de Acordar</option>
-                                                        <option value="150">Horário de Wallis e Futuna</option>
-                                                        <option value="151">Horário da Indonésia Ocidental</option>
-                                                        <option value="152">Horário de Samoa Ocidental</option>
-                                                        <option value="153">Horário da África Ocidental</option>
-                                                        <option value="154">Horário da Europa Ocidental</option>
-                                                        <option value="155">Horário da Groenlândia Ocidental</option>
-                                                        <option value="156">Horário de Xinjiang</option>
-                                                        <option value="157">Horário de Yakutsk</option>
-                                                        <option value="158">Horário de Ecaterimburgo</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col"></div>
-                                            </div>
+                                            <label for="travelTime">Insira o horário de partida do seu voo para o Canadá</label>
+                                            <input type="time" class="form-control w-25 mb-3" name="travelTime" id="travelTime" value="{{travelTime}}" disabled >
+
+                                            <label for="travelTimeZone">Escolha o fuso horário de partida do voo</label>
+                                            <select class="form-control mb-3" name="travelTimeZone" id="travelTimeZone{{id}}" disabled >
+                                                <option value="" disabled>Selecione o fuso horário</option>
+                                                <option value="0">Horário do Acre</option>
+                                                <option value="1">Horário do Afeganistão</option>
+                                                <option value="2">Horário do Alasca</option>
+                                                <option value="3">Horário de Alma-Ata</option>
+                                                <option value="4">Horário Amazonas</option>
+                                                <option value="5">Tempo de Anadyr</option>
+                                                <option value="6">Horário de Aqtau</option>
+                                                <option value="7">Horário Aqtobe</option>
+                                                <option value="8">Horário da Arábia</option>
+                                                <option value="9">Horário da Argentina</option>
+                                                <option value="10">Horário da Armênia</option>
+                                                <option value="11">Horário do Atlântico</option>
+                                                <option value="12">Horário Central Australiana (Território do Norte)</option>
+                                                <option value="13">Horário Central Australiana (Sul da Austrália)</option>
+                                                <option value="14">Horário Central Australiana (Sul da Austrália/Nova Gales do Sul)</option>
+                                                <option value="15">Horário do Centro-Oeste Australiano</option>
+                                                <option value="16">Horário do Leste Australiano (Nova Gales do Sul)</option>
+                                                <option value="17">Horário do Leste Australiano (Queensland)</option>
+                                                <option value="18">Horário do Leste Australiano (Tasmânia)</option>
+                                                <option value="19">Horário do Leste Australiano (Victoria)</option>
+                                                <option value="20">Horário Ocidental Australiana</option>
+                                                <option value="21">Horário do Azerbaijão</option>
+                                                <option value="22">Horário dos Açores</option>
+                                                <option value="23">Horário de Bangladesh</option>
+                                                <option value="24">Horário do Butão</option>
+                                                <option value="25">Horário da Bolívia</option>
+                                                <option value="26">Horário de Bougainville</option>
+                                                <option value="27">Horário de Brasília</option>
+                                                <option value="28">Horário britânico</option>
+                                                <option value="29">Horário de Brunei</option>
+                                                <option value="30">Horário de Cabo Verde</option>
+                                                <option value="31">Horário da África Central</option>
+                                                <option value="32">Horário da Europa Central</option>
+                                                <option value="33">Horário da Indonésia Central</option>
+                                                <option value="35">Horário do Chamorro</option>
+                                                <option value="36">Horário de Chatham</option>
+                                                <option value="37">Horário do Chile</option>
+                                                <option value="38">Horário da China</option>
+                                                <option value="39">Horário de Choibalsan</option>
+                                                <option value="40">Horário da Ilha Christmas</option>
+                                                <option value="41">Horário do Chuuk</option>
+                                                <option value="42">Horário das Ilhas Cocos</option>
+                                                <option value="43">Horário da Colômbia</option>
+                                                <option value="44">Horário Ilha Cook</option>
+                                                <option value="46">Horário de Cuba</option>
+                                                <option value="47">Horário de Davis</option>
+                                                <option value="48">Horário de Dumont-d'Urville</option>
+                                                <option value="49">Horário do Leste da Indonésia</option>
+                                                <option value="50">Horário Ilha de Páscoa</option>
+                                                <option value="51">Horário da África Oriental</option>
+                                                <option value="52">Horário da Europa Oriental</option>
+                                                <option value="53">Horário do Leste da Groenlândia</option>
+                                                <option value="54">Horário do Leste</option>
+                                                <option value="55">Horário do Equador</option>
+                                                <option value="56">Horário de Ilhas Malvinas</option>
+                                                <option value="57">Horário de Fernando de Noronha</option>
+                                                <option value="58">Horário de Fiji</option>
+                                                <option value="59">Horário da Guiana Francesa</option>
+                                                <option value="60">Horário das Terras Austrais e Antárticas Francesas</option>
+                                                <option value="61">Horário de Galápagos</option>
+                                                <option value="62">Horário do Gambier</option>
+                                                <option value="63">Horário da Geórgia</option>
+                                                <option value="64">Horário Média de Gana</option>
+                                                <option value="65">Horário de Ilha Gilberto</option>
+                                                <option value="66">Horário de Greenwich</option>
+                                                <option value="67">Horário do Golfo</option>
+                                                <option value="68">Horário da Guiana</option>
+                                                <option value="69">Horário do Havaí</option>
+                                                <option value="70">Horário de Hong Kong</option>
+                                                <option value="72">Horário da Índia</option>
+                                                <option value="73">Horário do Território do Oceano Índico</option>
+                                                <option value="74">Horário da Indochina</option>
+                                                <option value="75">Horário do Irã</option>
+                                                <option value="76">Horário da Irlanda</option>
+                                                <option value="77">Horário de Irkutsk</option>
+                                                <option value="78">Horário de Israel</option>
+                                                <option value="79">Horário do Japão</option>
+                                                <option value="80">Horário do Quirguistão</option>
+                                                <option value="81">Horário de Kiribati</option>
+                                                <option value="82">Horário da Coréia</option>
+                                                <option value="83">Horário de Kosrae</option>
+                                                <option value="84">Horário de Krasnoyarsk</option>
+                                                <option value="85">Horário de Ilha Linha</option>
+                                                <option value="86">Horário de Lorde Howe</option>
+                                                <option value="87">Horário da Ilha Macquarie</option>
+                                                <option value="88">Horário de Magadan</option>
+                                                <option value="89">Horário da Malásia</option>
+                                                <option value="90">Horário das Maldivas</option>
+                                                <option value="91">Horário das Marquesas</option>
+                                                <option value="92">Horário das Ilhas Marshall</option>
+                                                <option value="93">Horário das Maurícias</option>
+                                                <option value="94">Horário de Mawson</option>
+                                                <option value="95">Horário de Moscou</option>
+                                                <option value="96">Horário de Mountain</option>
+                                                <option value="97">Horário de Mianmar</option>
+                                                <option value="98">Horário de Nauru</option>
+                                                <option value="99">Horário do Nepal</option>
+                                                <option value="100">Horário da Nova Caledônia</option>
+                                                <option value="101">Horário da Nova Zelândia</option>
+                                                <option value="102">Horário da Terra Nova</option>
+                                                <option value="103">Horário de Niue</option>
+                                                <option value="104">Horário de Norfolk</option>
+                                                <option value="105">Horário de Novosibirsk</option>
+                                                <option value="106">Horário de Omsk</option>
+                                                <option value="107">Horário de Oral</option>
+                                                <option value="108">Horário do Paquistão</option>
+                                                <option value="109">Horário de Palau</option>
+                                                <option value="110">Horário de Papua Nova Guiné</option>
+                                                <option value="111">Horário do Paraguai</option>
+                                                <option value="112">Horário do Peru</option>
+                                                <option value="113">Horário de Petropavlovsk-Kamchatski</option>
+                                                <option value="114">Horário das Filipinas</option>
+                                                <option value="115">Horário de Ilha Fênix</option>
+                                                <option value="116">Horário de Pierre &amp; Miquelon</option>
+                                                <option value="117">Horário de Pitcairn</option>
+                                                <option value="118">Horário do Ponape</option>
+                                                <option value="119">Horário de Qyzylorda</option>
+                                                <option value="121">Horário de Rothera</option>
+                                                <option value="122">Horário de Sakhalin</option>
+                                                <option value="123">Horário de Samara</option>
+                                                <option value="124">Horário de Samoa</option>
+                                                <option value="125">Horário das Seicheles</option>
+                                                <option value="126">Horário de Cingapura</option>
+                                                <option value="127">Horário da Ilha Salomão</option>
+                                                <option value="128">Horário da África do Sul</option>
+                                                <option value="129">Horário da Geórgia do Sul</option>
+                                                <option value="130">Horário de Srednekolymsk</option>
+                                                <option value="131">Horário do Suriname</option>
+                                                <option value="132">Horário de Syowa</option>
+                                                <option value="133">Horário do Taiti</option>
+                                                <option value="134">Horário do Tajiquistão</option>
+                                                <option value="135">Horário de Timor-Leste</option>
+                                                <option value="136">Horário de Tokelau</option>
+                                                <option value="137">Horário de Tonga</option>
+                                                <option value="138">Horário do Troll</option>
+                                                <option value="139">Horário do Turquemenistão</option>
+                                                <option value="140">Horário de Tuvalu</option>
+                                                <option value="141">Horário de Ulaanbaatar</option>
+                                                <option value="142">Horário do Uruguai</option>
+                                                <option value="143">Horário de Ust-Nera</option>
+                                                <option value="144">Horário do Uzbequistão</option>
+                                                <option value="145">Horário de Vanuatu</option>
+                                                <option value="146">Horário da Venezuela</option>
+                                                <option value="147">Horário de Vladivostok</option>
+                                                <option value="148">Horário de Vostok</option>
+                                                <option value="149">Horário de Acordar</option>
+                                                <option value="150">Horário de Wallis e Futuna</option>
+                                                <option value="151">Horário da Indonésia Ocidental</option>
+                                                <option value="152">Horário de Samoa Ocidental</option>
+                                                <option value="153">Horário da África Ocidental</option>
+                                                <option value="154">Horário da Europa Ocidental</option>
+                                                <option value="155">Horário da Groenlândia Ocidental</option>
+                                                <option value="156">Horário de Xinjiang</option>
+                                                <option value="157">Horário de Yakutsk</option>
+                                                <option value="158">Horário de Ecaterimburgo</option>
+                                            </select>
                                         {{else}}
                                             <br><p class="d-inline alert-danger p-1">Não</p><br>
                                         {{/if}}
