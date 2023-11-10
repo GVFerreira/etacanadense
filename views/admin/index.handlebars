@@ -1684,13 +1684,16 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>Cliente: {{firstName}} {{surname}}</p>
-                                        <form action="/admin/edit-visa/{{id}}" method="post">
+                                        <form action="/admin/edit-visa/{{id}}" method="POST" enctype="multipart/form-data">
                                             <label for="statusETA">Status da aplicação</label>
-                                            <select class="form-select mb-3" name="statusETA" id="statusETA" required>
+                                            <select class="form-select mb-3" name="statusETA" id="statusETA{{id}}" required>
                                                 <option value="Em análise">Em análise</option>
                                                 <option value="Recusado">Recusado</option>
                                                 <option value="Aprovado">Aprovado</option>
                                             </select>
+
+                                            <label for="formFileMultiple" class="form-label">Anexos do processo</label>
+                                            <input type="file" class="form-control mb-3" id="formFileMultiple" name="attachments" multiple>
 
                                             <input type="submit" class="btn btn-warning" value="Atualizar">
                                         </form>
@@ -1740,6 +1743,9 @@
 
                                     const theseConditions = document.getElementById("theseConditions{{id}}")
                                     if(theseConditions) theseConditions.value = "{{theseConditions}}"
+
+                                    const statusETA = document.getElementById("statusETA{{id}}")
+                                    if(statusETA) statusETA.value = "{{statusETA}}"
                                 })
                             })
                         </script>

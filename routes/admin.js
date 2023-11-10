@@ -1,17 +1,21 @@
 const express = require('express')
 router = express.Router()
+
 const mongoose = require('mongoose')
     require('../models/User')
 const User = mongoose.model("users")
     require('../models/Visa')
 const Visa = mongoose.model("visa")
+
 const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('../helpers/senderMail')
 const hbs = require('nodemailer-express-handlebars')
+
 const bcrypt = require('bcryptjs')
 const multer = require('multer')
 const path = require("path")
 const { connect } = require('http2')
+const uploadAttach = require('../helpers/uploadAttachments')
 require('dotenv').config()
 
 router.get('/', async (req, res) => {
@@ -178,9 +182,35 @@ router.get('/delete-user/:id', (req, res) => {
     })
 })
 
-router.post('/edit-visa/:id', (req, res) => {
+router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
     Visa.findOne({_id: req.params.id}).then((visa) => {
         visa.statusETA = req.body.statusETA
+        visa.attachments = req.files
+
+        transporter.use('compile', hbs(handlebarOptions))
+
+        const subject = `${visa.firstName} ${visa.surname} - ${visa.numPassport}`.toUpperCase()
+        const mailOptions = {
+            from: `eTA Canadense <${process.env.USER_MAIL}>`,
+            to: visa.contactEmail,
+            replyTo: process.env.USER_MAIL,
+            subject,
+            template: 'documento',
+            attachments: req.files,
+            context: {
+                clientName: visa.firstName,
+                codeETA: visa.codeETA
+            }
+        }
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err) {
+                console.log(err)
+            } else {
+                console.log(info)
+            }
+        })
+        
         visa.save().then(() => {
             req.flash("success_msg", "Aplicação atualizada com sucesso")
             res.redirect('/admin')

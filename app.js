@@ -379,7 +379,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', isAdmin, admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

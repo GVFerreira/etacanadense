@@ -227,6 +227,9 @@ const Visa = new Schema({
         default: 'Em análise',
         required: true
     },
+    attachments: {
+        type: Array
+    },
     detailPayment: {
         type: String,
         default: ''
