@@ -27,25 +27,39 @@
                         </div>
                     </form>
                     <hr>
-                    <section>
-                        {{#search_result}}
-                            <p><b>Nome: </b>{{consentAndDeclaration}}</p>
-                            <p><b>E-mail de contato: </b>{{contactEmail}}</p>
-                            <p><b>Telefone de contato: </b>{{contactTel}}</p>
-                            <p>
-                                <b>Status de pagamento: </b>
-                                {{#if statusPayment}}
-                                    {{statusPayment}}
-                                    <p><b>Motivo: </b>{{detailPayment}}</p>
-                                {{else}}
-                                    <span class="alert-danger p-1">Pagamento não efetuado</span>
+                    <section class="section-results">
+                        {{#each search_result}}
+                            <div class="px-3 py-4">
+                                <p><b>Nome: </b>{{consentAndDeclaration}}</p>
+                                <p><b>E-mail de contato: </b>{{contactEmail}}</p>
+                                <p><b>Telefone de contato: </b>{{contactTel}}</p>
+                                <p>
+                                    <b>Status de pagamento: </b>
+                                    {{#if statusPayment}}
+                                        {{statusPayment}}
+                                        <p><b>Motivo: </b>{{detailPayment}}</p>
+                                    {{else}}
+                                        <span class="alert-danger p-1">Pagamento não efetuado</span>
+                                    {{/if}}
+                                </p>
+                                <p><b>Aprovado pelo Governo Canadense: </b>{{statusETA}}</p>
+                                {{#if attachments}}
+                                    {{#each attachments}}
+                                        Clique aqui para fazer o download do seu eTA: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>
+                                    {{/each}}
                                 {{/if}}
-                            </p>
-                            <p><b>Aprovado pelo Governo Canadense: </b>{{statusETA}}</p>
+                            </div>
                         {{else}}
                             <h4 class="mb-5 text-center" style="color: #F00">Não há nenhum processo com esse código</h4>
-                        {{/search_result}}
+                        {{/each}}
                     </section>
+
+                    <style>
+                        .section-results div:nth-child(even) {
+                            background-color: var(--bs-gray-200);
+                            border-radius: 10px;
+                        }
+                    </style>
 
                     <section class="mt-4 ps-2">
                         <h3>Sua solicitação não foi localizada? Entre em contato conosco</h3>

@@ -311,16 +311,20 @@ app.post('/consultando-solicitacao', (req, res) => {
         res.redirect('/acompanhar-solicitacao')
     } else {
         if (req.body.EmailCod === 'email') {
-            Visa.findOne({contactEmail: req.body.codeInsert}).then((search_result) => {
+            Visa.find({contactEmail: req.body.codeInsert}).then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         } else {
-            Visa.findOne({codeETA: req.body.codeInsert}).then((search_result) => {
+            Visa.find({codeETA: req.body.codeInsert}).then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         }
         
     }
+})
+
+app.get('/consulta-download-documento/:filename', (req, res) => {
+    res.download(`public/uploads/attachments/${req.params.filename}`)
 })
 
 app.get('/contato', (req, res) => {
@@ -379,7 +383,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', /*isAdmin,*/ admin)
+app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

@@ -195,7 +195,7 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
             to: visa.contactEmail,
             replyTo: process.env.USER_MAIL,
             subject,
-            template: 'documento',
+            template: req.body.statusETA === 'Aprovado'? 'documento': 'documento-negado',
             attachments: req.files,
             context: {
                 clientName: visa.firstName,
