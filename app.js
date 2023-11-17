@@ -180,9 +180,12 @@ app.get('/aplicacao', (req, res) => {
                     <h3 class="mt-4">Dados de não-imigrante</h3>
 
                     <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
-                    <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
-                        <i class="bi bi-question-circle-fill btn"></i>
-                    </a>
+                    <span class="small mb-2">
+                        Confira no botão ao lado
+                        <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
+                            <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
+                        </a>
+                    </span>
                     <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
 
                     <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
