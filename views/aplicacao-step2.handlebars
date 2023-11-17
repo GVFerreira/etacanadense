@@ -47,7 +47,7 @@
             </div>
             <form action="/aplicacaoStep2" method="POST">
                 <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
-                <span class="small mb-2">
+                <span class="d-block small mb-2">
                     Confira no botão ao lado
                     <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
                         <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
@@ -108,7 +108,7 @@
         if (type === 'pass-commom') {
             dynamicFields.innerHTML += `
                 <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.  <span class="text-red">* (obrigatório)</span></label>
-                <span class="small mb-2">
+                <span class="d-block small mb-2">
                     Confira no botão ao lado
                     <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
                         <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>

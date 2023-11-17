@@ -180,7 +180,7 @@ app.get('/aplicacao', (req, res) => {
                     <h3 class="mt-4">Dados de não-imigrante</h3>
 
                     <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
-                    <span class="small mb-2">
+                    <span class="d-block small mb-2">
                         Confira no botão ao lado
                         <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
                             <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
