@@ -47,9 +47,12 @@
             </div>
             <form action="/aplicacaoStep2" method="POST">
                 <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
-                <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
-                    <i class="bi bi-question-circle-fill btn"></i>
-                </a>
+                <span class="small mb-2">
+                    Confira no botão ao lado
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
+                        <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
+                    </a>
+                </span>
                 <select class="form-select w-50 mb-3" name="document" id="document" onchange="showFields(this.value)" required>
                     <option value="" selected disabled>Selecione</option>
                     <option value="pass-commom">Passaporte – comum/regular</option>
@@ -105,9 +108,12 @@
         if (type === 'pass-commom') {
             dynamicFields.innerHTML += `
                 <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.  <span class="text-red">* (obrigatório)</span></label>
-                <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
-                    <i class="bi bi-question-circle-fill btn"></i>
-                </a>
+                <span class="small mb-2">
+                    Confira no botão ao lado
+                    <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
+                        <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
+                    </a>
+                </span>
                 <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">

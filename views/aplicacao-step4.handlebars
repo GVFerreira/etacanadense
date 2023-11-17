@@ -145,17 +145,11 @@
                 <h3 class="h4">Perguntas de validação</h3>
 
                 <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá?</label>
-                <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
-                    <i class="bi bi-question-circle-fill btn"></i>
-                </a>
                 <select class="form-select w-50 mb-3" name="document" id="document" disabled required>
                     <option value="pass-commom" selected>Passaporte – comum/regular</option>
                 </select>
 
                 <label class="m-0">Seu passaporte foi emitido no Brasil?</label>
-                <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
-                    <i class="bi bi-question-circle-fill btn"></i>
-                </a>
                 <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
                 {{#if data.passportBrazil}}
                     <div class="p-2 w-50 d-flex flex-row gap-4">
@@ -2008,7 +2002,7 @@
         </div>
     </section>
     {{!-- MODAIS--}}
-    <section></section>
+    {{!-- <section></section> --}}
 </main>
 <script>
     window.addEventListener("load", () => {
