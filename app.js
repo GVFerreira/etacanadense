@@ -183,7 +183,7 @@ app.get('/aplicacao', (req, res) => {
                     <span class="d-block small mb-2">
                         Confira no botão ao lado
                         <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
-                            <i class="d-block bi bi-question-circle-fill btn btn-primary p-1"></i>
+                            <i class="d-block bi bi-question-circle-fill btn p-0"></i>
                         </a>
                     </span>
                     <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
