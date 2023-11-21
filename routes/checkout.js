@@ -206,7 +206,10 @@ router.post('/webhooks', (req, res, next) => {
           visa.detailPayment = data.status_detail
           visa.statusPayment = data.status
 
+          console.log(data)
+          console.log(data.status)
           if(data.status === 'approved') {
+
             transporter.use('compile', hbs(handlebarOptions))
 
             const mailOptions = {
