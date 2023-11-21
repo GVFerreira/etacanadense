@@ -30,14 +30,14 @@
                     <section class="section-results">
                         {{#each search_result}}
                             <div class="px-3 py-4">
-                                <p><b>Nome: </b>{{consentAndDeclaration}}</p>
+                                <p><b>Nome: </b>{{firstName}} {{surname}}</p>
                                 <p><b>E-mail de contato: </b>{{contactEmail}}</p>
                                 <p><b>Telefone de contato: </b>{{contactTel}}</p>
                                 <p>
-                                    <b>Status de pagamento: </b>
+                                    <b>Pagamento: </b>
                                     {{#if statusPayment}}
-                                        {{statusPayment}}
-                                        <p><b>Motivo: </b>{{detailPayment}}</p>
+                                        {{#returnStatusMP statusPayment}}{{/returnStatusMP}}
+                                        <p><b>Detalhes: </b>{{#returnDetailMP detailPayment}}{{/returnDetailMP}}</p>
                                     {{else}}
                                         <span class="alert-danger p-1">Pagamento não efetuado</span>
                                     {{/if}}
@@ -45,7 +45,7 @@
                                 <p><b>Aprovado pelo Governo Canadense: </b>{{statusETA}}</p>
                                 {{#if attachments}}
                                     {{#each attachments}}
-                                        Clique aqui para fazer o download do seu eTA: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>
+                                        Clique aqui para fazer o download do seu doumento: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>
                                     {{/each}}
                                 {{/if}}
                             </div>
@@ -53,14 +53,6 @@
                             <h4 class="mb-5 text-center" style="color: #F00">Não há nenhum processo com esse código</h4>
                         {{/each}}
                     </section>
-
-                    <style>
-                        .section-results div:nth-child(even) {
-                            background-color: var(--bs-gray-200);
-                            border-radius: 10px;
-                        }
-                    </style>
-
                     <section class="mt-4 ps-2">
                         <h3>Sua solicitação não foi localizada? Entre em contato conosco</h3>
                         <a class="btn btn-primary text-uppercase" href="mailto:contato@etacanadense.com.br"><i class="bi bi-envelope-fill me-1"></i>contato@etacanadense.com.br</a>

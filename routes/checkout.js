@@ -38,156 +38,11 @@ router.get('/', (req, res) => {
     const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
     res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
   } else {
-      req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
-      res.redirect(`/aplicacao?etapa=4`)
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
   }
 })
 
-// FUNCIONANDO
-// router.post('/process-payment', (req, res) => {
-//   const { body } = req
-//   const { payer } = body
-
-//   mercadopago.payment
-//   .create({
-//     // transaction_amount: 0.01, //testes
-//     transaction_amount: 147.00, //produção
-//     token: body.token,
-//     description: 'Solicitação de Autorização de Viagem - Canadá',
-//     installments: Number(body.installments),
-//     payment_method_id: body.paymentMethodId,
-//     issuer_id: body.issuerId,
-//     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
-//     payer: {
-//       email: payer.email,
-//       identification: {
-//         type: payer.identification.docType,
-//         number: payer.identification.docNumber
-//       }
-//     }
-//   })
-//   .then(response => {
-//     const { response: data } = response
-//     const sessionData = req.session.aplicacaoStep
-
-//     Visa
-//       .findOne({
-//         _id: sessionData.visaID
-//       })
-//       .then((visa) => {
-//         visa.detailPayment = data.status_detail
-//         visa.statusPayment = data.status
-//         visa.idPayment = data.id
-
-//         visa
-//           .save()
-//           .then(() => {
-//             res.status(200).json({
-//               detail: data.status_detail,
-//               status: data.status,
-//               id: data.id
-//             })
-//           })
-//           .catch((e) => {
-//             console.log(e)
-//             res.status(409).json({
-//               detail: data.status_detail,
-//               status: data.status,
-//               id: data.id
-//             })
-//           })
-//       })
-//       .catch((e) => {
-//         console.log(e)
-//         res.status(409).json({
-//           detail: data.detail,
-//           status: data.status,
-//           id: data.id
-//         })
-//       })
-
-//   })
-//   .catch(error => {
-//     console.log(error)
-//     const { errorMessage, errorStatus }  = validateError(error)
-//     res.status(errorStatus).json({ error_message: errorMessage })
-
-//   })
-// })
-
-// router.post("/process-payment-pix", (req, res) => {
-//   const requestBody = req.body
-//   const data = {
-//     payment_method_id: "pix",
-//     description: 'Solicitação de Autorização de Viagem - Canadá',
-//     // transaction_amount: 0.01, //testes
-//     transaction_amount: 147.00, //produção
-//     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
-//     payer: {
-//       email: requestBody.payer.email,
-//       first_name: requestBody.payer.firstName,
-//       last_name: requestBody.payer.lastName,
-//       identification: {
-//         type: requestBody.payer.identification.type,
-//         number: requestBody.payer.identification.number,
-//       }
-//     }
-//   };
-
-//   mercadopago.payment.create(data).then((data) => {
-//     const { response } = data
-//     const sessionData = req.session.aplicacaoStep
-
-//     Visa
-//       .findOne({
-//         _id: sessionData.visaID
-//       })
-//       .then((visa) => {
-//         visa.detailPayment = response.status_detail
-//         visa.statusPayment = response.status
-//         visa.idPayment = response.id
-
-//         visa
-//           .save()
-//           .then(() => {
-//             res.status(200).json({
-//               id: response.id,
-//               status: response.status,
-//               detail: response.status_detail,
-//               qrCode: response.point_of_interaction.transaction_data.qr_code,
-//               qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
-//             })
-//           })
-//           .catch((e) => {
-//             console.log(e)
-//             res.status(409).json({
-//               id: response.id,
-//               status: response.status,
-//               detail: response.status_detail,
-//               qrCode: response.point_of_interaction.transaction_data.qr_code,
-//               qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
-//             })
-//           })
-//       })
-//       .catch((e) => {
-//         console.log(e)
-//         res.status(409).json({
-//           id: response.id,
-//           status: response.status,
-//           detail: response.status_detail,
-//           qrCode: response.point_of_interaction.transaction_data.qr_code,
-//           qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
-//         })
-//       })
-
-//   }).catch((error) => {
-//     console.log(error)
-//     const { errorMessage, errorStatus }  = validateError(error)
-//     res.status(errorStatus).json({ error_message: errorMessage })
-//   })
-// })
-
-//TESTE
 router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
@@ -287,33 +142,39 @@ router.post("/process-payment-pix", (req, res) => {
         visa
           .save()
           .then(() => {
+            const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
+            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
             res.status(200).json({
               id: response.id,
               status: response.status,
               detail: response.status_detail,
               qrCode: response.point_of_interaction.transaction_data.qr_code,
-              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
             })
           })
           .catch((e) => {
             console.log(e)
+            const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
+            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
             res.status(409).json({
               id: response.id,
               status: response.status,
               detail: response.status_detail,
               qrCode: response.point_of_interaction.transaction_data.qr_code,
-              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
             })
           })
       })
       .catch((e) => {
         console.log(e)
+        const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
+        req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
         res.status(409).json({
           id: response.id,
           status: response.status,
           detail: response.status_detail,
           qrCode: response.point_of_interaction.transaction_data.qr_code,
-          qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64,
+          qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
         })
       })
 
@@ -344,23 +205,40 @@ router.post('/webhooks', (req, res, next) => {
         .then((visa) => {
           visa.detailPayment = data.status_detail
           visa.statusPayment = data.status
+
+          if(data.status === 'approved') {
+            transporter.use('compile', hbs(handlebarOptions))
+
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                to: 'contato@etacanadense.com.br',
+                subject: 'Pagmento aprovado',
+                template: 'pagamento-aprovado',
+                context: {
+                    codeETA: visa.codeETA,
+                }
+            }
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if(err) {
+                    console.error(err)
+                } else {
+                    console.log(info)
+                }
+            })
+          }
     
-          visa
-            .save()
-            .then(() => {
-              res.status(200).end()
-            })
-            .catch((e) => {
-              console.error(e)
-              res.status(409).end()
-            })
-        })
-        .catch((e) => {
+          visa.save().then(() => {
+            res.status(200).end()
+          }).catch((e) => {
+            console.error(e)
+            res.status(409).end()
+          })
+        }).catch((e) => {
           console.error(e)
           res.status(409).end()
         })
-      })
-      .catch((e) => {
+      }).catch((e) => {
         console.log("Erro:")
         console.error(e)
       })
@@ -369,14 +247,43 @@ router.post('/webhooks', (req, res, next) => {
   res.status(200).send("OK")
 })
 
+router.get('/verify-pix-payment', (req, res) => {
+  fetch(`https://api.mercadopago.com/v1/payments/${req.params.transactionID}`, {
+    method: "GET",
+    headers: {
+      'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+    }
+  }).then((response) => {
+    return response.json()
+  }).then((result) => {
+    res.json(result)
+  }).catch(error => {
+      console.error(error)
+      res.status(500).json({ error: "Erro ao verificar pagamento" })
+  })
+})
+
+router.get('/pix', (req, res) => {
+  const sessionaData = req.session.aplicacaoStep
+  if('visaID' in sessionaData) {
+    const title = 'PIX - '
+    const { id, status, qr_code } = req.query
+    const qr_code_base = req.session.aplicacaoStep.qr_code_base
+    res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
+  } else {
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
+  }
+})
+
 router.get('/obrigado', (req, res) => {
   const sessionaData = req.session.aplicacaoStep
   if('visaID' in sessionaData) {
     const { status, status_detail, transaction_id } = req.query
     res.render('checkout/obrigado', { status, status_detail, transaction_id })
   } else {
-    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
-    res.redirect(`/aplicacao?etapa=4`)
+     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+     res.redirect(`/aplicacao?etapa=4`)
   }
 })
 

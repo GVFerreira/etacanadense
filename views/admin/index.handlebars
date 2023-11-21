@@ -21,10 +21,6 @@
             <h1 class="mb-4 text-center">Área administrativa</h1>
             <h2>Acompanhe as solicitações</h2>
             <p class="w-75 m-0">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por algum motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
-            <p>
-                <a href="/admin/register-user">Registrar usuário</a>
-                <a href="/admin/consult-users">Consultar usuário</a>
-            </p>
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <form method="GET" class="mb-2">
@@ -54,7 +50,7 @@
                             <div class="d-none">
                                 <input type="text" name="page" id="page" value="1">
                             </div>
-                            <input type="submit" value="Filtar" class="btn btn-primary">
+                            <input type="submit" value="Filtrar" class="btn btn-primary">
                         </div>
                     </form>
                 </div>
@@ -78,6 +74,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
+                                        <b>Cód. acompanhamento: </b>{{codeETA}}<br>
                                         <b>Número passaporte: </b>{{numPassport}}
                                     </div>
                                     <div class="col">
@@ -86,7 +83,7 @@
                                     </div>
                                     <div class="col">
                                         <b>Status aplicação: </b>{{statusETA}}<br>
-                                        <b>Pagamento: </b>{{statusPayment}}
+                                        <b>Pagamento: </b>{{#returnStatusMP statusPayment}}{{/returnStatusMP}}
                                     </div>
                                 </div>                                
                             </div>
@@ -1761,15 +1758,16 @@
         </div>
     </section>
 </main>
-<script>
-    document.getElementById('link-logo-home').href = '/admin'
-</script>
 
 <script>
+    document.getElementById('link-logo-home').href = '/admin'
+
     var elementoPai = document.getElementById("header-container")
     var novoElementoFilho = document.createElement("div")
     novoElementoFilho.innerHTML = `
-        <a href="/users/logout" class="btn btn-danger text-upperccase fw-bold">Sair</a>
+        <a href="/admin/register-user" class="mx-4" style="color: white">Registrar usuário</a>
+        <a href="/admin/consult-users" class="mx-4" style="color: white">Consultar usuário</a>
+        <a href="/users/logout" class="ms-4 btn btn-danger text-upperccase fw-bold">Sair</a>
     `
     elementoPai.appendChild(novoElementoFilho)
 

@@ -20,20 +20,105 @@ const handle = handlebars.create({
             // return moment(date).format('DD/MM/YYYY hh:mm')
         },
         pagination: (page, totalPages, limit, sort) => {
-            let output = '';
+            let output = ''
   
             for (let i = 1; i <= totalPages; i++) {
                 // Marca a página atual como "ativa"
                 const pageNUM = parseInt(page)
-                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary ';
+                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary '
 
                 // Gera o HTML para o link da página
                 output += `
                     <a class="btn ${activeClass}" href="/admin?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
-                `;
+                `
             }
 
-            return output;
+            return output
+        },
+        returnStatusMP: (status) => {
+            switch(status) {
+                case 'approved':
+                    return '<span class="alert-success p-1">Aprovado</span>'
+
+                case 'pending':
+                    return '<span class="alert-warning p-1">Pendente</span>'
+                
+                case 'authorized':
+                    return '<span class="alert-warning p-1">Autorizado, aguardando confirmação</span>'
+
+                case 'in_process':
+                    return '<span class="alert-warning p-1">Em processamento</span>'
+                
+                case 'in_mediation':
+                    return '<span class="alert-warning p-1">Em análise</span>'
+
+                case 'rejected':
+                    return '<span class="alert-danger p-1">Rejeitado</span>'
+
+                case 'cancelled':
+                    return '<span class="alert-danger p-1">Cancelado por uma das partes</span>'
+
+                case 'refunded':
+                    return '<span class="alert-danger p-1">Reembolsado</span>'
+
+                case 'charged_back':
+                    return '<span class="alert-danger p-1">Estornado</span>'
+                
+                default:
+                    return '<span class="alert-warning p-1">Pendente</span>'
+
+            }
+        },
+        returnDetailMP: (detail) => {
+            switch(detail) {
+                case 'accredited':
+                    return '<span>Pagamento creditado</span>'
+
+                case 'pending_contingency':
+                    return '<span>O pagamento está sendo processado</span>'
+
+                case 'pending_review_manual':
+                    return '<span>O pagamento está em análise para determinar sua aprovação ou rejeição.</span>'
+                
+                case 'cc_rejected_bad_filled_date':
+                    return '<span>Data de validade incorreta</span>'
+
+                case 'cc_rejected_bad_filled_other':
+                    return '<span>Detalhes incorretos do cartão.</span>'
+
+                case 'cc_rejected_bad_filled_security_code':
+                    return '<span>CVV incorreto.</span>'
+
+                case 'cc_rejected_blacklist':
+                    return '<span>O cartão está em uma lista negra de roubo/reclamações/fraude.</span>'
+
+                case 'cc_rejected_call_for_authorize':
+                    return '<span>O meio de pagamento requer autorização prévia do valor da operação.</span>'
+
+                case 'cc_rejected_card_disabled':
+                    return '<span>O cartão está inativo.</span>'
+
+                case 'cc_rejected_duplicated_payment':
+                    return '<span>Transação duplicada.</span>'
+
+                case 'cc_rejected_high_risk':
+                    return '<span>Rejeição pela prevenção à fraude</span>'
+
+                case 'cc_rejected_insufficient_amount':
+                    return '<span>Cartão de crédito sem limite suficiente.</span>'
+
+                case 'cc_rejected_invalid_installments':
+                    return '<span>Quantidade de parcelas inválido.</span>'
+
+                case 'cc_rejected_max_attempts':
+                    return '<span>Quantidade máxima de tentativas excedida.</span>'
+
+                case 'cc_rejected_other_reason':
+                    return '<span>Erro por outros motivos. Consulte a operadora do seu cartão.</span>'
+
+                default:
+                    return '<span></span>'
+            }
         }
     }
 })

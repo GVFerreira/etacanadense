@@ -179,6 +179,31 @@
             </div>
         </div>
     </div>
+
+    <div id="exitModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Espere!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza de que deseja cancelar sua aplicação e perder a oportunidade de ter a nossa ajuda para emitir o seu eTA, vencendo a burocracia e tendo muito mais agilidade?</p>
+
+                    <p>Todos os dias nós identificamos erros de preenchimento de nossos clientes, que iriam complicar a emissão do eTA. Nós te ajudamos com isso.</p>
+
+                    <p>Além disso, 99% dos nossos clientes têm seu eTA aprovado em poucas horas.</p>
+
+                    <p>O valor de apenas R$ 147,00 já inclui a taxa do governo canadense e o valor da nossa prestação de serviços para assessoria individual na aplicação do seu eTA.</p>
+
+                    <p>Para confirmar o seu interesse no eTA, clique no botão abaixo para retornar ao checkout.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
@@ -275,7 +300,6 @@
                             return response.json()
                         })
                         .then((response) => {
-                            console.log(response)
                             switch(response.status) {
                                 case 'approved':
                                     window.location.href = `/checkout/obrigado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
@@ -354,37 +378,30 @@
             }),
         }).then((response) => {
             return response.json()
-        }).then(result => {
-            if(!result.hasOwnProperty("error_message")) {
-                document.getElementById("payment-id").innerText = result.id
-                document.getElementById("payment-status").innerText = result.status ? 'Pendente' : ''
-                document.getElementById("payment-detail").innerText = result.detail
-                document.getElementById("qr-code-image").src = `data:image/jpeg;base64,${result.qrCodeBase64}`
-                document.getElementById("pix-code").value = result.qrCode
-
-                document.getElementById("success-response").style.display = "block"
-                document.getElementById("pix-code-section").style.display = "block"
-            } else {
-                document.getElementById("error-message").innerText = result.error_message
-                document.getElementById("fail-response").style.display = "block"
-            }
+        }).then((response) => {
+            window.location.href = `/checkout/pix?id=${response.id}&status=${response.status}&qr_code=${response.qrCode}`
         }).catch(error => {
             alert("Unexpected error\n"+JSON.stringify(error))
         })
     }
+</script>
 
-    document.getElementById('submit-checkout-pix').addEventListener('click', () => {
-        $('.container__payment').fadeOut(500)
-        setTimeout(() => {
-            $('.container__result').show(500).fadeIn()
-        }, 500)
-    })
+{{!-- Script Exit Intent --}}
+<script>
+    let mouseout = 1
+    function showExitModal() {
+        $('#exitModal').modal('show')
+    }
 
-    //Clipboard copy
-    document.getElementById('btnCopy').addEventListener('click', async () => {
-        const text = document.getElementById("pix-code").value
-        await navigator.clipboard.writeText(text)
-        alert('Código PIX copiado com sucesso')
+    // Adiciona um ouvinte de evento ao documento
+    document.addEventListener('mouseout', (e) => {
+        // Verifica se o cursor está fora da janela
+        if (e.relatedTarget === null) {
+            if (mouseout) {
+                // O cursor está fora da janela, então mostra o modal
+                showExitModal()
+                mouseout--
+            }
+        }
     })
-    
 </script>

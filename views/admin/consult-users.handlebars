@@ -1,3 +1,8 @@
+<style>
+    header #nav {
+        display: none !important;
+    }
+</style>
 <main class="my-5" style="flex: 1 1 0">
     <section>
         <div class="container">
@@ -53,4 +58,13 @@
 </main>
 <script>
     document.getElementById('link-logo-home').href = '/admin'
+
+    var elementoPai = document.getElementById("header-container")
+    var novoElementoFilho = document.createElement("div")
+    novoElementoFilho.innerHTML = `
+        <a href="/admin/register-user" class="mx-4" style="color: white">Registrar usuário</a>
+        <a href="/admin/consult-users" class="mx-4" style="color: white">Consultar usuário</a>
+        <a href="/users/logout" class="ms-4 btn btn-danger text-upperccase fw-bold">Sair</a>
+    `
+    elementoPai.appendChild(novoElementoFilho)
 </script>
