@@ -78,6 +78,29 @@ router.post('/process-payment', (req, res) => {
         visa.statusPayment = data.status
         visa.idPayment = data.id
 
+        if(data.status === 'approved') {
+
+          transporter.use('compile', hbs(handlebarOptions))
+
+          const mailOptions = {
+              from: `eTA Canadense <${process.env.USER_MAIL}>`,
+              to: 'contato@etacanadense.com.br',
+              subject: 'Pagmento aprovado',
+              template: 'pagamento-aprovado',
+              context: {
+                  codeETA: visa.codeETA,
+              }
+          }
+
+          transporter.sendMail(mailOptions, (err, info) => {
+              if(err) {
+                  console.error(err)
+              } else {
+                  console.log(info)
+              }
+          })
+        }
+
         visa
           .save()
           .then(() => {
@@ -139,6 +162,29 @@ router.post("/process-payment-pix", (req, res) => {
         visa.statusPayment = response.status
         visa.idPayment = response.id
 
+        if(response.status === 'approved') {
+
+          transporter.use('compile', hbs(handlebarOptions))
+
+          const mailOptions = {
+              from: `eTA Canadense <${process.env.USER_MAIL}>`,
+              to: 'contato@etacanadense.com.br',
+              subject: 'Pagmento aprovado',
+              template: 'pagamento-aprovado',
+              context: {
+                  codeETA: visa.codeETA,
+              }
+          }
+
+          transporter.sendMail(mailOptions, (err, info) => {
+              if(err) {
+                  console.error(err)
+              } else {
+                  console.log(info)
+              }
+          })
+        }
+
         visa
           .save()
           .then(() => {
@@ -189,6 +235,8 @@ router.post('/webhooks', (req, res, next) => {
   const { body } = req
   const { data: data_webhook } = body
 
+  console.log(data_webhook.status)
+
   if(body.action === "payment.updated") {
     fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {
       method: "GET",
@@ -205,8 +253,6 @@ router.post('/webhooks', (req, res, next) => {
         .then((visa) => {
           visa.detailPayment = data.status_detail
           visa.statusPayment = data.status
-
-          console.log(data)
           console.log(data.status)
           if(data.status === 'approved') {
 
