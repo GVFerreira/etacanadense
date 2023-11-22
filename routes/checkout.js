@@ -10,6 +10,9 @@ const bodyParser = require('body-parser')
 router.use(bodyParser.urlencoded({extended: true}))
 router.use(bodyParser.json())
 
+const nodemailer = require('nodemailer')
+const { transporter, handlebarOptions } = require('../helpers/senderMail')
+const hbs = require('nodemailer-express-handlebars')
 
 const mercadoPagoPublicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY;
 if (!mercadoPagoPublicKey) {
@@ -234,8 +237,6 @@ router.post("/process-payment-pix", (req, res) => {
 router.post('/webhooks', (req, res, next) => {
   const { body } = req
   const { data: data_webhook } = body
-
-  console.log(data_webhook.status)
 
   if(body.action === "payment.updated") {
     fetch(`https://api.mercadopago.com/v1/payments/${data_webhook.id}`, {
