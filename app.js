@@ -427,7 +427,7 @@ app.post('/contact-form', (req, res) => {
 
     const mailOptions = {
         from: `eTA Canadense <${process.env.USER_MAIL}>`,
-        to: 'dev@etacanadense.com.br',
+        to: 'contato@etacanadense.com.br',
         subject: 'Formulário de Contato',
         template: 'contato',
         context: {
