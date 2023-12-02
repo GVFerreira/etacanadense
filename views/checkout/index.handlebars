@@ -22,7 +22,7 @@
                             <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
                             <small class="text-muted">Permissão para viajar ao Canadá</small>
                         </div>
-                        <span class="text-muted">R$ 147,00</span>
+                        <span class="text-muted" id="totalAmount1">R$ 147,00</span>
                     </li>
                     {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
                     {{!-- <li class="list-group-item d-flex justify-content-between bg-light">
@@ -34,7 +34,7 @@
                     </li> --}}
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (R$)</span>
-                        <strong>147,00</strong>
+                        <strong id="totalAmount2">147,00</strong>
                     </li>
                 </ul>
 
@@ -99,6 +99,7 @@
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                 Pix QR Code
+                                <span class="btn btn-success px-1 py-1 mx-3 fw-bold">5% OFF</span>
                             </button>
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
@@ -364,7 +365,7 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                transactionAmount: 147.00,
+                transactionAmount: 139.65,
                 description: 'Solicitação de Autorização de Viagem - Canadá',
                 payer: {
                     firstName: payerFirstName,
@@ -403,5 +404,20 @@
                 mouseout--
             }
         }
+    })
+
+    $(document).ready(function() {
+        $('#collapseTwo').on('show.bs.collapse', function() {
+            // Atualize o conteúdo do strong
+            $('#totalAmount1').text('R$ 139,65')
+            $('#totalAmount2').text('139,65')
+
+        })
+
+        $('#collapseTwo').on('hide.bs.collapse', function() {
+            // Restaure o valor original se necessário
+            $('#totalAmount1').text('R$ 147,00')
+            $('#totalAmount2').text('147,00')
+        })
     })
 </script>
