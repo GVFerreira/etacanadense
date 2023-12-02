@@ -298,15 +298,8 @@ router.post('/webhooks', (req, res, next) => {
 })
 
 router.get('/verify-pix-payment', (req, res) => {
-  fetch(`https://api.mercadopago.com/v1/payments/${req.params.transactionID}`, {
-    method: "GET",
-    headers: {
-      'Authorization': `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
-    }
-  }).then((response) => {
-    return response.json()
-  }).then((result) => {
-    res.json(result)
+  Visa.findOne({idPayment: req.query.transactionID}).then((response) => {
+    return res.json(response)
   }).catch(error => {
       console.error(error)
       res.status(500).json({ error: "Erro ao verificar pagamento" })
