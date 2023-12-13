@@ -248,46 +248,62 @@ router.post('/webhooks', (req, res, next) => {
       .then((response) => response.json())
       .then((data) => {
         Visa
-        .findOne({
-          idPayment: data_webhook.id
-        })
-        .then((visa) => {
-          visa.detailPayment = data.status_detail
-          visa.statusPayment = data.status
-          console.log(data.status)
-          if(data.status === 'approved') {
+          .findOne({idPayment: data_webhook.id})
+          .then((visa) => {
+            visa.detailPayment = data.status_detail
+            visa.statusPayment = data.status
 
-            transporter.use('compile', hbs(handlebarOptions))
+            if(data.status === 'approved') {
+              transporter.use('compile', hbs(handlebarOptions))
 
-            const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: 'contato@etacanadense.com.br',
-                subject: 'Pagmento aprovado',
-                template: 'pagamento-aprovado',
-                context: {
+              transporter.sendMail(
+                {
+                  from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                  to: visa.contactEmail,
+                  bcc: 'contato@etacanadense.com.br',
+                  subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
+                  template: 'aviso-eta',
+                },
+                (err, info) => {
+                  if(err) {
+                      console.error(err)
+                      
+                  } else {
+                      console.log(info)
+                  }
+                })
+
+              transporter.use('compile', hbs(handlebarOptions))
+
+              transporter.sendMail(
+                {
+                  from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                  to: 'contato@etacanadense.com.br',
+                  subject: 'Pagmento aprovado',
+                  template: 'pagamento-aprovado',
+                  context: {
                     codeETA: visa.codeETA,
-                }
+                  }
+                },
+                (err, info) => {
+                  if(err) {
+                      console.error(err)
+                  } else {
+                      console.log(info)
+                  }
+              })
             }
-
-            transporter.sendMail(mailOptions, (err, info) => {
-                if(err) {
-                    console.error(err)
-                } else {
-                    console.log(info)
-                }
+      
+            visa.save().then(() => {
+              res.status(200).end()
+            }).catch((e) => {
+              console.error(e)
+              res.status(409).end()
             })
-          }
-    
-          visa.save().then(() => {
-            res.status(200).end()
           }).catch((e) => {
             console.error(e)
             res.status(409).end()
           })
-        }).catch((e) => {
-          console.error(e)
-          res.status(409).end()
-        })
       }).catch((e) => {
         console.log("Erro:")
         console.error(e)

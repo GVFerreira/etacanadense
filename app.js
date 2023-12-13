@@ -353,28 +353,8 @@ app.post('/aplicacaoStep4', async (req, res) => {
             req.session.aplicacaoStep = Object.assign({}, {visaID}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
-                transporter.use('compile', hbs(handlebarOptions))
-
-                const mailOptions = {
-                    from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                    to: req.session.aplicacaoStep.contactEmail,
-                    bcc: 'contato@etacanadense.com.br',
-                    subject: `Confirmação de Recebimento Código ${req.session.aplicacaoStep.codeETA} - Autorização Eletrônica de Viagem Canadense`,
-                    template: 'aviso-eta',
-                }
-
-                transporter.sendMail(mailOptions, (err, info) => {
-                    if(err) {
-                        console.error(err)
-                        req.flash('error_msg', `Houve um erro ao enviar este e-mail: ${err}`)
-                        req.session.destroy()
-                        res.redirect('/aplicacao')
-                    } else {
-                        console.log(info)
-                        req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
-                        res.redirect('/checkout')
-                    }
-                })
+                req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
+                res.redirect('/checkout')
                 
             }).catch((err) => {
                 console.log(err)
