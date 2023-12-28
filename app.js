@@ -20,20 +20,48 @@ const handle = handlebars.create({
             // return moment(date).format('DD/MM/YYYY hh:mm')
         },
         pagination: (page, totalPages, limit, sort) => {
-            let output = ''
-  
-            for (let i = 1; i <= totalPages; i++) {
-                // Marca a página atual como "ativa"
-                const pageNUM = parseInt(page)
-                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary '
+            let output = '';
 
-                // Gera o HTML para o link da página
+            const pageNUM = parseInt(page);
+
+            // Adiciona link para a primeira página
+            if (pageNUM > 1) {
                 output += `
-                    <a class="btn ${activeClass}" href="/admin?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
-                `
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=1">&laquo;</a>
+                `;
             }
 
-            return output
+            // Adiciona link para a página anterior
+            if (pageNUM > 1) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=${pageNUM - 1}">&lsaquo;</a>
+                `;
+            }
+
+            // Adiciona links para páginas específicas (5 páginas no máximo)
+            for (let i = Math.max(1, pageNUM - 2); i <= Math.min(totalPages, pageNUM + 2); i++) {
+                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary';
+
+                output += `
+                    <a class="btn ${activeClass}" href="/admin?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
+                `;
+            }
+
+            // Adiciona link para a próxima página
+            if (pageNUM < totalPages) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=${pageNUM + 1}">&rsaquo;</a>
+                `;
+            }
+
+            // Adiciona link para a última página
+            if (pageNUM < totalPages) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=${totalPages}">&raquo;</a>
+                `;
+            }
+
+            return output;
         },
         returnStatusMP: (status) => {
             switch(status) {
@@ -119,6 +147,175 @@ const handle = handlebars.create({
                 default:
                     return '<span></span>'
             }
+        },
+        verifyCodPassport: (codPassport, residentUSCIS, airplane, canadaVisa, nonImmigrateVisa) => {
+            const specialCodes = ['ATG (Antígua e Barbuda)', 'BRA (Brasil)']
+            let output = ""
+
+            if (specialCodes.includes(codPassport)) {
+                residentUSCIS ? output += `<p class="mb-2">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</p><p class="d-inline-block alert-success p-1 mb-3">Sim</p>` : output += `<p class="mb-2">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</p><p class="d-inline-block alert-danger p-1 mb-3">Não</p>`
+                
+                airplane ? output += `<p class="mb-2">Você está viajando para o Canadá de avião?</p><p class="d-inline-block alert-success p-1 mb-3">Sim</p>` : output += `<p class="mb-2">Você está viajando para o Canadá de avião?</p><p class="d-inline-block alert-danger p-1 mb-3">Não</p>`
+
+                canadaVisa ? output += `<p class="mb-2">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</p><p class="d-inline-block alert-success p-1 mb-3">Sim</p>` : output += `<p class="mb-2">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</p><p class="d-inline-block alert-danger p-1 mb-3">Não</p>`
+
+                nonImmigrateVisa ? output += `<p class="mb-2">Você atualmente possui um visto válido de não-imigrante nos EUA?</p><p class="d-inline-block alert-success p-1 mb-3">Sim</p>` : output += `<p class="mb-2">Você atualmente possui um visto válido de não-imigrante nos EUA?</p><p class="d-inline-block alert-danger p-1 mb-3">Não</p>`
+            
+            }
+
+            return output
+        },
+        verifyCodPassportStep: (codPassport, residentUSCIS, airplane, canadaVisa, nonImmigrateVisa) => {
+            const specialCodes = ['ATG (Antígua e Barbuda)', 'BRA (Brasil)']
+            let output = ""
+
+            if (specialCodes.includes(codPassport)) {
+                residentUSCIS ? 
+                    output += `
+                        <label class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</label> 
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" disabled required>
+                                <label class="form-check-label" for="residentUSCIS1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" checked required>
+                                <label class="form-check-label" for="residentUSCIS2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    ` : 
+                    output += `
+                        <label class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</label> 
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" checked required>
+                                <label class="form-check-label" for="residentUSCIS1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" disabled required>
+                                <label class="form-check-label" for="residentUSCIS2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    `
+                
+                airplane ?
+                    output += `
+                        <label class="mt-3">Você está viajando para o Canadá de avião?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" disabled required>
+                                <label class="form-check-label" for="airplane1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" checked required>
+                                <label class="form-check-label" for="airplane2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    ` :
+                    output += `
+                        <label class="mt-3">Você está viajando para o Canadá de avião?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" checked required>
+                                <label class="form-check-label" for="airplane1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" disabled required>
+                                <label class="form-check-label" for="airplane2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    `
+
+                canadaVisa ? 
+                    output += `
+                        <label class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" disabled required>
+                                <label class="form-check-label" for="canadaVisa1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" checked required>
+                                <label class="form-check-label" for="canadaVisa2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    ` :
+                    output += `
+                        <label class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" checked required>
+                                <label class="form-check-label" for="canadaVisa1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" disabled required>
+                                <label class="form-check-label" for="canadaVisa2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    `
+
+                nonImmigrateVisa ?
+                    output += `
+                        <label class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" disabled required>
+                                <label class="form-check-label" for="nonImmigrateVisa1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" checked required>
+                                <label class="form-check-label" for="nonImmigrateVisa2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    ` :
+                    output += `
+                        <label class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA?</label>
+                        <div class="p-2 w-50 d-flex flex-row gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" checked required>
+                                <label class="form-check-label" for="nonImmigrateVisa1">
+                                    Não
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" disabled required>
+                                <label class="form-check-label" for="nonImmigrateVisa2">
+                                    Sim
+                                </label>
+                            </div>
+                        </div>
+                    `
+            }
+
+            return output
         }
     }
 })
@@ -219,9 +416,8 @@ app.use((req, res, next) => {
 app.post('/accept-policy', (req, res, next) => {
     //Setar cookie de aceite de política por 1 ano
     res.cookie('policyAccepted', true, { maxAge: 31536000000 })
-    res.redirect('/')
+    res.status(200).json({ message: 'Cookies aceitos com sucesso!' })
 })
-
 
 app.get('/', (req, res) => {
     req.session.destroy()
@@ -232,9 +428,12 @@ app.get('/', (req, res) => {
 })
 
 app.get('/aplicacao', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     if(!parseInt(req.query.etapa)) {
         const title = "Representante - "
         res.render('aplicacao-step1', {
+            showPolicyPopup,
             title,
             data: req.session.aplicacaoStep,
             metaDescription: 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
@@ -312,7 +511,6 @@ app.post('/aplicacaoStep1', (req, res) => {
 
 app.post('/aplicacaoStep2', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
-    req.session.aplicacaoStep.passportBrazil = parseInt(req.session.aplicacaoStep.passportBrazil)
     req.session.aplicacaoStep.residentUSCIS = parseInt(req.session.aplicacaoStep.residentUSCIS)
     req.session.aplicacaoStep.airplane = parseInt(req.session.aplicacaoStep.airplane)
     req.session.aplicacaoStep.canadaVisa = parseInt(req.session.aplicacaoStep.canadaVisa)
@@ -367,7 +565,10 @@ app.post('/aplicacaoStep4', async (req, res) => {
 })
 
 app.get('/acompanhar-solicitacao', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     res.render('acompanhar-solicitacao', {
+        showPolicyPopup,
         title: 'Acompanhar solicitação - ',
         metaDescription: 'Acompanhe o status de sua solicitação de eTA em tempo real. Fique atualizado sobre o progresso e a aprovação de sua Autorização Eletrônica de Viagem para o Canadá.'
     })
@@ -396,7 +597,10 @@ app.get('/consulta-download-documento/:filename', (req, res) => {
 })
 
 app.get('/contato', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     res.render('contato', {
+        showPolicyPopup,
         title: 'Contato - ',
         metaDescription: 'Entre em contato conosco para todas as suas dúvidas e necessidades relacionadas à Autorização Eletrônica de Viagem para o Canadá. Estamos aqui para ajudar a tornar sua viagem o mais tranquila possível.'
     })
@@ -431,27 +635,36 @@ app.post('/contact-form', (req, res) => {
 })
 
 app.get('/artigos', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     res.render('artigos', {
+        showPolicyPopup,
         title: 'Artigos - ',
         metaDescription: 'Explore nosso catálogo de artigos informativos sobre viagens ao Canadá, Autorização Eletrônica de Viagem e dicas úteis para uma visita perfeita.'
     })
 })
 
 app.get('/politica-privacidade', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     res.render('politica-privacidade', {
+        showPolicyPopup,
         title: 'Politica de privacidade - ',
         metaDescription: 'Saiba como protegemos seus dados pessoais. Leia nossa Política de Privacidade para entender nosso compromisso com a segurança e a confidencialidade.'
     })
 })
 
 app.get('/termos-condicoes', (req, res) => {
+    const policyAccepted = req.cookies.policyAccepted
+    const showPolicyPopup = !policyAccepted
     res.render('termos-condicoes', {
+        showPolicyPopup,
         title: 'Termos e Condições - ',
         metaDescription: 'Conheça nossos Termos e Condições para solicitação e uso da Autorização Eletrônica de Viagem para o Canadá. Garanta que sua viagem esteja em conformidade com as regras e regulamentos'
     })
 })
 
-app.use('/admin', isAdmin, admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

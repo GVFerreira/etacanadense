@@ -206,6 +206,7 @@
         </div>
     </div>
 </main>
+
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
     const mercadopago = new MercadoPago('{{publicKey}}')
@@ -387,8 +388,9 @@
     }
 </script>
 
-{{!-- Script Exit Intent --}}
+{{!-- Scripts secundário --}}
 <script>
+    //Exit intent
     let mouseout = 1
     function showExitModal() {
         $('#exitModal').modal('show')
@@ -406,6 +408,8 @@
         }
     })
 
+
+    //Atualizar valor em tela
     $(document).ready(function() {
         $('#collapseTwo').on('show.bs.collapse', function() {
             // Atualize o conteúdo do strong

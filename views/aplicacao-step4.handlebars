@@ -137,7 +137,7 @@
                     <label for="representativeCodpostal">Código postal:</label>
                     <input class="form-control mb-3 w-50" type="text" name="representativeCodpostal" id="representativeCodpostal" value="{{data.representativeCodpostal}}" required disabled>
                 
-                    <a href="/aplicacao?etapa=1" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                    <a href="/aplicacao" class="btn btn-primary fw-bold text-uppercase">Editar</a>
                 {{/if}}
                 
                 <hr>
@@ -149,171 +149,110 @@
                     <option value="pass-commom" selected>Passaporte – comum/regular</option>
                 </select>
 
-                <label class="m-0">Seu passaporte foi emitido no Brasil?</label>
-                <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
-                {{#if data.passportBrazil}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" value="0" disabled required>
-                            <label class="form-check-label" for="passportBrazil1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" value="1" checked required>
-                            <label class="form-check-label" for="passportBrazil2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{else}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" value="0" checked required>
-                            <label class="form-check-label" for="passportBrazil1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" value="1" disabled required>
-                            <label class="form-check-label" for="passportBrazil2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{/if}}
+                <label for="codPassport" class="mt-3">Selecione o código que corresponde ao do seu passaporte</label>
+                <p class="m-0">
+                    <small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small>
+                </p>
+                <select name="codPassport" id="codPassport" class="form-select w-50 mb-3" required disabled>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="AND (Andorra)">AND (Andorra)</option>
+                    <option value="ATG (Antígua e Barbuda)">ATG (Antígua e Barbuda)</option>
+                    <option value="AUS (Austrália)">AUS (Austrália)</option>
+                    <option value="AUT (Áustria)">AUT (Áustria)</option>
+                    <option value="BEL (Bélgica)">BEL (Bélgica)</option>
+                    <option value="BHS (Bahamas)">BHS (Bahamas)</option>
+                    <option value="BRA (Brasil)">BRA (Brasil)</option>
+                    <option value="BRB (Barbados)">BRB (Barbados)</option>
+                    <option value="BRN (Brunei Darussalam)">BRN (Brunei Darussalam)</option>
+                    <option value="CHE (Suíça)">CHE (Suíça)</option>
+                    <option value="CHL (Chile)">CHL (Chile)</option>
+                    <option value="CYP (Chipre)">CYP (Chipre)</option>
+                    <option value="CZE (República Checa)">CZE (República Checa)</option>
+                    <option value="D (Alemanha)">D (Alemanha)</option>
+                    <option value="DNK (Dinamarca)">DNK (Dinamarca)</option>
+                    <option value="ESP (Espanha)">ESP (Espanha)</option>
+                    <option value="EST (Estônia)">EST (Estônia)</option>
+                    <option value="FIN (Finlândia)">FIN (Finlândia)</option>
+                    <option value="FRA (França)">FRA (França)</option>
+                    <option value="GRC (Grécia)">GRC (Grécia)</option>
+                    <option value="HRV (Croácia)">HRV (Croácia)</option>
+                    <option value="HUN (Hungria)">HUN (Hungria)</option>
+                    <option value="ISL (Islândia)">ISL (Islândia)</option>
+                    <option value="IRL (Irlanda)">IRL (Irlanda)</option>
+                    <option value="ITA (Itália)">ITA (Itália)</option>
+                    <option value="JPN (Japão)">JPN (Japão)</option>
+                    <option value="KOR (Coréia do Sul)">KOR (Coréia do Sul)</option>
+                    <option value="LIE (Liechtenstein)">LIE (Liechtenstein)</option>
+                    <option value="LTU (Lituânia)">LTU (Lituânia)</option>
+                    <option value="LUX (Luxemburgo)">LUX (Luxemburgo)</option>
+                    <option value="LVA (Letônia)">LVA (Letônia)</option>
+                    <option value="MCO (Mônaco)">MCO (Mônaco)</option>
+                    <option value="NLD (Holanda)">NLD (Holanda)</option>
+                    <option value="NOR (Noruega)">NOR (Noruega)</option>
+                    <option value="NZL (Nova Zelândia)">NZL (Nova Zelândia)</option>
+                    <option value="PEC (Singapura)">PEC (Singapura)</option>
+                    <option value="PNG (Papua Nova Guiné)">PNG (Papua Nova Guiné)</option>
+                    <option value="POL (Polônia)">POL (Polônia)</option>
+                    <option value="PRT (Portugal)">PRT (Portugal)</option>
+                    <option value="SMR (São Marino)">SMR (São Marino)</option>
+                    <option value="SLB (Ilhas Salomão)">SLB (Ilhas Salomão)</option>
+                    <option value="SVN (Eslovênia)">SVN (Eslovênia)</option>
+                    <option value="SVK (Eslováquia)">SVK (Eslováquia)</option>
+                    <option value="SWE (Suécia)">SWE (Suécia)</option>
+                    <option value="WSM (Samoa)">WSM (Samoa)</option>
+                </select>
 
-                <label class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</label>  
-                {{#if data.residentUSCIS}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" disabled required>
-                            <label class="form-check-label" for="residentUSCIS1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" checked required>
-                            <label class="form-check-label" for="residentUSCIS2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{else}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS1" value="0" checked required>
-                            <label class="form-check-label" for="residentUSCIS1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="residentUSCIS" id="residentUSCIS2" value="1" disabled required>
-                            <label class="form-check-label" for="residentUSCIS2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{/if}}
+                <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte?</label>
+                <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" disabled required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="Alemanha">Alemanha</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Austrália">Austrália</option>
+                    <option value="Áustria">Áustria</option>
+                    <option value="Bahamas">Bahamas</option>
+                    <option value="Barbados">Barbados</option>
+                    <option value="Bélgica">Bélgica</option>
+                    <option value="Brasil">Brasil</option>
+                    <option value="Brunei Darussalam">Brunei Darussalam</option>
+                    <option value="Chipre">Chipre</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Croácia">Croácia</option>
+                    <option value="Dinamarca">Dinamarca</option>
+                    <option value="Eslováquia">Eslováquia</option>
+                    <option value="Eslovênia">Eslovênia</option>
+                    <option value="Espanha">Espanha</option>
+                    <option value="Estônia">Estônia</option>
+                    <option value="Finlândia">Finlândia</option>
+                    <option value="França">França</option>
+                    <option value="Grécia">Grécia</option>
+                    <option value="Holanda">Holanda</option>
+                    <option value="Hungria">Hungria</option>
+                    <option value="Ilhas Salomão">Ilhas Salomão</option>
+                    <option value="Islândia">Islândia</option>
+                    <option value="Irlanda">Irlanda</option>
+                    <option value="Itália">Itália</option>
+                    <option value="Japão">Japão</option>
+                    <option value="Coréia do Sul">Coréia do Sul</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lituânia">Lituânia</option>
+                    <option value="Luxemburgo">Luxemburgo</option>
+                    <option value="Letônia">Letônia</option>
+                    <option value="Mônaco">Mônaco</option>
+                    <option value="Noruega">Noruega</option>
+                    <option value="Nova Zelândia">Nova Zelândia</option>
+                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
+                    <option value="Polônia">Polônia</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="República Checa">República Checa</option>
+                    <option value="Samoa">Samoa</option>
+                    <option value="São Marino">São Marino</option>
+                    <option value="Singapura">Singapura</option>
+                    <option value="Suécia">Suécia</option>
+                    <option value="Suíça">Suíça</option>
+                </select>
 
-                <label class="mt-3">Você está viajando para o Canadá de avião?</label>
-                {{#if data.airplane}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" disabled required>
-                            <label class="form-check-label" for="airplane1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" checked required>
-                            <label class="form-check-label" for="airplane2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{else}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="airplane" id="airplane1" value="0" checked required>
-                            <label class="form-check-label" for="airplane1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="airplane" id="airplane2" value="1" disabled required>
-                            <label class="form-check-label" for="airplane2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{/if}}
-
-                <label class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</label>
-                {{#if data.canadaVisa}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" disabled required>
-                            <label class="form-check-label" for="canadaVisa1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" checked required>
-                            <label class="form-check-label" for="canadaVisa2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{else}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa1" value="0" checked required>
-                            <label class="form-check-label" for="canadaVisa1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="canadaVisa" id="canadaVisa2" value="1" disabled required>
-                            <label class="form-check-label" for="canadaVisa2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{/if}}
-
-                <label class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA?</label>
-                {{#if data.nonImmigrateVisa}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" disabled required>
-                            <label class="form-check-label" for="nonImmigrateVisa1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" checked required>
-                            <label class="form-check-label" for="nonImmigrateVisa2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{else}}
-                    <div class="p-2 w-50 d-flex flex-row gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" value="0" checked required>
-                            <label class="form-check-label" for="nonImmigrateVisa1">
-                                Não
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" value="1" disabled required>
-                            <label class="form-check-label" for="nonImmigrateVisa2">
-                                Sim
-                            </label>
-                        </div>
-                    </div>
-                {{/if}}
+                {{#verifyCodPassportStep data.codPassport data.residentUSCIS data.airplane data.canadaVisa data.nonImmigrateVisa}}{{/verifyCodPassportStep}}
 
                 <a href="/aplicacao?etapa=2" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
@@ -648,6 +587,9 @@
                             </label>
                         </div>
                     </div>
+
+                    <label class="mb-2" for="personalUCI">Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão</label>
+                    <input type="text" class="form-control mb-3 w-50" id="personalUCI" name="personalUCI" value="{{data.personalUCI}}" disabled>
                 {{else}}
                     <div class="p-2 w-50 d-flex flex-row gap-4">
                         <div class="form-check">
@@ -664,9 +606,6 @@
                         </div>
                     </div>
                 {{/if}}
-
-                <label class="mb-2" for="personalUCI">Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão</label>
-                <input type="text" class="form-control mb-3 w-50" id="personalUCI" name="personalUCI" value="{{data.personalUCI}}" disabled>
 
                 <a href="/aplicacao?etapa=3#maritalStatus" class="btn btn-primary fw-bold text-uppercase">Editar</a>
                 
@@ -2009,6 +1948,12 @@
         setTimeout(() => {
             const representativeRelationship = document.getElementById("representativeRelationship")
             if(representativeRelationship) representativeRelationship.value = "{{data.representativeRelationship}}"
+
+            const codPassport = document.getElementById("codPassport")
+            if(codPassport) codPassport.value = "{{data.codPassport}}"
+
+            const nationalityPassport = document.getElementById("nationalityPassport")
+            if(nationalityPassport) nationalityPassport.value = "{{data.nationalityPassport}}"
 
             const gender = document.getElementById("gender")
             if(gender) gender.value = "{{data.gender}}"

@@ -43,8 +43,12 @@ const Visa = new Schema({
         type: String,
         required: true
     },
-    passportBrazil: {
-        type: Number,
+    codPassport: {
+        type: String,
+        required: true
+    },
+    nationalityPassport: {
+        type: String,
         required: true
     },
     residentUSCIS: {

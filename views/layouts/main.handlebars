@@ -39,18 +39,18 @@
     <body style="display: flex; flex-direction: column; min-height: 100vh">
         {{#if showPolicyPopup}}
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"></div>
-            <div class="modal-dialog modal-sm policy-popup">
+            <div class="modal-dialog modal-sm policy-popup" id="modalPolicyCookies">
                 <div class="modal-content bg-light text-dark">
-                <div class="modal-header">
-                    <h6 class="modal-title p-0" id="staticBackdropLabel">Política de privacidade e cookies</h6>
+                    <div class="modal-header">
+                        <h6 class="modal-title p-0" id="staticBackdropLabel">Política de privacidade e cookies</h6>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ao continuar navegando neste site, você concorda com a nossa política de privacidade e cookies.</p>
+                        <form id="accept-cookies-form" method="post">
+                            <button type="submit" class="btn btn-success">Aceitar</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p>Ao continuar navegando neste site, você concorda com a nossa política de privacidade e cookies.</p>
-                    <form action="/accept-policy" method="post">
-                        <button type="submit" class="btn btn-success">Aceitar</button>
-                    </form>
-                </div>
-            </div>
             </div>
             <style>
             .policy-popup {
@@ -60,6 +60,35 @@
                 z-index: 999;
             }
             </style>
+            <script>
+                // Adicione um ouvinte de evento ao formulário
+                document.getElementById('accept-cookies-form').addEventListener('submit', function (event) {
+                    // Impede o envio padrão do formulário
+                    event.preventDefault();
+
+                    // Realize uma solicitação AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/accept-policy', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+                    // Defina a função de callback para manipular a resposta
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // A resposta foi bem-sucedida
+                            $('#modalPolicyCookies').fadeOut();
+                            console.log('Cookies aceitos com sucesso!');
+                            // Fechar ou ocultar o popup/modal se necessário
+                        } else {
+                            // A resposta não foi bem-sucedida
+                            console.error('Erro ao aceitar cookies');
+                            // Exibir uma mensagem de erro se necessário
+                        }
+                    };
+
+                    // Envia a solicitação com dados vazios (já que o cookie é definido no servidor)
+                    xhr.send(JSON.stringify({}));
+                });
+            </script>
         {{/if}}
         {{>_header}}
         {{#if error}}

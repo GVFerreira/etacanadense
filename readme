@@ -1,6 +1,6 @@
 Comentar as variavéis de produção e descomentar as variáveis de desenvolvimento
 
-Comentar a linha do e-mail em cópia (bcc:) no app.js
+Comentar a linha do e-mail em cópia (bcc:) no routes/checkout.js
 
 Comentar o isAdmin na rota na declaração na rota admin no app.js
 

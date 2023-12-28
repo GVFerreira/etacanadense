@@ -260,7 +260,7 @@ router.post('/webhooks', (req, res, next) => {
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
                   to: visa.contactEmail,
-                  bcc: 'contato@etacanadense.com.br',
+                  // bcc: 'contato@etacanadense.com.br',
                   subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                   template: 'aviso-eta',
                 },

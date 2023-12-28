@@ -11,7 +11,7 @@
         width: 50% !important;
     }
 
-    .modal-body label {
+    .modal-body p {
         font-weight: 600;
     }
 </style>
@@ -26,7 +26,7 @@
                     <form method="GET" class="mb-2">
                         <div class="d-flex align-items-end gap-5">
                             <div>
-                                <label for="sort">Ordem de criação:</label>
+                                <p class="sort">Ordem de criação:</p>
                                 <select name="sort" id="sort" class="form-select">
                                     <option value=""></option>
                                     <option value="DESC">Recente -> Antigo</option>
@@ -34,7 +34,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="limit">Limite por página:</label>
+                                <p class="limit">Limite por página:</p>
                                 <select name="limit" id="limit" class="form-select">
                                     <option value=""></option>
                                     <option value="5">5</option>
@@ -44,7 +44,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="filter">Buscar pelo passaporte:</label>
+                                <p class="filter">Buscar pelo passaporte:</p>
                                 <input type="text" name="filter" id="filter" class="form-control" value="{{filter}}">
                             </div>
                             <div class="d-none">
@@ -90,24 +90,25 @@
                         </div>
 
                         {{!-- SOLICITAÇÂO MODAL VIEW --}}
-                        <div class="modal fade view{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade view{{id}}" tabindex="-1" aria-pledby="exampleModalP" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h3 class="modal-title" id="exampleModalLabel">Detalhes da solicitação</h3>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h3 class="modal-title" id="exampleModalP">Detalhes da solicitação</h3>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <label for="codeETA">Código de acompanhamento</label>
+                                        <p class="codeETA">Código de acompanhamento</p>
                                         <input type="text" class="form-control mb-3 w-50" value="{{codeETA}}" disabled>
+
                                         {{#if representative}}
                                             <h3 class="h5">Dados do representante</h3>
 
-                                            <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</label>
-                                            <p class="d-inline alert-success p-1">Sim</p><br>
+                                            <p class="mb-2">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</p>
+                                            <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                            <label class="mt-3" for="representativeRelationship">Eu sou</label>
-                                            <select class="form-control w-50 mb-3" name="representativeRelationship" id="representativeRelationship{{id}}"  disabled>
+                                            <p class="mb-2">Eu sou</p>
+                                            <select class="form-control w-50 mb-3" id="representativeRelationship{{id}}" disabled>
                                                 <option value="parent-friend">Parente ou amigo</option>
                                                 <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
                                                 <option value="iccrc">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
@@ -116,129 +117,105 @@
                                                 <option value="agent">Agente de viagens</option>
                                             </select>
 
-                                            <label class="mb-2" for="payed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome?</label>
+                                            <p class="mb-2">Você está sendo pago para representar o requerente e preencher o formulário em seu nome?</p>
                                             {{#if representativePayed}}
-                                                <p class="d-inline alert-success p-1">Sim</p><br>
+                                                <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
                                             {{else}}
-                                                <p class="d-inline alert-danger p-1">Não</p><br>
+                                                <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                             {{/if}}
 
-                                            <label class="mt-3" for="representativeName">Nome:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeName" id="representativeName" value="{{representativeName}}"  disabled>
+                                            <p class="mb-2">Nome:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeName}}" disabled>
 
-                                            <label for="representativeSurname">Sobrenome(s):</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeSurname" id="representativeSurname" value="{{representativeSurname}}"  disabled>
+                                            <p class="mb-2">Sobrenome(s):</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeSurname}}" disabled>
 
-                                            <label for="representativeOrgName">Nome da empresa:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeOrgName" id="representativeOrgName" value="{{representativeOrgName}}"  disabled>
+                                            <p class="mb-2">Nome da empresa:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeOrgName}}" disabled>
 
-                                            <label for="representativeAddress">Endereço:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeAddress" id="representativeAddress" value="{{representativeAddress}}"  disabled>
+                                            <p class="mb-2">Endereço:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeAddress}}" disabled>
 
-                                            <label for="representativeEmail">E-mail:</label>
-                                            <input class="form-control mb-3 w-50" type="email" name="representativeEmail" id="representativeEmail" value="{{representativeEmail}}"  disabled>
+                                            <p class="mb-2">E-mail:</p>
+                                            <input class="form-control mb-3 w-50" type="email" value="{{representativeEmail}}" disabled>
 
-                                            <label for="representativeNumTel">Número de telefone:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeNumTel" id="representativeNumTel" value="{{representativeNumTel}}"  disabled>
+                                            <p class="mb-2">Número de telefone:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeNumTel}}" disabled>
 
-                                            <label for="representativeNumIDmebro">Número de identificação de membro:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeNumIDmebro" id="representativeNumIDmebro" value="{{representativeNumIDmebro}}"  disabled>
+                                            <p class="mb-2">Número de identificação de membro:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeNumIDmebro}}" disabled>
 
-                                            <label for="representativeProvOrTer">Província ou território:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeProvOrTer" id="representativeProvOrTer" value="{{representativeProvOrTer}}"  disabled>
+                                            <p class="mb-2">Província ou território:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeProvOrTer}}" disabled>
 
-                                            <label for="representativeCodpostal">Código postal:</label>
-                                            <input class="form-control mb-3 w-50" type="text" name="representativeCodpostal" id="representativeCodpostal" value="{{representativeCodpostal}}"  disabled>
-                                        
+                                            <p class="mb-2">Código postal:</p>
+                                            <input class="form-control mb-3 w-50" type="text" value="{{representativeCodpostal}}" disabled>
                                         {{/if}}
                                     
                                         <hr>
 
                                         <h3 class="h5">Perguntas de validação</h3>
 
-                                        <label for="document">Qual documento de viagem você pretende usar para viajar ao Canadá?</label>
-                                        <select class="form-control w-50 mb-3" name="document" id="document" disabled >
-                                            <option value="pass-commom" selected>Passaporte – comum/regular</option>
+                                        <p class="mb-2">Qual documento de viagem você pretende usar para viajar ao Canadá?</p>
+                                        <select class="form-control w-50 mb-3" disabled >
+                                            <option>Passaporte – comum/regular</option>
                                         </select>
 
-                                        <label class="mb-2" for="codPassport">Seu passaporte foi emitido no Brasil?</label>
-                                        {{#if passportBrazil}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
-                                        {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
-                                        {{/if}}
+                                        <p class="mb-2">Selecione o código que corresponde ao do seu passaporte.</p>
+                                        <select class="form-control w-50 mb-3" disabled>
+                                            <option>{{codPassport}}</option>
+                                        </select>
 
-                                        <label class="mt-3 mb-2" for="residentUSCIS">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)?</label>  
-                                        {{#if residentUSCIS}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
-                                        {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
-                                        {{/if}}
+                                        <p class="mb-2">Qual é a nacionalidade indicada neste passaporte?</p>
+                                        <select class="form-control w-50 mb-3" disabled>
+                                            <option>{{nationalityPassport}}</option>
+                                        </select>
 
-                                        <label class="mt-3 mb-2" for="airplane">Você está viajando para o Canadá de avião?</label>
-                                        {{#if airplane}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
-                                        {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
-                                        {{/if}}
-
-                                        <label class="mt-3 mb-2" for="canadaVisa">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido?</label>
-                                        {{#if canadaVisa}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
-                                        {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
-                                        {{/if}}
-
-                                        <label class="mt-3 mb-2" for="nonImmigrateVisa">Você atualmente possui um visto válido de não-imigrante nos EUA?</label>
-                                        {{#if nonImmigrateVisa}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
-                                        {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
-                                        {{/if}}
+                                        {{#verifyCodPassport codPassport residentUSCIS airplane canadaVisa nonImmigrateVisa}}{{/verifyCodPassport}}
 
                                         <hr>
 
                                         {{#if nonImmigrateVisa}}
                                             <h3 class="h5">Dados de Não-Imigrante</h3>
 
-                                            <label for="numVisaNonImmigrate">Número do visto de não imigrante nos EUA</label>
-                                            <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" value="{{numVisaNonImmigrate}}" maxlength="35" disabled >
+                                            <p class="mb-2">Número do visto de não imigrante nos EUA</p>
+                                            <input type="text" class="form-control mb-3 w-50" value="{{numVisaNonImmigrate}}" disabled>
                                             
-                                            <label for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante</label>
-                                            <input type="date" class="form-control mb-3 w-25" id="dateVisaNonImmigrate" name="dateVisaNonImmigrate" value="{{dateVisaNonImmigrate}}" disabled >
+                                            <p class="mb-2">Data de expiração do visto americano de não-imigrante</p>
+                                            <input type="date" class="form-control mb-3 w-25" value="{{dateVisaNonImmigrate}}" disabled>
 
                                             <hr>
                                         {{/if}}
                                     
                                         <h3 class="h5">Dados do passaporte do requerente</h3>
 
-                                        <label for="numPassport">Número do passaporte</label>
-                                        <input type="text" class="form-control w-50 mb-3" name="numPassport" id="numPassport" value="{{numPassport}}" disabled >
+                                        <p class="mb-2">Número do passaporte</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{numPassport}}" disabled>
 
-                                        <label for="doiPassport">Data de emissão do passaporte</label>
-                                        <input type="date" class="form-control mb-3 w-25" name="doiPassport" id="doiPassport" value="{{doiPassport}}" disabled >
+                                        <p class="mb-2">Data de emissão do passaporte</p>
+                                        <input type="date" class="form-control w-25 mb-3" value="{{doiPassport}}" disabled>
 
-                                        <label for="doePassport">Data de expiração do passaporte</label>
-                                        <input type="date" class="form-control mb-3 w-25" name="doePassport" id="doePassport" value="{{doePassport}}" disabled >
+                                        <p class="mb-2">Data de expiração do passaporte</p>
+                                        <input type="date" class="form-control w-25 mb-3" value="{{doePassport}}" disabled>
 
-                                        <label for="firstName">Nome</label>
-                                        <input type="text" class="form-control w-50 mb-3" name="firstName" id="firstName" value="{{firstName}}" disabled >
+                                        <p class="mb-2">Nome</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{firstName}}" disabled>
 
-                                        <label for="surname">Sobrenome(s)</label>
-                                        <input type="text" class="form-control w-50 mb-3" name="surname" id="surname" value="{{surname}}" disabled >
+                                        <p class="mb-2">Sobrenome(s)</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{surname}}" disabled>
 
-                                        <label for="dateBirthday">Data de Nascimento</label>
-                                        <input type="date" class="form-control mb-3 w-25" name="dateBirthday" id="dateBirthday" value="{{dateBirthday}}" disabled >
+                                        <p class="mb-2">Data de Nascimento</p>
+                                        <input type="date" class="form-control mb-3 w-25" value="{{dateBirthday}}" disabled>
 
-                                        <label for="gender">Gênero</label>
-                                        <select class="form-control w-50 mb-3" name="gender" id="gender{{id}}" disabled>
+                                        <p class="mb-2">Gênero</p>
+                                        <select class="form-control w-50 mb-3" id="gender{{id}}" disabled>
                                             <option value="female">Feminino</option>
                                             <option value="male">Masculino</option>
                                             <option value="other">Outro</option>
                                         </select>
 
-                                        <label for="countryBirth">País/território de nascimento</label>
-                                        <select class="form-control w-50 mb-3" name="countryBirth" id="countryBirth{{id}}" disabled>
+                                        <p class="mb-2">País/território de nascimento</p>
+                                        <select class="form-control w-50 mb-3" id="countryBirth{{id}}" disabled>
                                             <option value="0">Afeganistão</option>
                                             <option value="1">Albânia</option>
                                             <option value="2">Argélia</option>
@@ -484,18 +461,18 @@
                                             <option value="243">Zimbábue</option>
                                         </select>
                                     
-                                        <label for="cityBirth">Cidade/município de nascimento</label>
-                                        <input type="text" name="cityBirth" id="cityBirth" class="form-control w-50 mb-3" value="{{cityBirth}}" disabled >
+                                        <p class="mb-2">Cidade/município de nascimento</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{cityBirth}}" disabled>
 
                                         <hr>
 
                                         <h3 class="h5">Dados pessoais do requerente</h3>
 
-                                        <label for="nationalitiesExtra">Nacionalidade adicional</label>
-                                        <textarea name="nationalitiesExtra" id="nationalitiesExtra" class="form-control mb-3" rows="3" disabled>{{nationalitiesExtra}}</textarea>
+                                        <p class="mb-2">Nacionalidade adicional</p>
+                                        <textarea class="form-control mb-3" rows="3" disabled>{{nationalitiesExtra}}</textarea>
 
-                                        <label for="maritalStatus">Estado civil</label>
-                                        <select class="form-control w-50 mb-3" name="maritalStatus" id="maritalStatus{{id}}" disabled >
+                                        <p class="mb-2">Estado civil</p>
+                                        <select class="form-control w-50 mb-3" id="maritalStatus{{id}}" disabled>
                                             <option value="0">Casado</option>
                                             <option value="2">Divorciado</option>
                                             <option value="3">Casamento anulado</option>
@@ -504,22 +481,22 @@
                                             <option value="6">Nunca casou / Solteiro</option>
                                         </select>
 
-                                        <label class="mb-2" for="appliedToCanada">Você já solicitou ou obteve um visto, um eTA ou uma permissão para visitar, morar, trabalhar ou estudar no Canadá?</label>
+                                        <p class="mb-2">Você já solicitou ou obteve um visto, um eTA ou uma permissão para visitar, morar, trabalhar ou estudar no Canadá?</p>
                                         {{#if appliedToCanada}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                            <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                            <label class="mt-3" for="personalUCI">Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão</label>
-                                            <input type="text" class="form-control mb-3 w-50" id="personalUCI" name="personalUCI" value="{{personalUCI}}" disabled>
+                                            <p class="mb-2">Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão</p>
+                                            <input type="text" class="form-control w-50 mb-3" value="{{personalUCI}}" disabled>
                                         {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                            <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                         {{/if}}
                                     
                                         <hr>
 
                                         <h3 class="h5">Informações de emprego</h3>
 
-                                        <label for="occupation">Profissão</label>
-                                        <select class="form-control w-50 mb-3" name="occupation" id="occupation{{id}}" disabled>
+                                        <p class="mb-2">Profissão</p>
+                                        <select class="form-control w-50 mb-3" id="occupation{{id}}" disabled>
                                             <option value="1">Ocupações artísticas, culturais, recreativas e desportivas</option>
                                             <option value="2">Ocupações de negócios, finanças e administração</option>
                                             <option value="3">Educação, direito e ocupações de serviços sociais, comunitários e governamentais</option>
@@ -537,8 +514,8 @@
                                             <option value="15">Desempregado</option>
                                         </select>
 
-                                        <label for="employmentTitle">Cargo</label>
-                                        <select class="form-control mb-3 w-50" name="employmentTitle" id="employmentTitle{{id}}" disabled>
+                                        <p class="mb-2">Cargo</p>
+                                        <select class="form-control w-50 mb-3" id="employmentTitle{{id}}" disabled>
                                             <option value="art-0">Locutores e outros artistas</option>
                                             <option value="art-1">Atletas, treinadores, árbitros e ocupações relacionadas</option>
                                             <option value="art-2">Artistas criativos e performáticos</option>
@@ -749,11 +726,11 @@
                                             <option value="com-20">Ocupações operacionais da tripulação do trem</option>
                                         </select>
 
-                                        <label for="employmentCompanyName">Nome do empregador ou escola, conforme o caso.</label>
-                                        <input type="text" class="form-control mb-3 w-50" id="employmentCompanyName" name="employmentCompanyName" value="{{employmentCompanyName}}" disabled >
+                                        <p class="mb-2">Nome do empregador ou escola, conforme o caso</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{employmentCompanyName}}" disabled>
 
-                                        <label for="employmentCountry">País/território</label>
-                                        <select class="form-control w-50 mb-3" name="employmentCountry" id="employmentCountry{{id}}" disabled>
+                                        <p class="mb-2">País/território</p>
+                                        <select class="form-control w-50 mb-3" id="employmentCountry{{id}}" disabled>
                                             <option value="0">Afeganistão</option>
                                             <option value="1">Albânia</option>
                                             <option value="2">Argélia</option>
@@ -999,11 +976,11 @@
                                             <option value="243">Zimbábue</option>
                                         </select>
 
-                                        <label for="employmentCity">Cidade/município</label>
-                                        <input type="text" class="form-control mb-3 w-50" id="employmentCity"  name="employmentCity" value="{{employmentCity}}" disabled >
+                                        <p class="mb-2">Cidade/município</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{employmentCity}}" disabled>
 
-                                        <label for="employmentFromDateYear">Desde que ano?</label>
-                                        <select class="form-control w-50 mb-3" name="employmentFromDateYear" id="employmentFromDateYear{{id}}" disabled >
+                                        <p class="mb-2">Desde que ano?</p>
+                                        <select class="form-control w-50 mb-3" id="employmentFromDateYear{{id}}" disabled >
                                             <option value="0">2023</option>
                                             <option value="1">2022</option>
                                             <option value="2">2021</option>
@@ -1134,32 +1111,33 @@
 
                                         <h3 class="h5">Informações de contato</h3>
 
-                                        <label for="contactEmail">Endereço de e-mail</label>
-                                        <input type="email" class="form-control mb-3 w-50" id="contactEmail" name="contactEmail" value="{{contactEmail}}" disabled >
+                                        <p class="mb-2">Endereço de e-mail</p>
+                                        <input type="email" class="form-control w-50 mb-3" value="{{contactEmail}}" disabled>
 
-                                        <label for="contactTel">Celular</label>
-                                        <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" value="{{contactTel}}" disabled >
+                                        <p class="mb-2">Celular</p>
+                                        <input type="tel" class="form-control w-50 mb-3" value="{{contactTel}}" disabled>
 
                                         <hr>
 
                                         <h3 class="h5">Endereço residencial</h3>
-                                        <label for="addressName">Endereço</label>
-                                        <input type="text" class="form-control mb-3" id="addressName" name="addressName" value="{{addressName}}" disabled >
+
+                                        <p class="mb-2">Endereço</p>
+                                        <input type="text" class="form-control mb-3" value="{{addressName}}" disabled>
                                            
-                                        <label for="addressNumber">Número</label>
-                                        <input type="text" class="form-control mb-3" id="addressNumber" name="addressNumber" value="{{addressNumber}}" disabled >
+                                        <p class="mb-2">Número</p>
+                                        <input type="text" class="form-control mb-3" value="{{addressNumber}}" disabled>
 
-                                        <label for="addressComplement">Complemento</label>
-                                        <input type="text" class="form-control mb-3 w-50" id="addressComplement" name="addressComplement" value="{{addressComplement}}" disabled>
+                                        <p class="mb-2">Complemento</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{addressComplement}}" disabled>
                                         
-                                        <label for="addressCity">Cidade/município</label>
-                                        <input type="text" class="form-control mb-3" id="addressCity" name="addressCity" value="{{addressCity}}" disabled >
+                                        <p class="mb-2">Cidade/município</p>
+                                        <input type="text" class="form-control mb-3" value="{{addressCity}}" disabled>
 
-                                        <label class="mb-2" for="addressState">Estado/Região</label>
-                                        <input type="text" class="form-control w-50 mb-3" id="addressState" name="addressState"  value="{{addressState}}" disabled>
+                                        <p class="mb-2">Estado/Região</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{addressState}}" disabled>
                                         
-                                        <label for="addressCountry">País</label>
-                                        <select class="form-control mb-3" id="addressCountry" name="addressCountry{{id}}" disabled >
+                                        <p class="mb-2">País</p>
+                                        <select class="form-control mb-3" id="addressCountry{{id}}" disabled>
                                             <option>Selecione</option>
                                             <option value="0">Afeganistão</option>
                                             <option value="1">Albânia</option>
@@ -1410,18 +1388,18 @@
 
                                         <h3 class="h5">Informação de viagem</h3>
 
-                                        <label class="mb-2" for="travelWhen">Você sabe quando vai viajar para o Canadá?</label>
+                                        <p class="mb-2">Você sabe quando vai viajar para o Canadá?</p>
                                         {{#if travelWhen}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                            <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                            <label for="travelDate" class="mt-3">Quando você pretende viajar para o Canadá?</label>
-                                            <input type="date" class="form-control mb-3 w-25" name="travelDate" id="travelDate" value="{{travelDate}}" disabled >
+                                            <p class="mb-2">Quando você pretende viajar para o Canadá?</p>
+                                            <input type="date" class="form-control w-25 mb-3" value="{{travelDate}}" disabled>
 
-                                            <label for="travelTime">Insira o horário de partida do seu voo para o Canadá</label>
-                                            <input type="time" class="form-control w-25 mb-3" name="travelTime" id="travelTime" value="{{travelTime}}" disabled >
+                                            <p class="mb-2">Insira o horário de partida do seu voo para o Canadá</p>
+                                            <input type="time" class="form-control w-25 mb-3" value="{{travelTime}}" disabled>
 
-                                            <label for="travelTimeZone">Escolha o fuso horário de partida do voo</label>
-                                            <select class="form-control mb-3" name="travelTimeZone" id="travelTimeZone{{id}}" disabled >
+                                            <p class="mb-2">Escolha o fuso horário de partida do voo</p>
+                                            <select class="form-control mb-3" id="travelTimeZone{{id}}" disabled>
                                                 <option value="" disabled>Selecione o fuso horário</option>
                                                 <option value="0">Horário do Acre</option>
                                                 <option value="1">Horário do Afeganistão</option>
@@ -1580,67 +1558,67 @@
                                                 <option value="158">Horário de Ecaterimburgo</option>
                                             </select>
                                         {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                            <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                         {{/if}}
 
                                         <hr>
 
                                         <h3 class="h5">Perguntas básicas</h3>
 
-                                        <label class="mb-2" for="refusedVisaToCanda">Você já teve um visto ou permissão negado, entrada negada ou ordem de deixar o Canadá ou qualquer outro país/território?</label>
+                                        <p class="mb-2">Você já teve um visto ou permissão negado, entrada negada ou ordem de deixar o Canadá ou qualquer outro país/território?</p>
                                         {{#if refusedVisaToCanda}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                            <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                            <label class="mt-3" for="refusedVisaToCandaDetails">Para cada recusa, por favor, indique o país que lhe recusou o visto ou autorização, ou que lhe negou a entrada, bem como os motivos apresentados pelo país.</label>
-                                            <textarea rows="5" class="form-control mb-3 w-50"  id="refusedVisaToCandaDetails" name="refusedVisaToCandaDetails" maxlength="500" disabled >{{refusedVisaToCandaDetails}}</textarea>
+                                            <p class="mb-2">Para cada recusa, por favor, indique o país que lhe recusou o visto ou autorização, ou que lhe negou a entrada, bem como os motivos apresentados pelo país.</p>
+                                            <textarea class="form-control w-50 mb-3" rows="5" disabled>{{refusedVisaToCandaDetails}}</textarea>
                                         {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                            <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                         {{/if}}
                                     
-                                        <label class="mt-3 mb-2" for="criminalOffenceAnywhere">Você já cometeu, foi preso, acusado ou condenado por algum crime em qualquer país/território?</label>
+                                        <p class="mb-2">Você já cometeu, foi preso, acusado ou condenado por algum crime em qualquer país/território?</p>
                                         {{#if criminalOffenceAnywhere}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                            <br><p class="d-inline alert-success p-1 mb-3">Sim</p><br>
 
-                                            <label class="mt-3" for="criminalOffenceAnywhereDetails">Para cada prisão, acusação ou condenação, indique onde (cidade, país), quando (mês/ano), a natureza do delito e a sentença.</label>
-                                            <textarea rows="5" class="form-control mb-3 w-50" id="criminalOffenceAnywhereDetails" name="criminalOffenceAnywhereDetails" maxlength="500" disabled >{{criminalOffenceAnywhereDetails}}</textarea>
+                                            <p class="mb-2">Para cada prisão, acusação ou condenação, indique onde (cidade, país), quando (mês/ano), a natureza do delito e a sentença.</p>
+                                            <textareaclass="form-control w-50 mb-3" rows="5" disabled>{{criminalOffenceAnywhereDetails}}</textarea>
                                         {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                            <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                         {{/if}}
 
-                                        <label class="mt-3 mb-2" for="tuberculosis">Nos últimos dois anos, você foi diagnosticado com tuberculose ou esteve em contato próximo com uma pessoa com tuberculose?</label>
+                                        <p class="mb-2">Nos últimos dois anos, você foi diagnosticado com tuberculose ou esteve em contato próximo com uma pessoa com tuberculose?</p>
                                         {{#if tuberculosis}}
-                                            <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                            <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                            <label class="mt-3 mb-2" for="tuberculosisResultCareWorker">O seu contato com a tuberculose é resultado de ser um profissional de saúde?</label>
+                                            <p class="mb-2">O seu contato com a tuberculose é resultado de ser um profissional de saúde?</p>
                                             {{#if tuberculosisResultCareWorker}}
-                                                <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                                <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
 
-                                                <label class="mt-3 mb-2" for="diagnosedWithTuberculosis">Você já foi diagnosticado com tuberculose?</label>
+                                                <p class="mb-2">Você já foi diagnosticado com tuberculose?</p>
                                                 {{#if diagnosedWithTuberculosis}}
-                                                    <br><p class="d-inline alert-success p-1">Sim</p><br>
+                                                    <p class="d-inline-block alert-success p-1 mb-3">Sim</p>
                                                 {{else}}
-                                                    <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                                    <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                                 {{/if}}
                                             {{else}}
-                                                <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                                <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                             {{/if}}
                                         {{else}}
-                                            <br><p class="d-inline alert-danger p-1">Não</p><br>
+                                            <p class="d-inline-block alert-danger p-1 mb-3">Não</p>
                                         {{/if}}
                                     
-                                        <label class="mt-3" for="theseConditions">Você tem uma dessas condições?</label>
-                                        <select class="form-control mb-3 w-50" name="theseConditions" id="theseConditions{{id}}" disabled >
+                                        <p class="mb-2">Você tem uma dessas condições?</p>
+                                        <select class="form-control w-50 mb-3" id="theseConditions{{id}}" disabled>
                                             <option value="0">Sífilis não tratada</option>
                                             <option value="1">Dependência de drogas ou álcool não tratada</option>
                                             <option value="2">Condição de saúde mental não tratada com psicose</option>
                                             <option value="3">Nenhuma das acima</option>
                                         </select>
 
-                                        <label for="canadaDuringStayDetails">Indique brevemente se há detalhes adicionais pertinentes à sua inscrição.</label>
-                                        <textarea rows="5" class="form-control mb-3 w-50" id="canadaDuringStayDetails" name="canadaDuringStayDetails" maxlength="250" disabled>{{canadaDuringStayDetails}}</textarea>
+                                        <p class="mb-2">Indique brevemente se há detalhes adicionais pertinentes à sua inscrição</p>
+                                        <textarea class="form-control w-50 mb-3" rows="5" disabled>{{canadaDuringStayDetails}}</textarea>
 
-                                        <label for="consentAndDeclaration">Assinatura do requerente</label>
-                                        <input type="text" class="form-control mb-3 w-50" id="consentAndDeclaration" name="consentAndDeclaration" value="{{consentAndDeclaration}}" disabled >
+                                        <p class="mb-2">Assinatura do requerente</p>
+                                        <input type="text" class="form-control w-50 mb-3" value="{{consentAndDeclaration}}" disabled>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -1651,12 +1629,12 @@
                         {{!-- --}}
 
                         {{!-- SOLICITAÇÂO MODAL EXCLUSÃO --}}
-                        <div class="modal fade delete{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade delete{{id}}" tabindex="-1" aria-pledby="exampleModalP" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Você tem certeza?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="exampleModalP">Você tem certeza?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <p>Os dados da solicitação serão excluídos para sempre. Você deseja prosseguir com a exclusão?</p>
@@ -1672,24 +1650,24 @@
                         {{!-- --}}
 
                         {{!-- SOLICITAÇÂO MODAL ATUALIZAÇÃO --}}
-                        <div class="modal fade update{{id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade update{{id}}" tabindex="-1" aria-pledby="exampleModalP" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Atualize o status da aplicação</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="exampleModalP">Atualize o status da aplicação</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <p>Cliente: {{firstName}} {{surname}}</p>
                                         <form action="/admin/edit-visa/{{id}}" method="POST" enctype="multipart/form-data">
-                                            <label for="statusETA">Status da aplicação</label>
-                                            <select class="form-select mb-3" name="statusETA" id="statusETA{{id}}" required>
+                                            <p class="statusETA">Status da aplicação</p>
+                                            <select class="form-control mb-3" name="statusETA" id="statusETA{{id}}" required>
                                                 <option disabled>Selcione</option>
                                                 <option value="Recusado">Recusado</option>
                                                 <option value="Aprovado">Aprovado</option>
                                             </select>
 
-                                            <label for="formFileMultiple" class="form-label">Anexos do processo</label>
+                                            <p class="formFileMultiple" class="form-p">Anexos do processo</p>
                                             <input type="file" class="form-control mb-3" id="formFileMultiple" name="attachments" multiple>
 
                                             <input type="submit" class="btn btn-warning" value="Atualizar">

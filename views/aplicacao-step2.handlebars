@@ -46,7 +46,7 @@
                 </div>
             </div>
             <form action="/aplicacaoStep2" method="POST">
-                <label class="mb-2" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
+                <label class="mb-0" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
                 <span class="d-block small mb-2">
                     Confira no botão ao lado
                     <a type="button" data-bs-toggle="modal" data-bs-target="#documentModal">
@@ -107,7 +107,7 @@
 
         if (type === 'pass-commom') {
             dynamicFields.innerHTML += `
-                <label for="codPassport" class="m-0">Seu passaporte foi emitido no Brasil?.  <span class="text-red">* (obrigatório)</span></label>
+                <label for="codPassport" class="mt-3">Selecione o código que corresponde ao do seu passaporte. <span class="text-red">* (obrigatório)</span></label>
                 <span class="d-block small mb-2">
                     Confira no botão ao lado
                     <a type="button" data-bs-toggle="modal" data-bs-target="#codPassportModal">
@@ -115,43 +115,65 @@
                     </a>
                 </span>
                 <p class="m-0"><small>Verifique o código de três letras que encontra-se na página de informações do seu passaporte.</small></p>
-                <div class="p-2 w-50 d-flex flex-row gap-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil1" onchange="showUSCIS(0)" value="0" required="required">
-                        <label class="form-check-label" for="passportBrazil1">
-                            Não
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="passportBrazil" id="passportBrazil2" onchange="showUSCIS(1)" value="1" required="required">
-                        <label class="form-check-label" for="passportBrazil2">
-                            Sim
-                        </label>
-                    </div>
-                </div>
+
+                <select name="codPassport" id="codPassport" class="form-select w-50 mb-3" onchange="showUSCIS(this.value)" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="AND (Andorra)">AND (Andorra)</option>
+                    <option value="ATG (Antígua e Barbuda)">ATG (Antígua e Barbuda)</option>
+                    <option value="AUS (Austrália)">AUS (Austrália)</option>
+                    <option value="AUT (Áustria)">AUT (Áustria)</option>
+                    <option value="BEL (Bélgica)">BEL (Bélgica)</option>
+                    <option value="BHS (Bahamas)">BHS (Bahamas)</option>
+                    <option value="BRA (Brasil)">BRA (Brasil)</option>
+                    <option value="BRB (Barbados)">BRB (Barbados)</option>
+                    <option value="BRN (Brunei Darussalam)">BRN (Brunei Darussalam)</option>
+                    <option value="CHE (Suíça)">CHE (Suíça)</option>
+                    <option value="CHL (Chile)">CHL (Chile)</option>
+                    <option value="CYP (Chipre)">CYP (Chipre)</option>
+                    <option value="CZE (República Checa)">CZE (República Checa)</option>
+                    <option value="D (Alemanha)">D (Alemanha)</option>
+                    <option value="DNK (Dinamarca)">DNK (Dinamarca)</option>
+                    <option value="ESP (Espanha)">ESP (Espanha)</option>
+                    <option value="EST (Estônia)">EST (Estônia)</option>
+                    <option value="FIN (Finlândia)">FIN (Finlândia)</option>
+                    <option value="FRA (França)">FRA (França)</option>
+                    <option value="GRC (Grécia)">GRC (Grécia)</option>
+                    <option value="HRV (Croácia)">HRV (Croácia)</option>
+                    <option value="HUN (Hungria)">HUN (Hungria)</option>
+                    <option value="ISL (Islândia)">ISL (Islândia)</option>
+                    <option value="IRL (Irlanda)">IRL (Irlanda)</option>
+                    <option value="ITA (Itália)">ITA (Itália)</option>
+                    <option value="JPN (Japão)">JPN (Japão)</option>
+                    <option value="KOR (Coréia do Sul)">KOR (Coréia do Sul)</option>
+                    <option value="LIE (Liechtenstein)">LIE (Liechtenstein)</option>
+                    <option value="LTU (Lituânia)">LTU (Lituânia)</option>
+                    <option value="LUX (Luxemburgo)">LUX (Luxemburgo)</option>
+                    <option value="LVA (Letônia)">LVA (Letônia)</option>
+                    <option value="MCO (Mônaco)">MCO (Mônaco)</option>
+                    <option value="NLD (Holanda)">NLD (Holanda)</option>
+                    <option value="NOR (Noruega)">NOR (Noruega)</option>
+                    <option value="NZL (Nova Zelândia)">NZL (Nova Zelândia)</option>
+                    <option value="PEC (Singapura)">PEC (Singapura)</option>
+                    <option value="PNG (Papua Nova Guiné)">PNG (Papua Nova Guiné)</option>
+                    <option value="POL (Polônia)">POL (Polônia)</option>
+                    <option value="PRT (Portugal)">PRT (Portugal)</option>
+                    <option value="SMR (São Marino)">SMR (São Marino)</option>
+                    <option value="SLB (Ilhas Salomão)">SLB (Ilhas Salomão)</option>
+                    <option value="SVN (Eslovênia)">SVN (Eslovênia)</option>
+                    <option value="SVK (Eslováquia)">SVK (Eslováquia)</option>
+                    <option value="SWE (Suécia)">SWE (Suécia)</option>
+                    <option value="WSM (Samoa)">WSM (Samoa)</option>
+                </select>
                 <div id="dynamicUSCIS"></div>
             `
         }
     }
     
-    function showUSCIS(type) {
+    function showUSCIS(codPassport) {
         let dynamicUSCIS = document.getElementById('dynamicUSCIS')
         dynamicUSCIS.innerHTML = ''
 
-        if(type === '') {
-            dynamicUSCIS.innerHTML += '<p>Selecione uma opção</p>'
-            const envForm = document.getElementById('envForm')
-            envForm.disabled = "disabled"
-        } else if (type === 0) {
-            dynamicUSCIS.innerHTML += `
-                <div class="alert alert-danger w-50 my-3">
-                    <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
-                </div>
-            `
-            const envForm = document.getElementById('envForm')
-            envForm.disabled = "disabled"
-
-        } else if (type === 1) {
+        if (codPassport === 'ATG (Antígua e Barbuda)' || codPassport === 'BRA (Brasil)') {
             dynamicUSCIS.innerHTML += `
                 <label for="residentUSCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
@@ -170,6 +192,65 @@
                 </div>
                 <div id="dynamicAviao"></div>
             `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = "disabled"
+
+        } else {
+            dynamicUSCIS.innerHTML += `
+                <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte? <span class="text-red">* (obrigatório)</span></label>
+                <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="Alemanha">Alemanha</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Austrália">Austrália</option>
+                    <option value="Áustria">Áustria</option>
+                    <option value="Bahamas">Bahamas</option>
+                    <option value="Barbados">Barbados</option>
+                    <option value="Bélgica">Bélgica</option>
+                    <option value="Brasil">Brasil</option>
+                    <option value="Brunei Darussalam">Brunei Darussalam</option>
+                    <option value="Chipre">Chipre</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Croácia">Croácia</option>
+                    <option value="Dinamarca">Dinamarca</option>
+                    <option value="Eslováquia">Eslováquia</option>
+                    <option value="Eslovênia">Eslovênia</option>
+                    <option value="Espanha">Espanha</option>
+                    <option value="Estônia">Estônia</option>
+                    <option value="Finlândia">Finlândia</option>
+                    <option value="França">França</option>
+                    <option value="Grécia">Grécia</option>
+                    <option value="Holanda">Holanda</option>
+                    <option value="Hungria">Hungria</option>
+                    <option value="Ilhas Salomão">Ilhas Salomão</option>
+                    <option value="Islândia">Islândia</option>
+                    <option value="Irlanda">Irlanda</option>
+                    <option value="Itália">Itália</option>
+                    <option value="Japão">Japão</option>
+                    <option value="Coréia do Sul">Coréia do Sul</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lituânia">Lituânia</option>
+                    <option value="Luxemburgo">Luxemburgo</option>
+                    <option value="Letônia">Letônia</option>
+                    <option value="Mônaco">Mônaco</option>
+                    <option value="Noruega">Noruega</option>
+                    <option value="Nova Zelândia">Nova Zelândia</option>
+                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
+                    <option value="Polônia">Polônia</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="República Checa">República Checa</option>
+                    <option value="Samoa">Samoa</option>
+                    <option value="São Marino">São Marino</option>
+                    <option value="Singapura">Singapura</option>
+                    <option value="Suécia">Suécia</option>
+                    <option value="Suíça">Suíça</option>
+                </select>
+                <div id="dynamicAviao"></div>
+            `
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = ""
+
         }
     }
     
@@ -188,6 +269,56 @@
                 
         } else if (type === 0) {
             dynamicAviao.innerHTML += `
+                <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte? <span class="text-red">* (obrigatório)</span></label>
+                <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="Alemanha">Alemanha</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Austrália">Austrália</option>
+                    <option value="Áustria">Áustria</option>
+                    <option value="Bahamas">Bahamas</option>
+                    <option value="Barbados">Barbados</option>
+                    <option value="Bélgica">Bélgica</option>
+                    <option value="Brasil">Brasil</option>
+                    <option value="Brunei Darussalam">Brunei Darussalam</option>
+                    <option value="Chipre">Chipre</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Croácia">Croácia</option>
+                    <option value="Dinamarca">Dinamarca</option>
+                    <option value="Eslováquia">Eslováquia</option>
+                    <option value="Eslovênia">Eslovênia</option>
+                    <option value="Espanha">Espanha</option>
+                    <option value="Estônia">Estônia</option>
+                    <option value="Finlândia">Finlândia</option>
+                    <option value="França">França</option>
+                    <option value="Grécia">Grécia</option>
+                    <option value="Holanda">Holanda</option>
+                    <option value="Hungria">Hungria</option>
+                    <option value="Ilhas Salomão">Ilhas Salomão</option>
+                    <option value="Islândia">Islândia</option>
+                    <option value="Irlanda">Irlanda</option>
+                    <option value="Itália">Itália</option>
+                    <option value="Japão">Japão</option>
+                    <option value="Coréia do Sul">Coréia do Sul</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lituânia">Lituânia</option>
+                    <option value="Luxemburgo">Luxemburgo</option>
+                    <option value="Letônia">Letônia</option>
+                    <option value="Mônaco">Mônaco</option>
+                    <option value="Noruega">Noruega</option>
+                    <option value="Nova Zelândia">Nova Zelândia</option>
+                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
+                    <option value="Polônia">Polônia</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="República Checa">República Checa</option>
+                    <option value="Samoa">Samoa</option>
+                    <option value="São Marino">São Marino</option>
+                    <option value="Singapura">Singapura</option>
+                    <option value="Suécia">Suécia</option>
+                    <option value="Suíça">Suíça</option>
+                </select>
+
                 <label for="airplane" class="mt-3">Você está viajando para o Canadá de avião? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
@@ -290,5 +421,4 @@
     }
 
 </script>
-
 
