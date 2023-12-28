@@ -21,7 +21,7 @@ require('dotenv').config()
 router.get('/', async (req, res) => {
     const page = req.query.page || 1
     const sort = req.query.sort || "DESC"
-    const limit = req.query.limit || 10
+    const limit = req.query.limit || 20
     const filter = req.query.filter || ''
     const visasPerPage = limit
     const skip = (page - 1) * visasPerPage
