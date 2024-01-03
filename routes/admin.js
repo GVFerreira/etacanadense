@@ -16,6 +16,9 @@ const multer = require('multer')
 const path = require("path")
 const { connect } = require('http2')
 const uploadAttach = require('../helpers/uploadAttachments')
+
+const PDFPrinter = require("pdfmake")
+
 require('dotenv').config()
 
 router.get('/', async (req, res) => {
@@ -180,6 +183,276 @@ router.get('/delete-user/:id', (req, res) => {
         req.flash('error_msg', `Ocorreu um erro: ${err}`)
         res.render('admin/consult-users')
     })
+})
+
+router.get('/details-visa/:id', (req, res) => {
+
+    Visa.findOne({_id: req.params.id}).then((visa) => {
+        const fonts = {
+            Helvetica: {
+                normal: 'Helvetica',
+                bold: 'Helvetica-Bold',
+                italics: 'Helvetica-Oblique',
+                bolditalics: 'Helvetica-BoldOblique'
+            }
+        }
+    
+        const printer = new PDFPrinter(fonts)
+
+        // Formatações
+        function formatarData(dataString) {
+            const [ano, mes, dia] = dataString.split("-");
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        function formatarGenero(genero) {
+            switch (genero) {
+                case 'male':
+                    return 'Masculino'
+                break
+                case 'female':
+                    return 'Feminino'
+                break
+                case 'other':
+                    return 'Outro'
+                break
+            }
+        }
+
+        function formatarEstadoCivil(estadoCivil) {
+            switch (estadoCivil) {
+                case '0':
+                    return 'Casado'
+                    break
+                case '2':
+                    return 'Divorciado'
+                    break
+                case '3':
+                    return 'Casamento anulado'
+                    break
+                case '4':
+                    return 'Viúvo(a)'
+                    break
+                case '5':
+                    return 'União estável'
+                    break
+                case '6':
+                    return 'Nunca casou / Solteiro'
+                    break
+            }
+        }
+
+        function formatarProfissao(profissao) {
+            switch (profissao) {
+                case 1: return 'Ocupações artísticas, culturais, recreativas e desportivas'
+                break
+                case 2: return 'Ocupações de negócios, finanças e administração'
+                break
+                case 3: return 'Educação, direito e ocupações de serviços sociais, comunitários e governamentais'
+                break
+                case 4: return 'Ocupações de saúde'
+                break
+                case 5: return 'Dona de casa'
+                break
+                case 6: return 'Ocupações de gestão'
+                break
+                case 7: return 'Ocupações de manufatura e serviços públicos'
+                break
+                case 8: return 'Forças militares/armadas'
+                break
+                case 9: return 'Ciências naturais e aplicadas e ocupações relacionadas'
+                break
+                case 10: return 'Recursos naturais, agricultura e ocupações de produção relacionadas'
+                break
+                case 11: return 'Aposentado'
+                break
+                case 12: return 'Ocupações de vendas e serviços'
+                break
+                case 13: return 'Estudante'
+                break
+                case 14: return 'Operadores de comércio, transporte e equipamentos e ocupações relacionadas'
+                break
+                case 15: return 'Desempregado'
+                break
+            }
+        }
+    
+        const docDefinitions = {
+            defaultStyle: { font: "Helvetica"},
+            header: [
+                {
+                    image: "./public/img/logo-details.png",
+                    width: 90,
+                    margin: 10,
+                    alignment: 'right'
+                },
+                {
+                    text: 'Teste'
+                }
+            ],
+            content: [
+                {
+                    stack:[
+                        { text: 'Informações enviadas para aplicação do eTA Canadense', fontSize: 18, bold: true, alignment: 'center', margin: [0, 0, 0, 15] },
+                        {
+                            stack: [
+                                {
+                                    text: visa.representative ? "Detalhes do responsável ou representante\n\n" : "",
+                                    style: 'subheader'
+                                },
+                                {
+                                    text:  visa.representative ? `Aplicado por: ${visa.representativeRelationship}\n
+                                            Pago para representar o requerente e preencher o formulário em seu nome? ${visa.representativePayed ? "Sim" : "Não"}\n
+                                            Representado por: ${visa.representativeName} ${visa.representativeSurname}\n
+                                            Nome da empresa: ${visa.representativeOrgName}\n
+                                            Endereço: ${visa.representativeAddress}\n
+                                            Código postal: ${visa.representativeCodpostal}\n
+                                            Contato: ${visa.representativeEmail} | ${visa.representativeNumTel}\n
+                                            Número de identificação de membro: ${visa.representativeNumIDmebro}\n
+                                            Província ou território: ${visa.representativeProvOrTer}\n
+                                        ` : ''
+                                }
+                            ]
+                        },
+                        {
+                            stack: [
+                                { text: "Perguntas de validação\n\n", style: 'subheader' },
+                                { text: `Qual documento de viagem você pretende usar para viajar ao Canadá?\nPassaporte - comum/regular\n\n` },
+                                { text: `Código que corresponde ao do seu passaporte: ${visa.codPassport}\n\n` },
+                                { text: [
+                                        'Residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? ',
+                                        `${visa.residentUSCIS ? "Sim\n\n" : "Não\n\n"}`
+                                    ]
+                                },
+                                { text: [
+                                        'Nacionalidade indicada neste passaporte: ',
+                                        `${visa.nationalityPassport}\n\n`
+                                    ]
+                                },
+                                {
+                                    text: [
+                                        'Está viajando para o Canadá de avião? ',
+                                        `${visa.airplane ? "Sim\n\n" : "Não\n\n"}`
+                                    ]
+                                },
+                                {
+                                    text: [
+                                        'Possuiu um visto canadense de residente temporário válido nos últimos 10 anos? ',
+                                        `${visa.canadaVisa ? "Sim\n\n" : "Não\n\n"}`
+                                    ]
+                                },
+                                {
+                                    text: [
+                                        'Atualmente possui um visto válido de não-imigrante nos EUA? ',
+                                        `${visa.nonImmigrateVisa ? "Sim\n\n" : "Não\n\n"}`
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            stack: [
+                                {
+                                    text: visa.nonImmigrateVisa ? "Dados de não-imigrante\n\n" : "",
+                                    style: 'subheader'
+                                },
+                                {
+                                    text: visa.nonImmigrateVisa ? `Número do visto de não imigrante nos EUA: ${visa.numVisaNonImmigrate}\n
+                                    Data de expiração do visto americano de não-imigrante: ${formatarData(visa.dateVisaNonImmigrate)}\n\n` : ""
+                                }
+                            ]
+                        },
+                        {
+                            stack: [
+                                {
+                                    text: "Dados do passaporte do requerente\n\n",
+                                    style: 'subheader'
+                                },
+                                { text: `Número do passaporte: ${visa.numPassport}\n\n` },
+                                { text: `Data de emissão do passaporte: ${formatarData(visa.doiPassport)}\n\n` },
+                                { text: `Data de expiração do passaporte: ${formatarData(visa.doePassport)}\n\n` },
+                                { text: `Nome completo: ${visa.firstName} ${visa.surname}\n\n` },
+                                { text: `Data de nascimento: ${formatarData(visa.dateBirthday)}\n\n` },
+                                { text: `Gênero: ${formatarGenero(visa.gender)}\n\n` },
+                                { text: `Cidade/município de nascimento: ${visa.cityBirth}\n\n` },
+                                { text: `País/território de nascimento: ${visa.countryBirth}\n\n` }
+                            ]
+                        },
+                        {
+                            stack: [
+                                {
+                                    text: "Dados pessoais do requerente\n\n",
+                                    style: 'subheader'
+                                },
+                                { text: visa.nationalitiesExtra ? `Nacionalidade adicional: ${visa.nationalitiesExtra}\n\n` : "" },
+                                { text: `Estado civil: ${formatarEstadoCivil(visa.maritalStatus)}\n\n` },
+                                { text: `já solicitou ou obteve um visto, um eTA ou uma permissão para visitar, morar, trabalhar ou estudar no Canadá? ${visa.appliedToCanada ? "Sim\n\n" : "Não\n\n"}`},
+                                { text: visa.appliedToCanada ? `Identificador exclusivo do cliente (UCI) / visto canadense anterior, eTA ou número de permissão: ${visa.personalUCI ? "Sim\n\n" : "Não\n\n"}` : "" }
+                            ]
+                        },
+                        {
+                            stack: [
+                                {
+                                    text: "Informação de emprego\n\n",
+                                    style: 'subheader'
+                                },
+                                { text: `Profissão: ${formatarProfissao(visa.occupation)}` }
+                            ]
+                        }
+                    ],
+                    margin: [10, 20]
+                },
+            ],
+            footer: (currentPage, pageCount) => { 
+                const contador = currentPage.toString() + ' de ' + pageCount
+                const dataAtual = new Date()
+    
+                const dia = dataAtual.getDate()
+                const mes = dataAtual.getMonth() + 1
+                const ano = dataAtual.getFullYear()
+                const hora = dataAtual.getHours()
+                const minutos = dataAtual.getMinutes()
+    
+                const dataHora = `${dia}/${mes}/${ano} ${hora}:${minutos}`
+                return [
+                    { text: contador, style: 'footer'},
+                    { text: `${dataHora}`, alignment: 'right', margin: [10,0] }
+                ]
+            },
+            styles: {
+                header: {
+                    fontSize: 15,
+                    bold: true
+                },
+                subheader: {
+                    fontSize: 11,
+                    margin: [0, 7],
+                    bold: true
+                },
+                footer: {
+                  alignment: 'center'
+                }
+            }
+        }
+    
+        const pdfDoc = printer.createPdfKitDocument(docDefinitions)
+    
+        const chunks = []
+        pdfDoc.on("data", (chunk) => {
+            chunks.push(chunk)
+        })
+    
+        pdfDoc.end()
+    
+        pdfDoc.on("end", () => {
+            const result = Buffer.concat(chunks)
+            res.end(result)
+        })
+    }).catch((err) => {
+        req.flash("error_msg", "Falha ao carregar o PDF: " + err)
+        res.redirect('/admin')
+    })
+
+    
 })
 
 router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {

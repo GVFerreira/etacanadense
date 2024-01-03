@@ -18,9 +18,8 @@
 <main style="flex: 1 1 0">
     <section class="section-1 full-width py-4">
         <div class="container py-3">
-            <h1 class="mb-4 text-center">Área administrativa</h1>
-            <h2>Acompanhe as solicitações</h2>
-            <p class="w-75 m-0">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por algum motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
+            <h1 class="h2">Acompanhe as solicitações</h1>
+            <p class="w-75 mb-2">Abaixo estão todas as solicitações feitas. Os dados do formulário são salvos antes de efetuar o pagamento. Dessa forma, se algum cliente não conseguiu concluir o pagamento por algum motivo, a equipe do eTA Canadense terá os dados de contato do usuário.</p>
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <form method="GET" class="mb-2">
@@ -66,6 +65,7 @@
                                     <div class="col d-flex flex-row justify-content-end align-items-start gap-3">
                                         <p>Ações: </p>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".view{{id}}"><i class="bi bi-eye-fill"></i></button>
+                                        <a href="admin/details-visa/{{id}}" target="_blank" type="button" class="btn btn-info"><i class="bi bi-printer-fill"></i></a>
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".update{{id}}"><i class="bi bi-pencil-fill"></i></button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".delete{{id}}"><i class="bi bi-x-square-fill"></i></button>
                                     </div>
