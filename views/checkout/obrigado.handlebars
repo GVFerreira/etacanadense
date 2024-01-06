@@ -10,13 +10,15 @@
                         <div class="product-info py-3 px-5">
                             <div id="success-response px-5">
                                 <h3 class="text-center alert alert-success fw-bold text-uppercase w-50 mb-5 mx-auto">Pagamento aprovado</h3>
-                                <p>Seu pagamento foi aprovado. Aguarde até que sua aplicação de Autorização Eletrônica seja feita.</p>
-                                <p>Seu processo de aplicação foi concluído com sucesso. Agradecemos por escolher nossos serviços.</p>
+                                <p>Seu pagamento foi aprovado. Aguarde até que sua aplicação de Autorização Eletrônica de Viagem (eTA) seja feita.</p>
                                 <p>Caso sua aplicação seja aprovada, você receberá o documento por e-mail. Certifique-se de verificar sua caixa de entrada regularmente para garantir que você receba as informações importantes assim que estiverem disponíveis.</p>
                                 <p>Agradecemos por confiar em nós e desejamos a você o melhor em sua jornada.</p>
-                                <p class="small"><b>ID: </b>{{transaction_id }}</p>
-                                <p class="small"><b>Detalhe: </b>{{status_detail}}</p>
+                                <p class="small"><b>ID de pagamento: </b>{{transaction_id }}</p>
+                                <p class="small"><b>Detalhes: </b>{{status_detail}}</p>
                             </div>
+                        </div>
+                        <div class="d-flex justify-content-center mb-3">
+                            <a href="/aplicacao" class="btn btn-success fw-bold text-uppercase align-center">Fazer nova solicitação</a>
                         </div>
                     </div>
                 </div>

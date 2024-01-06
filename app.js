@@ -349,6 +349,13 @@ const cookieParser = require('cookie-parser')
 
 const mercadopago = require('./config/mercadoPago')
 
+// const cron = require('node-cron')
+
+// cron.schedule('*/1 * * * *', () =>  {
+//         console.log('task rodando')
+//     }
+// )
+
 
 /*AUTHENTICATION*/
 const passport = require("passport")
@@ -503,9 +510,7 @@ app.get('/aplicacao', (req, res) => {
 app.post('/aplicacaoStep1', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.body)
     req.session.aplicacaoStep.representative = parseInt(req.session.aplicacaoStep.representative)
-    if(req.session.aplicacaoStep.representativePayed) {
-        req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed)
-    }
+    req.session.aplicacaoStep.representative ? req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed) : 0
     res.redirect('/aplicacao?etapa=2')
 })
 

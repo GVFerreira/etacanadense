@@ -52,8 +52,7 @@ const Visa = new Schema({
         required: true
     },
     residentUSCIS: {
-        type: Number,
-        required: true
+        type: Number
     },
     airplane: {
         type: Number,

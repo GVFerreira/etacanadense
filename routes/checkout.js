@@ -46,6 +46,14 @@ router.get('/', (req, res) => {
   }
 })
 
+router.get('/retry/:idPayment', async (req, res) => {
+  const title = 'Checkout - '
+  const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
+  const visa = await Visa.findOne({idPayment: req.params.idPayment})
+
+  res.render('checkout/retry', {visa, title, publicKey})
+})
+
 router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
@@ -88,7 +96,7 @@ router.post('/process-payment', (req, res) => {
           const mailOptions = {
               from: `eTA Canadense <${process.env.USER_MAIL}>`,
               to: 'contato@etacanadense.com.br',
-              subject: 'Pagmento aprovado',
+              subject: 'Pagamento aprovado',
               template: 'pagamento-aprovado',
               context: {
                   codeETA: visa.codeETA,
@@ -279,7 +287,7 @@ router.post('/webhooks', (req, res, next) => {
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
                   to: 'contato@etacanadense.com.br',
-                  subject: 'Pagmento aprovado',
+                  subject: 'Pagamento aprovado',
                   template: 'pagamento-aprovado',
                   context: {
                     codeETA: visa.codeETA,
@@ -341,8 +349,8 @@ router.get('/obrigado', (req, res) => {
     const { status, status_detail, transaction_id } = req.query
     res.render('checkout/obrigado', { status, status_detail, transaction_id })
   } else {
-     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
-     res.redirect(`/aplicacao?etapa=4`)
+    req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
+    res.redirect(`/aplicacao?etapa=4`)
   }
 })
 

@@ -13,10 +13,11 @@
                                 <p>Lamentamos informar que o pagamento associado à sua aplicação foi negado. Entendemos que isso pode ser decepcionante, mas existem várias razões pelas quais isso pode ter ocorrido.</p>
                                 <p>Por favor, verifique se as informações de pagamento fornecidas estão corretas e que você possui fundos suficientes na forma de pagamento selecionada. Além disso, certifique-se de que não haja restrições ou bloqueios em sua conta de pagamento.</p>
                                 <p>Se você acredita que houve um erro ou tem alguma dúvida, não hesite em entrar em contato com nossa equipe de suporte. Estamos aqui para ajudar a esclarecer qualquer problema que você possa ter <a href="mailto:contato@etacanadense.com.br">contato@etacanadense.com.br</a>.</p>
-                                <p>Para tentar novamente, <a href="/">clique aqui</a>.</p>
-
-                                <p class="small"><b>ID: </b>{{transaction_id }}</p>
-                                <p class="small"><b>Detalhe: </b>{{status_detail}}</p>
+                                <p class="small"><b>ID de pagamento: </b>{{transaction_id }}</p>
+                                <p class="small"><b>Detalhes: </b>{{status_detail}}</p>
+                            </div>
+                            <div class="d-flex justify-content-center mb-3">
+                                <a href="retry/{{transaction_id}}" class="btn btn-success fw-bold text-uppercase">Tentar pagamento novamente</a>
                             </div>
                         </div>
                     </div>
