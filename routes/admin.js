@@ -21,6 +21,8 @@ const uploadAttach = require('../helpers/uploadAttachments')
 
 const PDFPrinter = require("pdfmake")
 
+const axios = require('axios')
+
 require('dotenv').config()
 
 router.get('/', async (req, res) => {
@@ -520,61 +522,109 @@ router.get('/consult-payments', async (req, res) => {
     }
 })
 
-router.post('/create-payments', async (req, res) => {
+// router.post('/create-payments', async (req, res) => {
+//     try {
+//         // Obtém todos os documentos da coleção "visas"
+//         const visas = await Visa.find()
+
+//         // Itera sobre cada documento e verifica se o pagamento já existe antes de criar um novo
+//         for (const visa of visas) {
+//             if (visa.idPayment !== '' || visa.idPayment !== undefined) {
+
+//                 // Verifica se já existe um pagamento com base no campo "idPayment"
+//                 const existingPayment = await Payment.findOne({ transactionId: visa.idPayment })
+
+//                 if (!existingPayment) {
+//                     // Faz uma chamada à API do Mercado Pago para obter informações adicionais sobre o pagamento
+//                     const response = await fetch(`https://api.mercadopago.com/v1/payments/${visa.idPayment}`, {
+//                         method: "GET",
+//                         headers: {
+//                             Authorization: `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+//                         }
+//                     })
+
+//                     // Converte a resposta para JSON
+//                     const paymentData = await response.json()
+
+//                     // Cria um novo registro na coleção "payments" com base nas informações obtidas
+//                     const payment = await Payment.create({
+//                         transaction_amount: paymentData.transaction_amount,
+//                         transactionId: visa.idPayment,
+//                         status: paymentData.status,
+//                         status_details: paymentData.status_detail,
+//                         payment_type_id: paymentData.payment_type_id,
+//                         installments: paymentData.installments,
+//                         qrCode: paymentData.qrCode || '',
+//                         qrCodeBase64: paymentData.qrCodeBase64 || '',
+//                         visaIDs: [visa._id],
+//                     })
+
+//                     // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
+//                     await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: payment._id } })
+//                 } else {
+//                     // Se o pagamento já existir, adiciona o _id do Visa ao array visaIDs
+//                     existingPayment.visaIDs.push(visa._id)
+//                     await existingPayment.save()
+//                 }
+//             }
+//         }
+
+//         res.status(200).send('Registros de pagamento criados/atualizados com sucesso.')
+//     } catch (err) {
+//         console.error(err)
+//         res.status(500).send('Erro ao criar/atualizar registros de pagamento.')
+//     }
+// })
+
+router.post('/create-payments/:id', async (req, res) => {
     try {
         // Obtém todos os documentos da coleção "visas"
-        const visas = await Visa.find()
+        const visa = await Visa.findOne({_id: req.params.id})
+  
+        if (visa.idPayment) {
+            // Verifica se já existe um pagamento com base no campo "idPayment"
+            const existingPayment = await Payment.findOne({ transactionId: visa.idPayment })
 
-        // Itera sobre cada documento e verifica se o pagamento já existe antes de criar um novo
-        for (const visa of visas) {
-            if (visa.idPayment) {
-
-                // Verifica se já existe um pagamento com base no campo "idPayment"
-                const existingPayment = await Payment.findOne({ transactionId: visa.idPayment })
-
-                if (!existingPayment) {
-                    // Faz uma chamada à API do Mercado Pago para obter informações adicionais sobre o pagamento
-                    const response = await fetch(`https://api.mercadopago.com/v1/payments/${visa.idPayment}`, {
-                        method: "GET",
-                        headers: {
-                            Authorization: `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
-                        }
-                    });
-
-                    // Converte a resposta para JSON
-                    const paymentData = await response.json()
-
-                    // Cria um novo registro na coleção "payments" com base nas informações obtidas
-                    const payment = await Payment.create({
-                        transaction_amount: paymentData.transaction_amount,
-                        transactionId: visa.idPayment,
-                        status: paymentData.status,
-                        status_details: paymentData.status_detail,
-                        payment_type_id: paymentData.payment_type_id,
-                        installments: paymentData.installments,
-                        qrCode: paymentData.qrCode || '',
-                        qrCodeBase64: paymentData.qrCodeBase64 || '',
-                        visaIDs: [visa._id],
-                    })
-
-                    // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
-                    await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: payment._id } })
-                } else {
-                    // Se o pagamento já existir, adiciona o _id do Visa ao array visaIDs
-                    existingPayment.visaIDs.push(visa._id)
-                    await existingPayment.save()
+            if (!existingPayment) {
+            // Faz uma chamada à API do Mercado Pago para obter informações adicionais sobre o pagamento
+            const response = await axios.get(`https://api.mercadopago.com/v1/payments/${visa.idPayment}`, {
+                headers: {
+                Authorization: `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
                 }
+            })
+
+            // Obtém os dados relevantes da resposta da API do Mercado Pago
+            const paymentData = response.data
+
+            // Cria um novo registro na coleção "payments" com base nas informações obtidas
+            const payment = await Payment.create({
+                transaction_amount: paymentData.transaction_amount,
+                transactionId: visa.idPayment,
+                status: paymentData.status,
+                status_details: paymentData.status_detail,
+                payment_type_id: paymentData.payment_type_id,
+                installments: paymentData.installments,
+                qrCode: paymentData.qrCode || '',
+                qrCodeBase64: paymentData.qrCodeBase64 || '',
+                visaIDs: [visa._id],
+            })
+
+            // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
+            await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: payment._id } })
+            } else {
+            // Se o pagamento já existir, adiciona o _id do Visa ao array visaIDs
+            existingPayment.visaIDs.push(visa._id)
+            await existingPayment.save()
             }
         }
-
-        res.status(200).send('Registros de pagamento criados/atualizados com sucesso.')
+      
+        req.flash('success_msg', 'Pagamento atualizado')
+        res.status(200).redirect('/admin')
     } catch (err) {
         console.error(err)
-        res.status(500).send('Erro ao criar/atualizar registros de pagamento.')
+        req.flash('error_msg', err)
+        res.status(500).redirect('/admin')
     }
-});
-
-
-
+})
 
 module.exports = router
