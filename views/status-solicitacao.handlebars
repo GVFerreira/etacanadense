@@ -35,9 +35,9 @@
                                 <p><b>Telefone de contato: </b>{{contactTel}}</p>
                                 <p>
                                     <b>Pagamento: </b>
-                                    {{#if statusPayment}}
-                                        {{#returnStatusMP statusPayment}}{{/returnStatusMP}}
-                                        <p><b>Detalhes: </b>{{#returnDetailMP detailPayment}}{{/returnDetailMP}}</p>
+                                    {{#if pagamento.status}}
+                                        {{#returnStatusMP pagamento.status}}{{/returnStatusMP}}
+                                        <p><b>Detalhes: </b>{{#returnDetailMP pagamento.status_details}}{{/returnDetailMP}}</p>
                                     {{else}}
                                         <span class="alert-danger p-1">Pagamento não efetuado</span>
                                     {{/if}}
@@ -54,6 +54,12 @@
                         {{/each}}
                     </section>
                     <section class="mt-4 ps-2">
+                        <div style="display: flex; flex-direction: column; align-items: center">
+                            <p class="fs-3 fw-bold text-center">Garanta seu <span class="text-info">SEGURO VIAGEM</span> com desconto agora mesmo neste link:</p>
+                            <a href="https://www.segurospromo.com.br/?utm_medium=afiliado&pcrid=10157&utm_source=site-blog&pcrtt=Acompanhamento" class="d-flex w-100">
+                                <img src="./img/seguro-viagem.JPG" alt="Seguro viagem" class="w-25" style="margin: 0 auto 4rem auto;">
+                            </a>
+                        </div>
                         <h3>Sua solicitação não foi localizada? Entre em contato conosco</h3>
                         <a class="btn btn-primary text-uppercase" href="mailto:contato@etacanadense.com.br"><i class="bi bi-envelope-fill me-1"></i>contato@etacanadense.com.br</a>
                     </section>

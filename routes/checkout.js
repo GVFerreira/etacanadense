@@ -113,7 +113,8 @@ router.post('/process-payment', (req, res) => {
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
-                    codeETA: visa.codeETA,
+                  nome: visa.firstName,
+                  codeETA: visa.codeETA,
                 }
             }
     
@@ -196,7 +197,8 @@ router.post("/process-payment-pix", (req, res) => {
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
-                    codeETA: visa.codeETA,
+                  nome: visa.firstName,
+                  codeETA: visa.codeETA,
                 }
             }
     
@@ -255,7 +257,7 @@ router.post('/webhooks', (req, res, next) => {
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
                   to: visa.contactEmail,
-                  // bcc: 'contato@etacanadense.com.br',
+                  bcc: 'contato@etacanadense.com.br',
                   subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                   template: 'aviso-eta',
                 },
@@ -273,10 +275,11 @@ router.post('/webhooks', (req, res, next) => {
               transporter.sendMail(
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                  // to: 'contato@etacanadense.com.br',
+                  to: 'contato@etacanadense.com.br',
                   subject: 'Pagamento aprovado',
                   template: 'pagamento-aprovado',
                   context: {
+                    nome: visa.firstName,
                     codeETA: visa.codeETA,
                   }
                 },

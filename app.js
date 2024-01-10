@@ -524,7 +524,7 @@ app.get('/aplicacao', (req, res) => {
                             <i class="bi bi-question-circle-fill btn p-0"></i>
                         </a>
                     </span>
-                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="35" required>
+                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="9" required>
 
                     <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
                     <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
@@ -641,16 +641,20 @@ app.post('/consultando-solicitacao', (req, res) => {
         res.redirect('/acompanhar-solicitacao')
     } else {
         if (req.body.EmailCod === 'email') {
-            Visa.find({contactEmail: req.body.codeInsert}).then((search_result) => {
+            Visa.find({contactEmail: req.body.codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         } else {
-            Visa.find({codeETA: req.body.codeInsert}).then((search_result) => {
+            Visa.find({codeETA: req.body.codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         }
         
     }
+})
+
+app.get('/testando-mail', (req, res) => {
+    res.render('email/pagamento-aprovado')
 })
 
 app.get('/consulta-download-documento/:filename', (req, res) => {
@@ -665,6 +669,10 @@ app.get('/contato', (req, res) => {
         title: 'Contato - ',
         metaDescription: 'Entre em contato conosco para todas as suas dúvidas e necessidades relacionadas à Autorização Eletrônica de Viagem para o Canadá. Estamos aqui para ajudar a tornar sua viagem o mais tranquila possível.'
     })
+})
+
+app.get('/cadastur', (req, res) => {
+    res.render('cadastur', {title: 'Cadastur - '})
 })
 
 app.post('/contact-form', (req, res) => {
@@ -725,7 +733,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', /*isAdmin,*/ admin)
+app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
