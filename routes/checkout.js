@@ -244,55 +244,60 @@ router.post('/webhooks', (req, res, next) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        Visa
-          .findOne({idPayment: data_webhook.id})
-          .then((visa) => {
-            visa.detailPayment = data.status_detail
-            visa.statusPayment = data.status
+        Payment.findOne({transactionId: data_webhook.id})
+          .then(async (payment) => {
+            payment.status_details = data.status_detail
+            payment.status = data.status
 
-            if(data.status === 'approved') {
-              transporter.use('compile', hbs(handlebarOptions))
-
-              transporter.sendMail(
-                {
-                  from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                  to: visa.contactEmail,
-                  bcc: 'contato@etacanadense.com.br',
-                  subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
-                  template: 'aviso-eta',
-                },
-                (err, info) => {
-                  if(err) {
-                      console.error(err)
-                      
-                  } else {
-                      console.log(info)
-                  }
-                })
-
-              transporter.use('compile', hbs(handlebarOptions))
-
-              transporter.sendMail(
-                {
-                  from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                  to: 'contato@etacanadense.com.br',
-                  subject: 'Pagamento aprovado',
-                  template: 'pagamento-aprovado',
-                  context: {
-                    nome: visa.firstName,
-                    codeETA: visa.codeETA,
-                  }
-                },
-                (err, info) => {
-                  if(err) {
-                      console.error(err)
-                  } else {
-                      console.log(info)
-                  }
-              })
+            for (const element of payment.visaIDs) {
+              const visa = await Visa.findOne({ _id: element })
+        
+              if (visa) {
+                if(data.status === 'approved') {
+                  transporter.use('compile', hbs(handlebarOptions))
+    
+                  transporter.sendMail(
+                    {
+                      from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                      to: visa.contactEmail,
+                      bcc: 'contato@etacanadense.com.br',
+                      subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
+                      template: 'aviso-eta',
+                    },
+                    (err, info) => {
+                      if(err) {
+                          console.error(err)
+                          
+                      } else {
+                          console.log(info)
+                      }
+                    })
+    
+                  transporter.use('compile', hbs(handlebarOptions))
+    
+                  transporter.sendMail(
+                    {
+                      from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                      to: 'contato@etacanadense.com.br',
+                      subject: 'Pagamento aprovado',
+                      template: 'pagamento-aprovado',
+                      context: {
+                        nome: visa.firstName,
+                        codeETA: visa.codeETA,
+                      }
+                    },
+                    (err, info) => {
+                      if(err) {
+                          console.error(err)
+                      } else {
+                          console.log(info)
+                      }
+                  })
+                }
+              }
             }
       
-            visa.save().then(() => {
+            payment.save().then(() => {
               res.status(200).end()
             }).catch((e) => {
               console.error(e)
