@@ -316,6 +316,54 @@ const handle = handlebars.create({
             }
 
             return output
+        },
+        formatTransactionAmount: (value) => {
+            return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        },
+        styleBorderPayment: (status) => {
+            switch(status) {
+                case 'approved':
+                    return 'success'
+
+                case 'pending':
+                    return 'warning'
+                
+                case 'authorized':
+                    return 'warning'
+
+                case 'in_process':
+                    return 'warning'
+                
+                case 'in_mediation':
+                    return 'warning'
+
+                case 'rejected':
+                    return 'danger'
+
+                case 'cancelled':
+                    return 'danger'
+
+                case 'refunded':
+                    return 'danger'
+
+                case 'charged_back':
+                    return 'danger'
+                
+                default:
+                    return 'warning'
+            }
+        },
+        formatPaymentType: (type) => {
+            switch (type) {
+                case 'bank_transfer':
+                    return 'Pix'
+                    break
+                case 'credit_card':
+                    return 'Cartão de crédito'
+                    break
+                default:
+                    return ''
+            }
         }
     }
 })
@@ -439,19 +487,20 @@ app.get('/aplicacao', (req, res) => {
     const showPolicyPopup = !policyAccepted
     if(!parseInt(req.query.etapa)) {
         const title = "Representante - "
-        res.render('aplicacao-step1', {
-            showPolicyPopup,
-            title,
-            data: req.session.aplicacaoStep,
-            metaDescription: 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
-        })
+        const metaDescription = 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
+        if(req.query.again === "true") {
+            req.session.aplicacaoStep = {}
+            res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
+        } else {
+            res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
+        }
     }
 
     if(parseInt(req.query.etapa) === 2) {
         const sessionaData = req.session.aplicacaoStep
         if('representative' in sessionaData ) {
             const title = "Validação - "
-            res.render('aplicacao-step2', {title, data: req.session.aplicacaoStep})
+            res.render('aplicacao-step2', { title, data: req.session.aplicacaoStep })
         } else {
             req.flash('error_msg', 'Os campos na etapa 1 devem ser preenchidos.')
             res.redirect(`/aplicacao`)
@@ -463,9 +512,7 @@ app.get('/aplicacao', (req, res) => {
         const sessionaData = req.session.aplicacaoStep
         if('document' in sessionaData) {
             const title = "Documentos - "
-            const data = req.session.aplicacaoStep
-            const canadaVisa = data.canadaVisa
-            const nonImmigrateVisa = data.nonImmigrateVisa
+            const { canadaVisa, nonImmigrateVisa } = req.session.aplicacaoStep
             if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
                 let dynamicData = `
                     <h3 class="mt-4">Dados de não-imigrante</h3>
@@ -482,9 +529,9 @@ app.get('/aplicacao', (req, res) => {
                     <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
                     <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
                 `
-                res.render('aplicacao-step3', {title, dynamicData, data})
+                res.render('aplicacao-step3', {title, dynamicData, data: req.session.aplicacaoStep})
             } else {
-                res.render('aplicacao-step3', {title, dynamicData: '', data})
+                res.render('aplicacao-step3', {title, dynamicData: '', data: req.session.aplicacaoStep})
             }
         } else {
             req.flash('error_msg', 'Os campos na etapa 2 devem ser preenchidos.')
@@ -497,8 +544,7 @@ app.get('/aplicacao', (req, res) => {
         const sessionaData = req.session.aplicacaoStep
         if('numPassport' in sessionaData) {
             const title = "Conferência - "
-            const data = req.session.aplicacaoStep
-            res.render('aplicacao-step4', {title, data})
+            res.render('aplicacao-step4', {title, data: req.session.aplicacaoStep})
         } else {
             req.flash('error_msg', 'Os campos na etapa 3 devem ser preenchidos.')
             res.redirect(`/aplicacao?etapa=3`)
@@ -509,6 +555,7 @@ app.get('/aplicacao', (req, res) => {
 
 app.post('/aplicacaoStep1', (req, res) => {
     req.session.aplicacaoStep = Object.assign({}, req.body)
+
     req.session.aplicacaoStep.representative = parseInt(req.session.aplicacaoStep.representative)
     req.session.aplicacaoStep.representative ? req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed) : 0
     res.redirect('/aplicacao?etapa=2')
@@ -553,6 +600,15 @@ app.post('/aplicacaoStep4', async (req, res) => {
 
             const visaID = newVisa._id
 
+            let sessionIDs
+
+            if (req.session.visas && req.session.visas.ids) {
+                sessionIDs = req.session.visas.ids
+                sessionIDs.push(visaID)
+            } else {
+                sessionIDs = [visaID]
+                req.session.visas = { ids: sessionIDs }
+            }
             req.session.aplicacaoStep = Object.assign({}, {visaID}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
@@ -669,7 +725,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', isAdmin, admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

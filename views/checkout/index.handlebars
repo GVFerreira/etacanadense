@@ -17,13 +17,15 @@
                     <span class="text-primary">Sua compra</span>
                 </h4>
                 <ul class="list-group mb-3">
-                    <li class="list-group-item d-flex justify-content-between lh-sm">
-                        <div>
-                            <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
-                            <small class="text-muted">Permissão para viajar ao Canadá</small>
-                        </div>
-                        <span class="text-muted" id="totalAmount1">R$ 147,00</span>
-                    </li>
+                    {{#each visas}}
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
+                                <small class="text-muted">Permissão para viajar ao Canadá</small>
+                            </div>
+                            <span class="text-muted totalAmount1">R$ 147,00</span>
+                        </li>
+                    {{/each}}
                     {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
                     {{!-- <li class="list-group-item d-flex justify-content-between bg-light">
                         <div class="text-success">
@@ -34,9 +36,11 @@
                     </li> --}}
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (R$)</span>
-                        <strong id="totalAmount2">147,00</strong>
+                        <strong id="totalAmount2"></strong>
                     </li>
                 </ul>
+
+                <a href="/aplicacao?again=true" class="btn btn-success fw-bold text-uppercase">Adicionar mais uma solicitação <i class="bi bi-plus-circle ms-2"></i></a>
 
                 {{!-- INPUT VALIDAÇÃO DE CÓDIGO PROMOCIONAL --}}
                 {{!-- <form class="card p-2">
@@ -410,18 +414,26 @@
 
 
     //Atualizar valor em tela
+    const qtyVisas = "{{qtyVisas}}"
+    const total = parseInt(qtyVisas) * 147
+    $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
     $(document).ready(function() {
         $('#collapseTwo').on('show.bs.collapse', function() {
             // Atualize o conteúdo do strong
-            $('#totalAmount1').text('R$ 139,65')
-            $('#totalAmount2').text('139,65')
+            $('.totalAmount1').text('R$ 139,65')
 
+            const qtyVisas = "{{qtyVisas}}"
+            const total = parseInt(qtyVisas) * 139.65
+            $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
         })
 
         $('#collapseTwo').on('hide.bs.collapse', function() {
             // Restaure o valor original se necessário
-            $('#totalAmount1').text('R$ 147,00')
-            $('#totalAmount2').text('147,00')
+            $('.totalAmount1').text('R$ 147,00')
+
+            const qtyVisas = "{{qtyVisas}}"
+            const total = parseInt(qtyVisas) * 147
+            $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
         })
     })
 </script>

@@ -245,6 +245,10 @@ const Visa = new Schema({
         type: String,
         default: ''
     },
+    pagamento: {
+        type: Schema.Types.ObjectId,
+        ref: 'payment'
+    },
     createdAt: {
         type: Date,
         default: Date.now

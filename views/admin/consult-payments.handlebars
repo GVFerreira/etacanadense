@@ -1,0 +1,62 @@
+<style>
+    header #nav {
+        display: none !important;
+    }
+</style>
+<main class="my-5" style="flex: 1 1 0">
+    <section>
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="p-0 m-0">Consulte os pagamentos</h1>
+                </div>
+                <div class="container">
+                    <div class="card-body w-100" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        {{#each pagamentos}}
+                            <div class="mb-3 px-2 py-4 border border-{{#styleBorderPayment status}}{{/styleBorderPayment}} rounded">
+                                <p class="mb-1">
+                                    <b>ID: </b> {{transactionId}}
+                                </p>
+                                <p class="mb-1">
+                                    <b>Transação: </b> {{#formatPaymentType payment_type_id}}{{/formatPaymentType}}
+                                </p>
+                                <p class="mb-1">
+                                    <b>Valor: </b>R$ {{#formatTransactionAmount transaction_amount}}{{/formatTransactionAmount}}
+                                </p>
+                                <p class="mb-1">
+                                    <b>Status: </b>{{#returnStatusMP status}}{{/returnStatusMP}}
+                                </p>
+                                <hr>
+                                {{#each visaIDs}}
+                                    <p class="mb-1">
+                                        <b>Nome: </b>{{this.firstName}} {{this.surname}}
+                                    </p>
+                                    <p class="mb-1">
+                                        <b>Código de acompanhamento: </b>{{this.codeETA}}
+                                    </p>
+                                {{/each}}
+                                <p class="mb-1">
+                                    <b>Criado em: </b>{{#formatDate createdAt}}{{/formatDate}}
+                                </p>
+                            </div>
+                        {{else}}
+                            <h3>Não há registro de pagamentos</h3>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    document.getElementById('link-logo-home').href = '/admin'
+
+    var elementoPai = document.getElementById("header-container")
+    var novoElementoFilho = document.createElement("div")
+    novoElementoFilho.innerHTML = `
+        <a href="/admin/register-user" class="mx-4" style="color: white">Registrar usuário</a>
+        <a href="/admin/consult-users" class="mx-4" style="color: white">Consultar usuário</a>
+        <a href="/users/logout" class="ms-4 btn btn-danger text-upperccase fw-bold">Sair</a>
+    `
+    elementoPai.appendChild(novoElementoFilho)
+</script>

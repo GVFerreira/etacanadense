@@ -3,6 +3,8 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require('../models/Visa')
 const Visa = mongoose.model("visa")
+require('../models/Payment')
+const Payment = mongoose.model("payment")
 const mercadopago = require('mercadopago')
 const dotenv = require('dotenv')
 dotenv.config()
@@ -14,13 +16,13 @@ const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('../helpers/senderMail')
 const hbs = require('nodemailer-express-handlebars')
 
-const mercadoPagoPublicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY;
+const mercadoPagoPublicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
 if (!mercadoPagoPublicKey) {
-  console.log("Error: public key not defined");
-  process.exit(1);
+  console.log("Error: public key not defined")
+  process.exit(1)
 }
 
-const mercadoPagoAccessToken = process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN;
+const mercadoPagoAccessToken = process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN
 if (!mercadoPagoAccessToken) {
   console.log("Error: access token not defined")
   process.exit(1)
@@ -35,11 +37,14 @@ mercadopago.configure({
 
 router.get('/', (req, res) => {
   const sessionaData = req.session.aplicacaoStep
+
   if('visaID' in sessionaData) {
     const title = 'Checkout - '
     const data = req.session.aplicacaoStep
     const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
-    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey})
+    const visas = req.session.visas.ids
+    const qtyVisas = visas.length
+    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey, visas, qtyVisas})
   } else {
     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
     res.redirect(`/aplicacao?etapa=4`)
@@ -58,10 +63,11 @@ router.post('/process-payment', (req, res) => {
   const { body } = req
   const { payer } = body
 
-  mercadopago.payment
-  .create({
-    // transaction_amount: 0.01, //testes
-    transaction_amount: 147.00, //produção
+  const visas = req.session.visas.ids
+  const qtyVisas = visas.length
+
+  mercadopago.payment.create({
+    transaction_amount: qtyVisas * 147.00,
     token: body.token,
     description: 'Solicitação de Autorização de Viagem - Canadá',
     installments: Number(body.installments),
@@ -75,79 +81,77 @@ router.post('/process-payment', (req, res) => {
         number: payer.identification.docNumber
       }
     }
-  })
-  .then(response => {
-    const { response: data } = response
-    const sessionData = req.session.aplicacaoStep
+  }).then(async (response) => {
+    try {
+      const { response: data } = response
+      const sessionData = req.session.aplicacaoStep
+      const sessionsIDs = req.session.visas.ids
 
-    Visa
-      .findOne({
-        _id: sessionData.visaID
+      const newPayment = new Payment({
+        transaction_amount: data.transaction_amount,
+        transactionId: data.id,
+        status: data.status,
+        status_details: data.status_detail,
+        payment_type_id: data.payment_type_id,
+        installments: data.installments,
+        visaIDs: sessionsIDs
       })
-      .then((visa) => {
-        visa.detailPayment = data.status_detail
-        visa.statusPayment = data.status
-        visa.idPayment = data.id
 
-        if(data.status === 'approved') {
+      const savedPayment = await newPayment.save()
 
-          transporter.use('compile', hbs(handlebarOptions))
-
-          const mailOptions = {
-              from: `eTA Canadense <${process.env.USER_MAIL}>`,
-              to: 'contato@etacanadense.com.br',
-              subject: 'Pagamento aprovado',
-              template: 'pagamento-aprovado',
-              context: {
-                  codeETA: visa.codeETA,
-              }
-          }
-
-          transporter.sendMail(mailOptions, (err, info) => {
+      for (const element of sessionsIDs) {
+        const visa = await Visa.findOne({ _id: element })
+  
+        if (visa) {
+          await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
+          if(data.status === 'approved') {
+            transporter.use('compile', hbs(handlebarOptions))
+    
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                to: 'contato@etacanadense.com.br',
+                subject: 'Pagamento aprovado',
+                template: 'pagamento-aprovado',
+                context: {
+                    codeETA: visa.codeETA,
+                }
+            }
+    
+            transporter.sendMail(mailOptions, (err, info) => {
               if(err) {
                   console.error(err)
               } else {
                   console.log(info)
               }
-          })
-        }
-
-        visa
-          .save()
-          .then(() => {
-            res.status(200).json({
-              detail: data.status_detail,
-              status: data.status,
-              id: data.id
             })
-          })
-          .catch((e) => {
-            console.log(e)
-            req.flash('error_msg', 'Falha ao processar o pagamento, tente novamente. Se o erro persistir entre em contato com o suporte.')
-            res.redirect('/checkout')
-          })
-      })
-      .catch((e) => {
-        console.log(e)
-        req.flash('error_msg', 'Falha ao processar o pagamento, tente novamente. Se o erro persistir entre em contato com o suporte.')
-        res.redirect('/checkout')
-      })
+          }
+        }
+      }
 
-  })
-  .catch((e) => {
-    console.log(e)
-    const { errorMessage, errorStatus }  = validateError(e)
-    res.status(errorStatus).json({ error_message: errorMessage })
+      res.status(200).json({
+        id: data.id,
+        status: data.status,
+        detail: data.status_detail
+      })
+    }
+    catch (e) {
+      console.log(e)
+      const { errorMessage, errorStatus }  = validateError(e)
+      res.status(errorStatus).json({ error_message: errorMessage })
+    }
   })
 })
 
 router.post("/process-payment-pix", (req, res) => {
   const requestBody = req.body
-  const data = {
+
+  const visas = req.session.visas.ids
+  const qtyVisas = visas.length
+
+  mercadopago.payment.create({
     payment_method_id: "pix",
     description: 'Solicitação de Autorização de Viagem - Canadá',
-    // transaction_amount: 0.01, //testes
-    transaction_amount: 139.65, //produção
+    transaction_amount: qtyVisas * 139.65,
     notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
     payer: {
       email: requestBody.payer.email,
@@ -158,87 +162,70 @@ router.post("/process-payment-pix", (req, res) => {
         number: requestBody.payer.identification.number,
       }
     }
-  };
+  }).then(async (response) => {
+    try {
+      const { response: data } = response
+      const sessionData = req.session.aplicacaoStep
+      const sessionsIDs = req.session.visas.ids
 
-  mercadopago.payment.create(data).then((data) => {
-    const { response } = data
-    const sessionData = req.session.aplicacaoStep
-
-    Visa
-      .findOne({
-        _id: sessionData.visaID
+      const newPayment = new Payment({
+        transaction_amount: data.transaction_amount,
+        transactionId: data.id,
+        status: data.status,
+        status_details: data.status_detail,
+        payment_type_id: data.payment_type_id,
+        installments: data.installments,
+        qrCode: data.point_of_interaction.transaction_data.qr_code,
+        qrCodeBase64: data.point_of_interaction.transaction_data.qr_code_base64,
+        visaIDs: sessionsIDs
       })
-      .then((visa) => {
-        visa.detailPayment = response.status_detail
-        visa.statusPayment = response.status
-        visa.idPayment = response.id
 
-        if(response.status === 'approved') {
+      const savedPayment = await newPayment.save()
 
-          transporter.use('compile', hbs(handlebarOptions))
-
-          const mailOptions = {
-              from: `eTA Canadense <${process.env.USER_MAIL}>`,
-              to: 'contato@etacanadense.com.br',
-              subject: 'Pagmento aprovado',
-              template: 'pagamento-aprovado',
-              context: {
-                  codeETA: visa.codeETA,
-              }
-          }
-
-          transporter.sendMail(mailOptions, (err, info) => {
+      for (const element of sessionsIDs) {
+        const visa = await Visa.findOne({ _id: element })
+  
+        if (visa) {
+          await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
+          if(data.status === 'approved') {
+            transporter.use('compile', hbs(handlebarOptions))
+    
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                to: 'contato@etacanadense.com.br',
+                subject: 'Pagamento aprovado',
+                template: 'pagamento-aprovado',
+                context: {
+                    codeETA: visa.codeETA,
+                }
+            }
+    
+            transporter.sendMail(mailOptions, (err, info) => {
               if(err) {
                   console.error(err)
               } else {
                   console.log(info)
               }
-          })
+            })
+          }
         }
+      }
 
-        visa
-          .save()
-          .then(() => {
-            const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
-            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
-            res.status(200).json({
-              id: response.id,
-              status: response.status,
-              detail: response.status_detail,
-              qrCode: response.point_of_interaction.transaction_data.qr_code,
-              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
-            })
-          })
-          .catch((e) => {
-            console.log(e)
-            const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
-            req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
-            res.status(409).json({
-              id: response.id,
-              status: response.status,
-              detail: response.status_detail,
-              qrCode: response.point_of_interaction.transaction_data.qr_code,
-              qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
-            })
-          })
-      })
-      .catch((e) => {
-        console.log(e)
-        const qr_code_base = response.point_of_interaction.transaction_data.qr_code_base64
-        req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
-        res.status(409).json({
-          id: response.id,
-          status: response.status,
-          detail: response.status_detail,
-          qrCode: response.point_of_interaction.transaction_data.qr_code,
-          qrCodeBase64: response.point_of_interaction.transaction_data.qr_code_base64
-        })
+      const qr_code_base = data.point_of_interaction.transaction_data.qr_code_base64
+      req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
+      res.status(200).json({
+        id: data.id,
+        status: data.status,
+        detail: data.status_detail,
+        qrCode: data.point_of_interaction.transaction_data.qr_code,
+        qrCodeBase64: data.point_of_interaction.transaction_data.qr_code_base64
       })
 
-  }).catch((error) => {
-    console.log(error)
-    const { errorMessage, errorStatus }  = validateError(error)
-    res.status(errorStatus).json({ error_message: errorMessage })
+    } catch (error){
+      console.log(error)
+      const { errorMessage, errorStatus }  = validateError(error)
+      res.status(errorStatus).json({ error_message: errorMessage })
+    }
   })
 })
 
@@ -268,7 +255,7 @@ router.post('/webhooks', (req, res, next) => {
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
                   to: visa.contactEmail,
-                  bcc: 'contato@etacanadense.com.br',
+                  // bcc: 'contato@etacanadense.com.br',
                   subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                   template: 'aviso-eta',
                 },
@@ -286,7 +273,7 @@ router.post('/webhooks', (req, res, next) => {
               transporter.sendMail(
                 {
                   from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                  to: 'contato@etacanadense.com.br',
+                  // to: 'contato@etacanadense.com.br',
                   subject: 'Pagamento aprovado',
                   template: 'pagamento-aprovado',
                   context: {

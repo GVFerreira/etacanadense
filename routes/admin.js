@@ -6,6 +6,8 @@ const mongoose = require('mongoose')
 const User = mongoose.model("users")
     require('../models/Visa')
 const Visa = mongoose.model("visa")
+    require('../models/Payment')
+const Payment = mongoose.model("payment")
 
 const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('../helpers/senderMail')
@@ -32,7 +34,7 @@ router.get('/', async (req, res) => {
     const totalVisas = await Visa.countDocuments()
 
     if(filter) {
-        Visa.find({numPassport: filter}).sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
+        Visa.find({numPassport: filter}).populate('pagamento').sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
             const totalPages = Math.ceil(totalVisas / visasPerPage)
             res.render('admin/index', {visas, limit, sort, page, filter, totalPages, totalVisas, title: 'Administrativo - '})
         }).catch((err) => {
@@ -40,7 +42,7 @@ router.get('/', async (req, res) => {
             res.redirect('/')
         })
     } else {
-        Visa.find().sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
+        Visa.find().populate('pagamento').sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
             const totalPages = Math.ceil(totalVisas / visasPerPage)
             res.render('admin/index', {visas, limit, sort, page, totalPages, totalVisas, title: 'Administrativo - '})
         }).catch((err) => {
@@ -506,6 +508,73 @@ router.get('/delete-visa/:id', (req, res) => {
         res.redirect('/admin')
     })
 })
+
+router.get('/consult-payments', async (req, res) => {
+    try {
+        const pagamentos = await Payment.find().populate('visaIDs').sort({ createdAt: 1 })
+
+        res.render('admin/consult-payments', { pagamentos, title: "Consulta de pagamentos - " })
+    } catch (error) {
+        console.error(error)
+        res.status(500).send('Erro ao consultar pagamentos')
+    }
+})
+
+router.post('/create-payments', async (req, res) => {
+    try {
+        // Obtém todos os documentos da coleção "visas"
+        const visas = await Visa.find()
+
+        // Itera sobre cada documento e verifica se o pagamento já existe antes de criar um novo
+        for (const visa of visas) {
+            if (visa.idPayment) {
+
+                // Verifica se já existe um pagamento com base no campo "idPayment"
+                const existingPayment = await Payment.findOne({ transactionId: visa.idPayment })
+
+                if (!existingPayment) {
+                    // Faz uma chamada à API do Mercado Pago para obter informações adicionais sobre o pagamento
+                    const response = await fetch(`https://api.mercadopago.com/v1/payments/${visa.idPayment}`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
+                        }
+                    });
+
+                    // Converte a resposta para JSON
+                    const paymentData = await response.json()
+
+                    // Cria um novo registro na coleção "payments" com base nas informações obtidas
+                    const payment = await Payment.create({
+                        transaction_amount: paymentData.transaction_amount,
+                        transactionId: visa.idPayment,
+                        status: paymentData.status,
+                        status_details: paymentData.status_detail,
+                        payment_type_id: paymentData.payment_type_id,
+                        installments: paymentData.installments,
+                        qrCode: paymentData.qrCode || '',
+                        qrCodeBase64: paymentData.qrCodeBase64 || '',
+                        visaIDs: [visa._id],
+                    })
+
+                    // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
+                    await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: payment._id } })
+                } else {
+                    // Se o pagamento já existir, adiciona o _id do Visa ao array visaIDs
+                    existingPayment.visaIDs.push(visa._id)
+                    await existingPayment.save()
+                }
+            }
+        }
+
+        res.status(200).send('Registros de pagamento criados/atualizados com sucesso.')
+    } catch (err) {
+        console.error(err)
+        res.status(500).send('Erro ao criar/atualizar registros de pagamento.')
+    }
+});
+
+
 
 
 module.exports = router
