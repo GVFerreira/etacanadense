@@ -654,7 +654,7 @@ app.post('/consultando-solicitacao', (req, res) => {
 })
 
 app.get('/testando-mail', (req, res) => {
-    res.render('email/pagamento-aprovado')
+    res.render('email/documento')
 })
 
 app.get('/consulta-download-documento/:filename', (req, res) => {
