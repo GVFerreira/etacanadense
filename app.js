@@ -492,6 +492,7 @@ app.get('/aplicacao', (req, res) => {
             req.session.aplicacaoStep = {}
             res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
         } else {
+            req.session.visas ? req.session.visas.ids = [] : null
             res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
         }
     }
