@@ -120,7 +120,7 @@ const Visa = new Schema({
         type: String
     },
     occupation: {
-        type: Number,
+        type: String,
         required: true
     },
     employmentTitle: {
@@ -136,7 +136,7 @@ const Visa = new Schema({
         type: String
     },
     employmentFromDateYear: {
-        type: Number
+        type: String
     },
     contactEmail: {
         type: String,
@@ -180,7 +180,7 @@ const Visa = new Schema({
         type: String
     },
     travelTimeZone: {
-        type: Number
+        type: String
     },
     refusedVisaToCanda: {
         type: Number,
@@ -207,7 +207,7 @@ const Visa = new Schema({
         type: Number
     },
     theseConditions: {
-        type: Number,
+        type: String,
         required: true
     },
     canadaDuringStayDetails: {

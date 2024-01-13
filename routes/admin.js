@@ -472,7 +472,7 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
             to: visa.contactEmail,
             replyTo: process.env.USER_MAIL,
             subject,
-            template: req.body.statusETA === 'Aprovado'? 'documento': 'documento-negado',
+            template: req.body.statusETA === 'Aprovado' ? 'documento' : 'documento-negado',
             attachments: req.files,
             context: {
                 clientName: visa.firstName,
@@ -514,11 +514,12 @@ router.get('/delete-visa/:id', (req, res) => {
 router.get('/consult-payments', async (req, res) => {
     try {
         const pagamentos = await Payment.find().populate('visaIDs').sort({ createdAt: -1 })
-
         res.render('admin/consult-payments', { pagamentos, title: "Consulta de pagamentos - " })
+
     } catch (error) {
         console.error(error)
         res.status(500).send('Erro ao consultar pagamentos')
+        
     }
 })
 

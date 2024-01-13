@@ -62,7 +62,7 @@
 </main>
 <script>
     function showFields(type) {
-        let dynamicFields = document.getElementById('dynamicFields');
+        let dynamicFields = document.getElementById('dynamicFields')
         dynamicFields.innerHTML = ''
 
         if (type === '') {
@@ -72,14 +72,15 @@
             dynamicFields.innerHTML += `
                 <label for="representativeRelationship">Eu sou <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="representativeRelationship" id="representativeRelationship" onchange="relationType(this.value)" required>
-                    <option value="" selected disabled>Selecione</option>
-                    <option value="parent-friend">Parente ou amigo</option>
-                    <option value="org-rel">Membro de uma organização não governamental ou religiosa</option>
-                    <option value="iccrc">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
-                    <option value="juridico-territorial">Uma sociedade jurídica provincial ou territorial do Canadá</option>
-                    <option value="notarios">A Câmara de Notários do Quebec</option>
-                    <option value="agent">Agente de viagens</option>
+                    <option selected disabled>Selecione</option>
+                    <option value="Parente ou amigo">Parente ou amigo</option>
+                    <option value="Membro de uma organização não governamental ou religiosa">Membro de uma organização não governamental ou religiosa</option>
+                    <option value="Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)">Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)</option>
+                    <option value="Uma sociedade jurídica provincial ou territorial do Canadá">Uma sociedade jurídica provincial ou territorial do Canadá</option>
+                    <option value="A Câmara de Notários do Quebec">A Câmara de Notários do Quebec</option>
+                    <option value="Agente de viagens">Agente de viagens</option>
                 </select>
+
                 <label for="representativePayed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome? <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="representativePayed" id="representativePayed" required>
                     <option value="" selected disabled>Selecione</option>
@@ -92,12 +93,12 @@
     }
 
     function relationType(type) {
-        let relationFields = document.getElementById('relationFields');
+        let relationFields = document.getElementById('relationFields')
         relationFields.innerHTML = ''
         
         if(type === '') {
             relationFields.innerHTML += '<span class="text-red">Selecione alguma das opções acima</span>'
-        } else if (type === 'parent-friend') {
+        } else if (type === 'Parente ou amigo') {
             relationFields.innerHTML += `
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeName" id="representativeName" value="{{data.representativeName}}" required>
@@ -114,7 +115,7 @@
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeNumTel" id="representativeNumTel" value="{{data.representativeNumTel}}" required>
             `
-        } else if (type === 'org-rel' || type === 'agent') {
+        } else if (type === 'Membro de uma organização não governamental ou religiosa' || type === 'Agente de viagens') {
             relationFields.innerHTML += `
                 <label for="representativeName">Nome: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeName" id="representativeName" value="{{data.representativeName}}" required>
@@ -134,7 +135,7 @@
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeNumTel" id="representativeNumTel" value="{{data.representativeNumTel}}" required>
             `
-        } else if (type === 'iccrc' || type === 'juridico-territorial') {
+        } else if (type === 'Membro do Conselho Regulatório de Consultores de Imigração (ICCRC)' || type === 'Uma sociedade jurídica provincial ou territorial do Canadá') {
             relationFields.innerHTML += `
                 <label for="representativeNumIDmebro">Número de identificação de membro: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeNumIDmebro" id="representativeNumIDmebro" value="{{data.representativeNumIDmebro}}" required>
@@ -163,7 +164,7 @@
                 <label for="representativeNumTel">Número de telefone: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeNumTel" id="representativeNumTel" value="{{data.representativeNumTel}}" required>
             `
-        } else if (type === 'notarios') {
+        } else if (type === 'A Câmara de Notários do Quebec') {
             relationFields.innerHTML += `
                 <label for="representativeNumIDmebro">Número de identificação de membro: <span class="text-red">* (obrigatório)</span></label>
                 <input class="form-control mb-3 w-50" type="text" name="representativeNumIDmebro" id="representativeNumIDmebro" value="{{data.representativeNumIDmebro}}" required>
