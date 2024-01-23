@@ -63,6 +63,50 @@ const handle = handlebars.create({
 
             return output;
         },
+        paginationPayment: (page, totalPages, limit, sort) => {
+            let output = ''
+
+            const pageNUM = parseInt(page)
+
+            // Adiciona link para a primeira página
+            if (pageNUM > 1) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=1">&laquo;</a>
+                `;
+            }
+
+            // Adiciona link para a página anterior
+            if (pageNUM > 1) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${pageNUM - 1}">&lsaquo;</a>
+                `;
+            }
+
+            // Adiciona links para páginas específicas (5 páginas no máximo)
+            for (let i = Math.max(1, pageNUM - 2); i <= Math.min(totalPages, pageNUM + 2); i++) {
+                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary';
+
+                output += `
+                    <a class="btn ${activeClass}" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
+                `;
+            }
+
+            // Adiciona link para a próxima página
+            if (pageNUM < totalPages) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${pageNUM + 1}">&rsaquo;</a>
+                `;
+            }
+
+            // Adiciona link para a última página
+            if (pageNUM < totalPages) {
+                output += `
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${totalPages}">&raquo;</a>
+                `
+            }
+
+            return output
+        },
         returnStatusMP: (status) => {
             switch(status) {
                 case 'approved':
@@ -468,6 +512,10 @@ app.use((req, res, next) => {
         sandbox: true,
     })
 
+app.get('/teste-mail', (req, res) => {
+    res.render('email/pagamento-recusado', {nome: "Gustavo", codeETA: "3UXSR", transactionID: "65a073ba72d8694ad1daedd2"})
+})
+
 app.post('/accept-policy', (req, res, next) => {
     //Setar cookie de aceite de política por 1 ano
     res.cookie('policyAccepted', true, { maxAge: 31536000000 })
@@ -637,25 +685,26 @@ app.get('/acompanhar-solicitacao', (req, res) => {
 })
 
 app.post('/consultando-solicitacao', (req, res) => {
-    if(req.body.codeInsert === undefined || req.body.codeInsert === null || req.body.codeInsert === '') {
+    const codeInsert = `${req.body.codeInsert}`.trim()
+    if(codeInsert === undefined || codeInsert === null || codeInsert === '') {
         req.flash('error_msg', 'Insira um e-mail ou código')
         res.redirect('/acompanhar-solicitacao')
     } else {
-        if (req.body.EmailCod === 'email') {
+        if (req.body.filtroSelecionado === 'email') {
             Visa.find({contactEmail: req.body.codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
-        } else {
+        } else if (req.body.filtroSelecionado === 'codigo') {
             Visa.find({codeETA: req.body.codeInsert}).populate('pagamento').then((search_result) => {
+                res.render('status-solicitacao', { search_result })
+            })
+        } else if (req.body.filtroSelecionado === 'passaporte') {
+            Visa.find({numPassport: req.body.codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         }
         
     }
-})
-
-app.get('/testando-mail', (req, res) => {
-    res.render('email/documento')
 })
 
 app.get('/consulta-download-documento/:filename', (req, res) => {

@@ -419,16 +419,22 @@
                                         <p>Cliente: {{firstName}} {{surname}}</p>
                                         <form action="/admin/edit-visa/{{id}}" method="POST" enctype="multipart/form-data">
                                             <p class="statusETA mb-2">Status da aplicação</p>
-                                            <select class="form-control mb-3" name="statusETA" id="statusETA{{id}}" required>
+                                            <select class="form-select mb-3" name="statusETA" id="statusETA{{id}}" required>
                                                 <option disabled>Selcione</option>
-                                                <option value="Recusado">Recusado</option>
+                                                <option value="Recebido pelo Governo Canadense">Recebido pelo Governo Canadense</option>
                                                 <option value="Aprovado">Aprovado</option>
+                                                <option value="Recusado">Recusado</option>
                                             </select>
 
                                             <p class="formFileMultiple form-p mb-2">Anexos do processo</p>
                                             <input type="file" class="form-control mb-3" id="formFileMultiple" name="attachments" multiple>
 
-                                            <input type="submit" class="btn btn-warning fw-bold text-uppercase mt-4" value="Atualizar">
+                                            <input type="submit" class="btn btn-warning fw-bold text-uppercase mt-2" value="Atualizar">
+                                        </form>
+                                        <form action="/admin/add-message/{{id}}" method="POST" class="mt-4">
+                                            <label for="messageClient" class="mb-2 fw-bold">Mensagem ao aplicante:</label>
+                                            <textarea name="messageClient" id="messageClient" rows="5" class="form-control mb-2"></textarea>
+                                            <input type="submit" class="btn btn-warning fw-bold text-uppercase mt-2" value="Enviar">
                                         </form>
                                     </div>
                                     <div class="modal-footer">

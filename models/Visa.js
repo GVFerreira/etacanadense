@@ -230,6 +230,9 @@ const Visa = new Schema({
         default: 'Em análise',
         required: true
     },
+    messageClient: {
+        type: String
+    },
     attachments: {
         type: Array
     },

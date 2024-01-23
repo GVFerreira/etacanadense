@@ -43,8 +43,8 @@
             return response.json()
         }).then((result) => {
             console.log(result)
-            if(result.statusPayment === 'approved') {
-                return window.location.href = `/checkout/obrigado?status=${result.statusPayment}&status_detail=${result.detailPayment}&transaction_id=${result.idPayment}`
+            if(result.status === 'approved') {
+                return window.location.href = `/checkout/obrigado?status=${result.status}&status_detail=${result.status_details}&transaction_id=${result.transactionId}`
             }
         }).catch(error => {
             console.error(error)

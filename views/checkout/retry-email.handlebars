@@ -17,13 +17,13 @@
                     <span class="text-primary">Sua compra</span>
                 </h4>
                 <ul class="list-group mb-3">
-                    {{#each visas}}
+                    {{#each payment.visaIDs}}
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
                                 <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
                                 <small class="text-muted">{{codeETA}} - {{firstName}} {{surname}}</small>
                             </div>
-                            <span class="text-muted totalAmount1">R$ 147,00</span>
+                            <span class="text-muted" id="totalAmount1">R$ 147,00</span>
                         </li>
                     {{/each}}
                     {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
@@ -36,11 +36,9 @@
                     </li> --}}
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (R$)</span>
-                        <strong id="totalAmount2"></strong>
+                        <strong id="totalAmount2">147,00</strong>
                     </li>
                 </ul>
-
-                <a href="/aplicacao?again=true" class="btn btn-success fw-bold text-uppercase">Adicionar mais uma solicitação <i class="bi bi-plus-circle ms-2"></i></a>
 
                 {{!-- INPUT VALIDAÇÃO DE CÓDIGO PROMOCIONAL --}}
                 {{!-- <form class="card p-2">
@@ -88,7 +86,7 @@
                                                     <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
                                                 </div>
                                             </div>
-                                            <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
+                                            <input type="email" id="form-checkout__cardholderEmail" class="form-control mb-3">
                                         </div>
                                     </div>
                                     <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
@@ -128,7 +126,7 @@
                                             <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
                                         </div>
                                     </div>
-                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}">
+                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail">
                                     <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                                 </form>
                                 <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
@@ -220,7 +218,7 @@
         const validationErrorMessages= document.getElementById('validation-error-messages')
 
         const cardForm = mercadopago.cardForm({
-            amount: "147.0",
+            amount: "147",
             iframe: true,
             form: {
                 id: "form-checkout",
@@ -273,15 +271,15 @@
                     const {
                         paymentMethodId,
                         issuerId,
-                        cardholderEmail: email,
                         amount,
+                        cardholderEmail: email,
                         token,
                         installments,
                         identificationNumber,
                         identificationType,
                     } = cardForm.getCardFormData()
 
-                    fetch("/checkout/process-payment", {
+                    fetch("/checkout/process-payment-retry?transactionid={{transactionid}}", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -364,13 +362,12 @@
         
         document.getElementById("loading-message-pix").style.display = "block"
 
-        fetch("/checkout/process-payment-pix", {
+        fetch("/checkout/process-payment-pix-retry?transactionid={{transactionid}}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                transactionAmount: 139.65,
                 description: 'Solicitação de Autorização de Viagem - Canadá',
                 payer: {
                     firstName: payerFirstName,

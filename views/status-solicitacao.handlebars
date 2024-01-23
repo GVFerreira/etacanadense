@@ -10,11 +10,12 @@
                         <p>Informe seu e-mail ou código para consultar o progresso da sua apliação.</p>
                         <div class="row">
                             <div class="col">
-                                <label for="EmailCod">Escolha:</label>
-                                <select class="form-select w-50 mb-3" name="EmailCod" id="EmailCod" required>
+                                <label for="filtroSelecionado">Escolha:</label>
+                                <select class="form-select w-50 mb-3" name="filtroSelecionado" id="filtroSelecionado" required>
                                     <option value="" selected disabled></option>
                                     <option value="email">E-mail</option>
-                                    <option value="cod">Código</option>
+                                    <option value="codigo">Código</option>
+                                    <option value="passaporte">N° Passaporte</option>
                                 </select>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" id="codeInsert" name="codeInsert" placeholder="Seu e-mail ou código" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -43,6 +44,10 @@
                                     {{/if}}
                                 </p>
                                 <p><b>Aprovado pelo Governo Canadense: </b>{{statusETA}}</p>
+                                {{#if messageClient}}
+                                    <p class="mb-1"><b>Mensagem para você:</b></p>
+                                    <textarea rows="5" class="form-control w-50" disabled>{{messageClient}}</textarea>
+                                {{/if}}
                                 {{#if attachments}}
                                     {{#each attachments}}
                                         Clique aqui para fazer o download do seu doumento: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>

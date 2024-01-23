@@ -464,30 +464,32 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
         visa.statusETA = req.body.statusETA
         visa.attachments = req.files
 
-        transporter.use('compile', hbs(handlebarOptions))
+        if (req.body.statusETA === 'Aprovado' || req.body.statusETA === 'Recusado') {
+            transporter.use('compile', hbs(handlebarOptions))
 
-        const subject = `${visa.firstName} ${visa.surname} - ${visa.numPassport}`.toUpperCase()
-        const mailOptions = {
-            from: `eTA Canadense <${process.env.USER_MAIL}>`,
-            to: visa.contactEmail,
-            replyTo: process.env.USER_MAIL,
-            subject,
-            template: req.body.statusETA === 'Aprovado' ? 'documento' : 'documento-negado',
-            attachments: req.files,
-            context: {
-                clientName: visa.firstName,
-                codeETA: visa.codeETA
+            const subject = `${visa.firstName} ${visa.surname} - ${visa.numPassport}`.toUpperCase()
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                to: visa.contactEmail,
+                replyTo: process.env.USER_MAIL,
+                subject,
+                template: req.body.statusETA === 'Aprovado' ? 'documento' : 'documento-negado',
+                attachments: req.files,
+                context: {
+                    clientName: visa.firstName,
+                    codeETA: visa.codeETA
+                }
             }
+
+            transporter.sendMail(mailOptions, (err, info) => {
+                if(err) {
+                    console.log(err)
+                } else {
+                    console.log(info)
+                }
+            })
         }
 
-        transporter.sendMail(mailOptions, (err, info) => {
-            if(err) {
-                console.log(err)
-            } else {
-                console.log(info)
-            }
-        })
-        
         visa.save().then(() => {
             req.flash("success_msg", "Aplicação atualizada com sucesso")
             res.redirect('/admin')
@@ -497,6 +499,22 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
         })
     }).catch((err) => {
         req.flash('error_msg', `Houve um erro ao atualizar a aplicação. Erro: ${err}`)
+        res.redirect('/admin')
+    })
+})
+
+router.post('/add-message/:id', (req, res) => {
+    Visa.findOne({_id: req.params.id}).then((visa) => {
+        visa.messageClient = req.body.messageClient
+        visa.save().then(() => {
+            req.flash('success_msg', 'Mensagem adicionada com sucesso')
+            res.redirect('/admin')
+        }).catch((err) => {
+            req.flash('error_msg', `Erro ao salvar a mensagem: ${err}`)
+            res.redirect('/admin')
+        })
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao salvar a mensagem')
         res.redirect('/admin')
     })
 })
@@ -512,14 +530,31 @@ router.get('/delete-visa/:id', (req, res) => {
 })
 
 router.get('/consult-payments', async (req, res) => {
-    try {
-        const pagamentos = await Payment.find().populate('visaIDs').sort({ createdAt: -1 })
-        res.render('admin/consult-payments', { pagamentos, title: "Consulta de pagamentos - " })
+    const page = req.query.page || 1
+    const sort = req.query.sort || "DESC"
+    const limit = req.query.limit || 20
+    const filter = req.query.filter || ''
+    const paymentsPerPage = limit
+    const skip = (page - 1) * paymentsPerPage
 
-    } catch (error) {
-        console.error(error)
-        res.status(500).send('Erro ao consultar pagamentos')
-        
+    const totalPayments = await Payment.countDocuments()
+
+    if(filter) {
+        Payment.find({status: filter}).populate('visaIDs').sort({createdAt: sort}).skip(skip).limit(limit).then((payments) => {
+            const totalPages = Math.ceil(totalPayments / paymentsPerPage)
+            res.render('admin/consult-payments', {payments, limit, sort, page, filter, totalPages, totalPayments, title: 'Consulta de pagamentos - '})
+        }).catch((err) => {
+            req.flash('error_msg', 'Ocorreu um erro ao listar todos os pagamentos')
+            res.redirect('/')
+        })
+    } else {
+        Payment.find().populate('visaIDs').sort({createdAt: sort}).skip(skip).limit(limit).then((payments) => {
+            const totalPages = Math.ceil(totalPayments / paymentsPerPage)
+            res.render('admin/consult-payments', {payments, limit, sort, page, totalPages, totalPayments, title: 'Consulta de pagamentos - '})
+        }).catch((err) => {
+            req.flash('error_msg', 'Ocorreu um erro ao listar todos os pagamentos')
+            res.redirect('/')
+        })
     }
 })
 
@@ -554,6 +589,7 @@ router.post('/create-payments/:id', async (req, res) => {
                 qrCode: paymentData.qrCode || '',
                 qrCodeBase64: paymentData.qrCodeBase64 || '',
                 visaIDs: [visa._id],
+                createdAt: new Date(paymentData.date_created)
             })
 
             // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
