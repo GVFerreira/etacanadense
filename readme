@@ -5,8 +5,3 @@ Comentar as variavéis de produção e descomentar as variáveis de desenvolvime
 Comentar as linhas do e-mail contato@etacanadense.com.br no routes/checkout.js
 
 Comentar o isAdmin na rota na declaração na rota admin no app.js
-
-ALTERAÇÃO NA ROTA VERIFY-PIX-PAYMENT
-ALTERAÇÃO NA PÁGINA PIX
-
-VERIFICAR FUNCIONAMENTO DO WEBHOOK PARA PIX
