@@ -540,7 +540,19 @@ router.get('/consult-payments', async (req, res) => {
     const totalPayments = await Payment.countDocuments()
 
     if(filter) {
-        Payment.find({status: filter}).populate('visaIDs').sort({createdAt: sort}).skip(skip).limit(limit).then((payments) => {
+        let statusArray
+        switch (filter) {
+            case 'approved':
+                statusArray = ['approved']
+                break
+            case 'in_process':
+                statusArray = ['pending', 'authorized', 'in_process', 'in_mediation']
+                break
+            case 'rejected':
+                statusArray = ['rejected', 'cancelled', 'refunded', 'charged_back']
+                break
+        }
+        Payment.find({status: { $in: statusArray }}).populate('visaIDs').sort({createdAt: sort}).skip(skip).limit(limit).then((payments) => {
             const totalPages = Math.ceil(totalPayments / paymentsPerPage)
             res.render('admin/consult-payments', {payments, limit, sort, page, filter, totalPages, totalPayments, title: 'Consulta de pagamentos - '})
         }).catch((err) => {
@@ -550,7 +562,7 @@ router.get('/consult-payments', async (req, res) => {
     } else {
         Payment.find().populate('visaIDs').sort({createdAt: sort}).skip(skip).limit(limit).then((payments) => {
             const totalPages = Math.ceil(totalPayments / paymentsPerPage)
-            res.render('admin/consult-payments', {payments, limit, sort, page, totalPages, totalPayments, title: 'Consulta de pagamentos - '})
+            res.render('admin/consult-payments', {payments, limit, sort, page, filter, totalPages, totalPayments, title: 'Consulta de pagamentos - '})
         }).catch((err) => {
             req.flash('error_msg', 'Ocorreu um erro ao listar todos os pagamentos')
             res.redirect('/')

@@ -18,7 +18,7 @@
                                     <option value="passaporte">N° Passaporte</option>
                                 </select>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="codeInsert" name="codeInsert" placeholder="Seu e-mail ou código" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <input type="text" class="form-control" id="codeInsert" name="codeInsert" placeholder="Digite seu e-mail, código ou número do passaporte" aria-label="Recipient's username" aria-describedby="button-addon2">
                                     <button class="btn btn-dark" type="submit" id="button-addon2">Buscar<i class="ms-2 bi bi-search"></i></button>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                 {{/if}}
                                 {{#if attachments}}
                                     {{#each attachments}}
-                                        Clique aqui para fazer o download do seu doumento: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>
+                                        Clique aqui para fazer o download do seu documento: <a href="/consulta-download-documento/{{filename}}">{{filename}}</a>
                                     {{/each}}
                                 {{/if}}
                             </div>

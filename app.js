@@ -63,7 +63,7 @@ const handle = handlebars.create({
 
             return output;
         },
-        paginationPayment: (page, totalPages, limit, sort) => {
+        paginationPayment: (page, totalPages, limit, sort, filter) => {
             let output = ''
 
             const pageNUM = parseInt(page)
@@ -71,14 +71,14 @@ const handle = handlebars.create({
             // Adiciona link para a primeira página
             if (pageNUM > 1) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=1">&laquo;</a>
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&filter=${filter}&page=1">&laquo;</a>
                 `;
             }
 
             // Adiciona link para a página anterior
             if (pageNUM > 1) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${pageNUM - 1}">&lsaquo;</a>
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&filter=${filter}&page=${pageNUM - 1}">&lsaquo;</a>
                 `;
             }
 
@@ -87,21 +87,21 @@ const handle = handlebars.create({
                 const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary';
 
                 output += `
-                    <a class="btn ${activeClass}" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${i}">${i}</a>
+                    <a class="btn ${activeClass}" href="/admin/consult-payments?sort=${sort}&limit=${limit}&filter=${filter}&page=${i}">${i}</a>
                 `;
             }
 
             // Adiciona link para a próxima página
             if (pageNUM < totalPages) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${pageNUM + 1}">&rsaquo;</a>
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&filter=${filter}&page=${pageNUM + 1}">&rsaquo;</a>
                 `;
             }
 
             // Adiciona link para a última página
             if (pageNUM < totalPages) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&page=${totalPages}">&raquo;</a>
+                    <a class="btn btn-secondary" href="/admin/consult-payments?sort=${sort}&limit=${limit}&filter=${filter}&page=${totalPages}">&raquo;</a>
                 `
             }
 
