@@ -10,6 +10,12 @@ const Payment = new Schema({
         type: String,
         required: true,
     },
+    docType: {
+        type: String
+    },
+    docNumber: {
+        type: String
+    },
     status: {
         type: String,
         required: true,

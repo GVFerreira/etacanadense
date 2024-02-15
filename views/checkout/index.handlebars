@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="/css/checkout.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
+<script src="https://www.mercadopago.com/v2/security.js" view="checkout"></script>
 <main>
     <div class="container container__payment">
         <div class="py-5 text-center">
@@ -89,6 +90,7 @@
                                                 </div>
                                             </div>
                                             <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
+                                            <input type="text" id="form-checkout__deviceId" class="form-control mb-3">
                                         </div>
                                     </div>
                                     <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
@@ -214,6 +216,11 @@
 {{!-- Script para Cartão de Crédito --}}
 <script defer>
     const mercadopago = new MercadoPago('{{publicKey}}')
+    setTimeout(() => {
+        const deviceId = window.MP_DEVICE_SESSION_ID
+        const formDeviceId = document.getElementById('form-checkout__deviceId')
+        formDeviceId.value = deviceId
+    }, 5000)
 
     function loadCardForm(){
         const payButton = document.getElementById("form-checkout__submit")
@@ -259,7 +266,12 @@
                 cardholderEmail: {
                     id: "form-checkout__cardholderEmail",
                     placeholder: "E-mail",
+                },
+                deviceId: {
+                    id: "form-checkout__deviceId",
+                    placeholder: "Device ID"
                 }
+
             },
             callbacks: {
                 onFormMounted: (error) => {
@@ -279,6 +291,7 @@
                         installments,
                         identificationNumber,
                         identificationType,
+                        deviceId
                     } = cardForm.getCardFormData()
 
                     fetch("/checkout/process-payment", {
@@ -292,6 +305,7 @@
                             paymentMethodId,
                             transactionAmount: Number(amount),
                             installments: Number(installments),
+                            deviceId,
                             description: "Solicitação de Autorização de Viagem - Canadá",
                             payer: {
                                 email,

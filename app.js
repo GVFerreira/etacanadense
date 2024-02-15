@@ -461,7 +461,7 @@ app.use(cors({
 }))
 app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
-    secret: process.env.SECRET,
+    secret: process.env.CANADENSE_SECRET,
     resave: true,
     saveUninitialized: true
 }))
@@ -497,7 +497,7 @@ app.use((req, res, next) => {
 
 //Mongoose
     mongoose.set('strictQuery', true)
-    mongoose.connect(process.env.DB_STRING_CONNECT, {
+    mongoose.connect(process.env.CANADENSE_DB_STRING_CONNECT, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(() => {
@@ -511,10 +511,6 @@ app.use((req, res, next) => {
         access_token: process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN,
         sandbox: true,
     })
-
-app.get('/teste-mail', (req, res) => {
-    res.render('email/pagamento-recusado', {nome: "Gustavo", codeETA: "3UXSR", transactionID: "65a073ba72d8694ad1daedd2"})
-})
 
 app.post('/accept-policy', (req, res, next) => {
     //Setar cookie de aceite de política por 1 ano
@@ -729,8 +725,8 @@ app.post('/contact-form', (req, res) => {
     transporter.use('compile', hbs(handlebarOptions))
 
     const mailOptions = {
-        from: `eTA Canadense <${process.env.USER_MAIL}>`,
-        to: 'contato@etacanadense.com.br',
+        from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+        to: process.env.CANADENSE_RECEIVER_MAIL,
         subject: 'Formulário de Contato',
         template: 'contato',
         context: {

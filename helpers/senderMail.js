@@ -10,8 +10,8 @@ module.exports = {
         port: process.env.PORT_MAIL,
         secure: false,
         auth: {
-            user: process.env.USER_MAIL,
-            pass: process.env.USER_MAIL_PASS
+            user: process.env.CANADENSE_SENDER_MAIL,
+            pass: process.env.CANADENSE_SENDER_MAIL_PASS
         }
     }),
     handlebarOptions: {

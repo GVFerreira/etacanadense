@@ -82,6 +82,8 @@ router.post('/process-payment', (req, res) => {
       const newPayment = new Payment({
         transaction_amount: data.transaction_amount,
         transactionId: data.id,
+        docType: payer.identification.docType,
+        docNumber: payer.identification.docNumber,
         status: data.status,
         status_details: data.status_detail,
         payment_type_id: data.payment_type_id,
@@ -102,8 +104,8 @@ router.post('/process-payment', (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: 'contato@etacanadense.com.br',
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
@@ -123,9 +125,9 @@ router.post('/process-payment', (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                 to: visa.contactEmail,
-                bcc: 'contato@etacanadense.com.br',
+                bcc: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento recusado',
                 template: 'pagamento-recusado',
                 context: {
@@ -189,6 +191,8 @@ router.post("/process-payment-pix", (req, res) => {
       const newPayment = new Payment({
         transaction_amount: data.transaction_amount,
         transactionId: data.id,
+        docType: requestBody.payer.identification.type,
+        docNumber: requestBody.payer.identification.number,
         status: data.status,
         status_details: data.status_detail,
         payment_type_id: data.payment_type_id,
@@ -210,8 +214,8 @@ router.post("/process-payment-pix", (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: 'contato@etacanadense.com.br',
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
@@ -291,6 +295,8 @@ router.post('/process-payment-retry', async (req, res) => {
       const newPayment = new Payment({
         transaction_amount: data.transaction_amount,
         transactionId: data.id,
+        docType: payer.identification.type,
+        docNumber: payer.identification.number,
         status: data.status,
         status_details: data.status_detail,
         payment_type_id: data.payment_type_id,
@@ -311,8 +317,8 @@ router.post('/process-payment-retry', async (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: 'contato@etacanadense.com.br',
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
@@ -332,9 +338,9 @@ router.post('/process-payment-retry', async (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                 to: visa.contactEmail,
-                bcc: 'contato@etacanadense.com.br',
+                bcc: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento recusado',
                 template: 'pagamento-recusado',
                 context: {
@@ -396,6 +402,8 @@ router.post("/process-payment-pix-retry", async (req, res) => {
       const newPayment = new Payment({
         transaction_amount: data.transaction_amount,
         transactionId: data.id,
+        docType: requestBody.payer.identification.type,
+        docNumber: requestBody.payer.identification.number,
         status: data.status,
         status_details: data.status_detail,
         payment_type_id: data.payment_type_id,
@@ -417,8 +425,8 @@ router.post("/process-payment-pix-retry", async (req, res) => {
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                to: 'contato@etacanadense.com.br',
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'Pagamento aprovado',
                 template: 'pagamento-aprovado',
                 context: {
@@ -497,9 +505,9 @@ router.post('/webhooks', (req, res, next) => {
     
                   transporter.sendMail(
                     {
-                      from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                      from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                       to: visa.contactEmail,
-                      bcc: 'contato@etacanadense.com.br',
+                      bcc: process.env.CANADENSE_RECEIVER_MAIL,
                       subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                       template: 'aviso-eta',
                     },
@@ -516,8 +524,8 @@ router.post('/webhooks', (req, res, next) => {
     
                   transporter.sendMail(
                     {
-                      from: `eTA Canadense <${process.env.USER_MAIL}>`,
-                      to: 'contato@etacanadense.com.br',
+                      from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                      to: process.env.CANADENSE_RECEIVER_MAIL,
                       subject: 'Pagamento aprovado',
                       template: 'pagamento-aprovado',
                       context: {
@@ -536,9 +544,9 @@ router.post('/webhooks', (req, res, next) => {
                   transporter.use('compile', hbs(handlebarOptions))
           
                   const mailOptions = {
-                      from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                      from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                       to: visa.contactEmail,
-                      bcc: 'contato@etacanadense.com.br',
+                      bcc: process.env.CANADENSE_RECEIVER_MAIL,
                       subject: 'Pagamento recusado',
                       template: 'pagamento-recusado',
                       context: {

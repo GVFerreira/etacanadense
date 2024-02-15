@@ -21,10 +21,11 @@ const uploadAttach = require('../helpers/uploadAttachments')
 
 const PDFPrinter = require("pdfmake")
 
-const axios = require('axios')
-
 require('dotenv').config()
 
+//////////////////
+// SOLICITAÇÕES //
+//////////////////
 router.get('/', async (req, res) => {
     const page = req.query.page || 1
     const sort = req.query.sort || "DESC"
@@ -52,141 +53,6 @@ router.get('/', async (req, res) => {
             res.redirect('/')
         })
     }
-})
-
-router.get("/register-user", (req, res) => {
-    res.render("admin/register-user")
-})
-
-router.post("/registering-user", (req, res) => {
-    let errors = []
-
-    if(!req.body.name || typeof !req.body.name == undefined || req.body.name == null) {
-        errors.push({text: "Nome inválido"})
-    }
-
-    if(!req.body.email || typeof !req.body.email == undefined || req.body.email == null) {
-        errors.push({text: "E-mail inválido"})
-    }
-
-    if(req.body.password.length < 4) {
-        errors.push({text: "Senha muito curta"})
-    }
-
-    if(req.body.password != req.body.password2) {
-        errors.push({text: "As senhas não são iguais"})
-    }
-
-    if(errors.length > 0) {
-        res.render("admin/register-user", {errors: errors})
-    }else {
-        User.findOne({email: req.body.email}).then((user) => {
-            if(user) {
-                req.flash("error_msg", "E-mail já cadastrado")
-                res.redirect("/admin/register-user")
-            } else{
-                const email = req.body.email.toLowerCase()
-                const newUser = new User({
-                    name:  req.body.name,
-                    email,
-                    password: req.body.password
-                })
-
-                //criptografar senha
-                bcrypt.genSalt(10, (error, salt) => {
-                    bcrypt.hash(newUser.password, salt, (error, hash) => {
-                        if(error){
-                            req.flash("error_msg", "Houve um erro durante o registro do usuário")
-                            res.redirect("/admin")
-                        } 
-
-                        newUser.password = hash
-
-                        newUser.save().then(() => {
-                            req.flash("success_msg", "Usuário registrado com sucesso")
-                            res.redirect("/admin/consult-users")
-                        }).catch(() => {
-                            req.flash("error_msg", "Houve um erro ao registrar o usário")
-                            res.redirect("/admin")
-                        })
-                    })
-                })
-            }
-        }).catch((err) => {
-            req.flash("error_msg", `Houve um erro interno: ${err}`)
-            res.redirect("/admin/consult-users")
-        })
-    }
-})
-
-router.get('/consult-users', (req, res) => {
-    User.find().sort({createdAt: 'DESC'}).then((users) => {
-        res.render('admin/consult-users', {users: users})
-    }).catch((err) => {
-        req.flash('error_msg', `Houve um erro ao listar os usuários ${err}`)
-        res.redirect('/admin')
-    })
-})
-
-router.get('/edit-user/:id', (req, res) => {
-    User.findOne({_id: req.params.id}).then((user) => {
-        res.render('admin/edit-user', {user: user})
-    }).catch((err) => {
-        req.flash('error_msg', 'Houve um erro ao carregar o usuário a ser editado')
-        res.redirect('/admin/consult-users')
-    })
-})
-
-router.post('/editing-user', (req, res) => {
-    User.findOne({_id: req.body.id}).then((user) => {
-        user.name = req.body.name
-        user.email = req.body.email
-        user.password = req.body.password
-        user.password2 = req.body.password2
-        
-        let errors = []
-
-        if(user.password != user.password2) {
-            errors.push({text: 'As senhas digitadas não coincidem'})
-        }
-
-        if(errors.length > 0) {
-            res.render('admin/edit-user', {errors: errors, user: user})
-        } else {
-            bcrypt.genSalt(10, (error, salt) => {
-                bcrypt.hash(user.password, salt, (err, hash) => {
-                    if(err){
-                        req.flash("error_msg", `Houve um erro durante o registro do usuário: ${err}`)
-                        res.redirect("/admin")
-                    } 
-    
-                    user.password = hash
-    
-                    user.save().then(() => {
-                        req.flash("success_msg", "Usuário registrado com sucesso")
-                        res.redirect('/admin/consult-users')
-                    }).catch((err) => {
-                        req.flash("error_msg", `Houve um erro ao registrar o seu usuário: ${err}` )
-                        res.redirect('/admin')
-                    })
-                })
-            })
-        }
-  
-    }).catch((err) => {
-            req.flash('error_msg', `Não foi possível encontrar esse usuário: ${err}` )
-            res.redirect('/admin/consult-users')
-    })
-})
-
-router.get('/delete-user/:id', (req, res) => {
-    User.findByIdAndDelete({_id: req.params.id}).then(() => {
-        req.flash('success_msg', 'Cadastro do usuário excluído com sucesso')
-        res.redirect('/admin/consult-users')
-    }).catch((err) => {
-        req.flash('error_msg', `Ocorreu um erro: ${err}`)
-        res.render('admin/consult-users')
-    })
 })
 
 router.get('/details-visa/:id', (req, res) => {
@@ -469,9 +335,9 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
 
             const subject = `${visa.firstName} ${visa.surname} - ${visa.numPassport}`.toUpperCase()
             const mailOptions = {
-                from: `eTA Canadense <${process.env.USER_MAIL}>`,
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                 to: visa.contactEmail,
-                replyTo: process.env.USER_MAIL,
+                replyTo: process.env.CANADENSE_RECEIVER_MAIL,
                 subject,
                 template: req.body.statusETA === 'Aprovado' ? 'documento' : 'documento-negado',
                 attachments: req.files,
@@ -529,6 +395,9 @@ router.get('/delete-visa/:id', (req, res) => {
     })
 })
 
+///////////////
+// PAGAMENTO //
+///////////////
 router.get('/consult-payments', async (req, res) => {
     const page = req.query.page || 1
     const sort = req.query.sort || "DESC"
@@ -570,61 +439,143 @@ router.get('/consult-payments', async (req, res) => {
     }
 })
 
-router.post('/create-payments/:id', async (req, res) => {
-    try {
-        // Obtém todos os documentos da coleção "visas"
-        const visa = await Visa.findOne({_id: req.params.id})
-  
-        if (visa.idPayment) {
-            // Verifica se já existe um pagamento com base no campo "idPayment"
-            const existingPayment = await Payment.findOne({ transactionId: visa.idPayment })
 
-            if (!existingPayment) {
-            // Faz uma chamada à API do Mercado Pago para obter informações adicionais sobre o pagamento
-            const response = await axios.get(`https://api.mercadopago.com/v1/payments/${visa.idPayment}`, {
-                headers: {
-                Authorization: `Bearer ${process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN}`
-                }
-            })
+//////////////
+// USUÁRIOS //
+//////////////
+router.get("/register-user", (req, res) => {
+    res.render("admin/register-user")
+})
 
-            // Obtém os dados relevantes da resposta da API do Mercado Pago
-            const paymentData = response.data
+router.post("/registering-user", (req, res) => {
+    let errors = []
 
-            // Cria um novo registro na coleção "payments" com base nas informações obtidas
-            const payment = await Payment.create({
-                transaction_amount: paymentData.transaction_amount,
-                transactionId: visa.idPayment,
-                status: paymentData.status,
-                status_details: paymentData.status_detail,
-                payment_type_id: paymentData.payment_type_id,
-                installments: paymentData.installments,
-                qrCode: paymentData.qrCode || '',
-                qrCodeBase64: paymentData.qrCodeBase64 || '',
-                visaIDs: [visa._id],
-                createdAt: new Date(paymentData.date_created)
-            })
-
-            // Atualiza o campo "pagamento" no documento Visa com o _id do pagamento criado
-            await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: payment._id } })
-            } else {
-            // Se o pagamento já existir, adiciona o _id do Visa ao array visaIDs
-            existingPayment.visaIDs.push(visa._id)
-            await existingPayment.save()
-            }
-
-            req.flash('success_msg', 'Pagamento atualizado')
-            res.status(200).redirect('/admin')
-        } else {
-            req.flash('error_msg', 'Não foi possível encontrar o pagamento')
-            res.status(200).redirect('/admin')
-        }
-      
-        
-    } catch (err) {
-        console.error(err)
-        req.flash('error_msg', err)
-        res.status(500).redirect('/admin')
+    if(!req.body.name || typeof !req.body.name == undefined || req.body.name == null) {
+        errors.push({text: "Nome inválido"})
     }
+
+    if(!req.body.email || typeof !req.body.email == undefined || req.body.email == null) {
+        errors.push({text: "E-mail inválido"})
+    }
+
+    if(req.body.password.length < 4) {
+        errors.push({text: "Senha muito curta"})
+    }
+
+    if(req.body.password != req.body.password2) {
+        errors.push({text: "As senhas não são iguais"})
+    }
+
+    if(errors.length > 0) {
+        res.render("admin/register-user", {errors: errors})
+    }else {
+        User.findOne({email: req.body.email}).then((user) => {
+            if(user) {
+                req.flash("error_msg", "E-mail já cadastrado")
+                res.redirect("/admin/register-user")
+            } else{
+                const email = req.body.email.toLowerCase()
+                const newUser = new User({
+                    name:  req.body.name,
+                    email,
+                    password: req.body.password
+                })
+
+                //criptografar senha
+                bcrypt.genSalt(10, (error, salt) => {
+                    bcrypt.hash(newUser.password, salt, (error, hash) => {
+                        if(error){
+                            req.flash("error_msg", "Houve um erro durante o registro do usuário")
+                            res.redirect("/admin")
+                        } 
+
+                        newUser.password = hash
+
+                        newUser.save().then(() => {
+                            req.flash("success_msg", "Usuário registrado com sucesso")
+                            res.redirect("/admin/consult-users")
+                        }).catch(() => {
+                            req.flash("error_msg", "Houve um erro ao registrar o usário")
+                            res.redirect("/admin")
+                        })
+                    })
+                })
+            }
+        }).catch((err) => {
+            req.flash("error_msg", `Houve um erro interno: ${err}`)
+            res.redirect("/admin/consult-users")
+        })
+    }
+})
+
+router.get('/consult-users', (req, res) => {
+    User.find().sort({createdAt: 'DESC'}).then((users) => {
+        res.render('admin/consult-users', {users: users})
+    }).catch((err) => {
+        req.flash('error_msg', `Houve um erro ao listar os usuários ${err}`)
+        res.redirect('/admin')
+    })
+})
+
+router.get('/edit-user/:id', (req, res) => {
+    User.findOne({_id: req.params.id}).then((user) => {
+        res.render('admin/edit-user', {user: user})
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro ao carregar o usuário a ser editado')
+        res.redirect('/admin/consult-users')
+    })
+})
+
+router.post('/editing-user', (req, res) => {
+    User.findOne({_id: req.body.id}).then((user) => {
+        user.name = req.body.name
+        user.email = req.body.email
+        user.password = req.body.password
+        user.password2 = req.body.password2
+        
+        let errors = []
+
+        if(user.password != user.password2) {
+            errors.push({text: 'As senhas digitadas não coincidem'})
+        }
+
+        if(errors.length > 0) {
+            res.render('admin/edit-user', {errors: errors, user: user})
+        } else {
+            bcrypt.genSalt(10, (error, salt) => {
+                bcrypt.hash(user.password, salt, (err, hash) => {
+                    if(err){
+                        req.flash("error_msg", `Houve um erro durante o registro do usuário: ${err}`)
+                        res.redirect("/admin")
+                    } 
+    
+                    user.password = hash
+    
+                    user.save().then(() => {
+                        req.flash("success_msg", "Usuário registrado com sucesso")
+                        res.redirect('/admin/consult-users')
+                    }).catch((err) => {
+                        req.flash("error_msg", `Houve um erro ao registrar o seu usuário: ${err}` )
+                        res.redirect('/admin')
+                    })
+                })
+            })
+        }
+  
+    }).catch((err) => {
+            req.flash('error_msg', `Não foi possível encontrar esse usuário: ${err}` )
+            res.redirect('/admin/consult-users')
+    })
+})
+
+router.get('/delete-user/:id', (req, res) => {
+    User.findByIdAndDelete({_id: req.params.id}).then(() => {
+        req.flash('success_msg', 'Cadastro do usuário excluído com sucesso')
+        res.redirect('/admin/consult-users')
+    }).catch((err) => {
+        req.flash('error_msg', `Ocorreu um erro: ${err}`)
+        res.render('admin/consult-users')
+    })
 })
 
 module.exports = router
