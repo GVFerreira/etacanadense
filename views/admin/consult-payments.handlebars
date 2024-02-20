@@ -46,18 +46,29 @@
                     <div class="card-body w-100" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                         {{#each payments}}
                             <div class="mb-3 px-2 py-4 border border-{{#styleBorderPayment status}}{{/styleBorderPayment}} rounded">
-                                <p class="mb-1">
-                                    <b>ID: </b> {{transactionId}}
-                                </p>
-                                <p class="mb-1">
-                                    <b>Transação: </b> {{#formatPaymentType payment_type_id}}{{/formatPaymentType}}
-                                </p>
-                                <p class="mb-1">
-                                    <b>Valor: </b>R$ {{#formatTransactionAmount transaction_amount}}{{/formatTransactionAmount}}
-                                </p>
-                                <p class="mb-1">
-                                    <b>Status: </b>{{#returnStatusMP status}}{{/returnStatusMP}}
-                                </p>
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <p class="mb-1">
+                                            <b>ID: </b> {{transactionId}}
+                                        </p>
+                                        <p class="mb-1">
+                                            <b>Transação: </b> {{#formatPaymentType payment_type_id}}{{/formatPaymentType}}
+                                        </p>
+                                        <p class="mb-1">
+                                            <b>Valor: </b>R$ {{#formatTransactionAmount transaction_amount}}{{/formatTransactionAmount}}
+                                        </p>
+                                        <p class="mb-1">
+                                            <b>Status: </b>{{#returnStatusMP status}}{{/returnStatusMP}}
+                                        </p>
+                                        <p class="mb-1">
+                                            <b>{{docType}}: </b>{{docNumber}}
+                                        </p>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-start">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target=".update{{id}}"><i class="bi bi-pencil-fill"></i></button>
+                                    </div>
+                                </div>
+                                
                                 <hr>
                                 {{#each visaIDs}}
                                     <p class="mb-1">
@@ -70,6 +81,33 @@
                                 <p class="mb-1">
                                     <b>Criado em: </b>{{#formatDate createdAt}}{{/formatDate}}
                                 </p>
+                            </div>
+                            {{!-- SOLICITAÇÂO MODAL ATUALIZAÇÃO --}}
+                            <div class="modal fade update{{id}}" tabindex="-1" aria-pledby="exampleModalP" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalP">Atualize o status do pagamento</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/admin/edit-payment/{{id}}" method="POST">
+                                                <label class="mb-2" for="statusPayment">Status do pagamento</label>
+                                                <select class="form-select mb-3" name="statusPayment" id="statusPayment{{id}}" required>
+                                                    <option disabled>Selecione</option>
+                                                    <option value="pending">Pendente</option>
+                                                    <option value="approved">Aprovado</option>
+                                                    <option value="rejected">Recusado</option>
+                                                </select>
+
+                                                <input type="submit" class="btn btn-warning fw-bold text-uppercase mt-2" value="Atualizar">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         {{else}}
                             <h3>Não há registro de pagamentos</h3>

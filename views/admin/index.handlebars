@@ -63,7 +63,7 @@
                                     <div class="col d-flex flex-row justify-content-end align-items-start gap-3">
                                         <p>Ações: </p>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".view{{id}}"><i class="bi bi-eye-fill"></i></button>
-                                        {{!-- <a href="admin/details-visa/{{id}}" target="_blank" type="button" class="btn btn-info"><i class="bi bi-printer-fill"></i></a> --}}
+                                        <a href="admin/details-visa/{{id}}" target="_blank" type="button" class="btn btn-info"><i class="bi bi-printer-fill"></i></a>
                                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target=".update{{id}}"><i class="bi bi-pencil-fill"></i></button>
                                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target=".delete{{id}}"><i class="bi bi-x-square-fill"></i></button>
                                     </div>
@@ -81,7 +81,8 @@
                                     </div>
                                     <div class="col">
                                         <b>Status aplicação: </b>{{statusETA}}<br>
-                                        <b>Pagamento: </b>{{#returnStatusMP pagamento.status}}{{/returnStatusMP}}
+                                        <b>Pagamento: </b>{{#returnStatusMP pagamento.status}}{{/returnStatusMP}}<br>
+                                        <b>ID Pagamento: </b>{{pagamento.transactionId}}
                                     </div>
                                 </div>                                
                             </div>

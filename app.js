@@ -417,8 +417,8 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 require('./models/Visa')
 const Visa = mongoose.model("visa")
-require('./models/User')
-const User = mongoose.model("users")
+require('./models/Payment')
+const Payment = mongoose.model("payment")
 
 const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('./helpers/senderMail')
@@ -441,13 +441,47 @@ const cookieParser = require('cookie-parser')
 
 const mercadopago = require('./config/mercadoPago')
 
-// const cron = require('node-cron')
+const cron = require('node-cron')
 
-// cron.schedule('*/1 * * * *', () =>  {
-//         console.log('task rodando')
-//     }
-// )
+/***** Tarefa que faz a verificação dos pagamentos pendentes *****/
+cron.schedule('*/10 * * * *', async () =>  {
+        const seteMinutosAtras = new Date(Date.now() - 7 * 60 * 1000)
+        const payment = await Payment.find({status: "pending", createdAt: { $gt: seteMinutosAtras }}).populate('visaIDs')
 
+        payment.forEach(element => {
+            transporter.use('compile', hbs(handlebarOptions))
+    
+            transporter.sendMail(
+                {
+                    from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                    to: element.visaIDs[0].contactEmail,
+                    bcc: process.env.CANADENSE_RECEIVER_MAIL,
+                    subject: 'eTA Canadense - Finalize sua aplicação',
+                    template: 'lembrete',
+                    context: {
+                        fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
+                        codeETA: element.visaIDs[0].codeETA,
+                        transactionid: element.transactionId
+                    }
+                },
+                (err, {response, envelope, messageId}) => {
+                    if(err) {
+                        console.error("Lembrete de pagamento: " + new Date())
+                        console.error(err)
+                    } else {
+                        console.log({
+                            message: "Lembrete de pagamento: " + new Date(),
+                            response,
+                            envelope,
+                            messageId
+                        })
+                    }
+                }
+            )
+        })
+
+    }
+)
 
 /*AUTHENTICATION*/
 const passport = require("passport")
@@ -717,10 +751,6 @@ app.get('/contato', (req, res) => {
     })
 })
 
-app.get('/cadastur', (req, res) => {
-    res.render('cadastur', {title: 'Cadastur - '})
-})
-
 app.post('/contact-form', (req, res) => {
     transporter.use('compile', hbs(handlebarOptions))
 
@@ -747,6 +777,10 @@ app.post('/contact-form', (req, res) => {
             res.redirect('/contato')
         }
     })
+})
+
+app.get('/cadastur', (req, res) => {
+    res.render('cadastur', {title: 'Cadastur - '})
 })
 
 app.get('/artigos', (req, res) => {
