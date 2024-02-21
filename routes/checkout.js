@@ -265,12 +265,13 @@ router.get('/retry-email', async (req, res) => {
   const title = 'Checkout - '
   const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
   const payment = await Payment.findOne({transactionId: req.query.transactionid}).populate('visaIDs')
+  const qtyVisas = payment.visaIDs.length
 
   if (!payment) {
     req.flash('success_msg', 'Esse pagamento foi alterado')
     res.redirect('/')
   } else {
-    res.render('checkout/retry-email', {payment, title, publicKey, transactionid: req.query.transactionid})
+    res.render('checkout/retry-email', {payment, title, publicKey, qtyVisas, transactionid: req.query.transactionid})
   }
 
 })

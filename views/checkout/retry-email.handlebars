@@ -23,7 +23,7 @@
                                 <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
                                 <small class="text-muted">{{codeETA}} - {{firstName}} {{surname}}</small>
                             </div>
-                            <span class="text-muted" id="totalAmount1">R$ 147,00</span>
+                            <span class="text-muted totalAmount1"></span>
                         </li>
                     {{/each}}
                     {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
@@ -36,7 +36,7 @@
                     </li> --}}
                     <li class="list-group-item d-flex justify-content-between">
                         <span>Total (R$)</span>
-                        <strong id="totalAmount2">147,00</strong>
+                        <strong id="totalAmount2"></strong>
                     </li>
                 </ul>
 
@@ -52,14 +52,52 @@
                 <h4 class="mb-3">Métodos de pagamento</h4>
 
                 <div class="accordion w-md-75 m-auto" id="accordionExample">
-                    <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
+                    <!-- PAGAMENTO COM PIX -->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
-                            <button class="fs-3 accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <button class="fs-3 accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Pix QR Code
+                                <span class="btn btn-success px-1 py-1 mx-3 fw-bold">5% OFF</span>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body container__payment">                      
+                                <form id="form-checkout-pix">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4 col-md-3">
+                                            <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
+                                                <option value="CPF">CPF</option>
+                                                <option value="CNPJ">CNPJ</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-8 col-md-9">
+                                            <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
+                                        </div>
+                                    </div>
+                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail">
+                                    <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
+                                </form>
+                                <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PAGAMENTO COM CARTÃO DE CRÉDITO -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                                 Cartão de crédito
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <form id="form-checkout">
                                     <div class="row">
@@ -92,44 +130,6 @@
                                     <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
                                     <p id="loading-message" style="display: none">Efetuando pagamento, aguarde...</p>
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PAGAMENTO COM PIX -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="fs-3 accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Pix QR Code
-                                <span class="btn btn-success px-1 py-1 mx-3 fw-bold">5% OFF</span>
-                            </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-                            <div class="accordion-body container__payment">                      
-                                <form id="form-checkout-pix">
-                                    <div class="row">
-                                        <div class="col-12 col-md-6">
-                                            <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-4 col-md-3">
-                                            <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
-                                                <option value="CPF">CPF</option>
-                                                <option value="CNPJ">CNPJ</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-8 col-md-9">
-                                            <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
-                                        </div>
-                                    </div>
-                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail">
-                                    <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
-                                </form>
-                                <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
                             </div>
                         </div>
                     </div>
@@ -366,25 +366,26 @@
 
 
     //Atualizar valor em tela
-    const qtyVisas = "{{qtyVisas}}"
-    const total = parseInt(qtyVisas) * 147
+    const qtyVisas = parseFloat("{{qtyVisas}}")
+    const total = qtyVisas * 139.65
     $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+
     $(document).ready(function() {
         $('#collapseTwo').on('show.bs.collapse', function() {
             // Atualize o conteúdo do strong
-            $('.totalAmount1').text('R$ 139,65')
+            $('.totalAmount1').text('R$ 147,00')
 
-            const qtyVisas = "{{qtyVisas}}"
-            const total = parseInt(qtyVisas) * 139.65
+            const qtyVisas = parseFloat("{{qtyVisas}}")
+            const total = qtyVisas * 147
             $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
         })
 
         $('#collapseTwo').on('hide.bs.collapse', function() {
             // Restaure o valor original se necessário
-            $('.totalAmount1').text('R$ 147,00')
+            $('.totalAmount1').text('R$ 139,65')
 
-            const qtyVisas = "{{qtyVisas}}"
-            const total = parseInt(qtyVisas) * 147
+            const qtyVisas = parseFloat("{{qtyVisas}}")
+            const total = qtyVisas * 139.65
             $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
         })
     })

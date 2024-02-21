@@ -443,45 +443,80 @@ const mercadopago = require('./config/mercadoPago')
 
 const cron = require('node-cron')
 
-/***** Tarefa que faz a verificação dos pagamentos pendentes *****/
-cron.schedule('*/10 * * * *', async () =>  {
-        const seteMinutosAtras = new Date(Date.now() - 7 * 60 * 1000)
-        const payment = await Payment.find({status: "pending", createdAt: { $gt: seteMinutosAtras }}).populate('visaIDs')
+/***** Tarefa que faz a verificação do checkout abandonado *****/
+// cron.schedule('*/10 * * * *', async () =>  {
+//     const visas = await Visa.find({createdAt: { $lt: new Date(Date.now() - 20 * 60 * 1000) }, pagamento: null})
 
-        payment.forEach(element => {
-            transporter.use('compile', hbs(handlebarOptions))
-    
-            transporter.sendMail(
-                {
-                    from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-                    to: element.visaIDs[0].contactEmail,
-                    bcc: process.env.CANADENSE_RECEIVER_MAIL,
-                    subject: 'eTA Canadense - Finalize sua aplicação',
-                    template: 'lembrete',
-                    context: {
-                        fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
-                        codeETA: element.visaIDs[0].codeETA,
-                        transactionid: element.transactionId
-                    }
-                },
-                (err, {response, envelope, messageId}) => {
-                    if(err) {
-                        console.error("Lembrete de pagamento: " + new Date())
-                        console.error(err)
-                    } else {
-                        console.log({
-                            message: "Lembrete de pagamento: " + new Date(),
-                            response,
-                            envelope,
-                            messageId
-                        })
-                    }
-                }
-            )
-        })
+//     for (const visa of visas) {
+//         transporter.use('compile', hbs(handlebarOptions))
 
-    }
-)
+//         transporter.sendMail(
+//             {
+//                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+//                 to: visa.contactEmail,
+//                 replyTo: `eTA Canadense <${process.env.CANADENSE_RECEIVER_MAIL}>`,
+//                 // bcc: process.env.CANADENSE_RECEIVER_MAIL,
+//                 subject: 'eTA Canadense - Finalize sua aplicação',
+//                 template: 'lembrete-pix',
+//                 context: {
+//                     fullname: `${visa.firstName} ${visa.surname}`,
+//                     codeETA: visa.codeETA,
+//                     visaID: visa._id
+//                 }
+//             },
+//             (err, {response, envelope, messageId}) => {
+//                 if(err) {
+//                     console.error("Lembrete de pagamento: " + new Date())
+//                     console.error(err)
+//                 } else {
+//                     console.log({
+//                         message: "Lembrete de pagamento: " + new Date(),
+//                         response,
+//                         envelope,
+//                         messageId
+//                     })
+//                 }
+//             }
+//         )
+//     }
+// })
+
+// /***** Tarefa que faz a verificação dos PIX pendentes *****/
+// cron.schedule('*/3 * * * *', async () =>  {
+//     const payment = await Payment.find({status: "pending", createdAt: { $gt: new Date(Date.now() - 7 * 60 * 1000) }}).populate('visaIDs')
+
+//     payment.forEach(element => {
+//         transporter.use('compile', hbs(handlebarOptions))
+
+//         transporter.sendMail(
+//             {
+//                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+//                 to: element.visaIDs[0].contactEmail,
+//                 bcc: process.env.CANADENSE_RECEIVER_MAIL,
+//                 subject: 'eTA Canadense - Finalize sua aplicação',
+//                 template: 'lembrete-pix',
+//                 context: {
+//                     fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
+//                     codeETA: element.visaIDs[0].codeETA,
+//                     transactionid: element.transactionId
+//                 }
+//             },
+//             (err, {response, envelope, messageId}) => {
+//                 if(err) {
+//                     console.error("Lembrete de pagamento: " + new Date())
+//                     console.error(err)
+//                 } else {
+//                     console.log({
+//                         message: "Lembrete de pagamento: " + new Date(),
+//                         response,
+//                         envelope,
+//                         messageId
+//                     })
+//                 }
+//             }
+//         )
+//     })
+// })
 
 /*AUTHENTICATION*/
 const passport = require("passport")
