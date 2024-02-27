@@ -332,11 +332,15 @@ router.post('/edit-visa/:id', uploadAttach.array('attachments'), (req, res) => {
                 }
             }
 
-            transporter.sendMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
                 if(err) {
+                    console.log("Envio de eTA: " + new Date())
                     console.log(err)
                 } else {
-                    console.log(info)
+                    console.log({
+                        message: `Envio de eTA: ${new Date()}`,
+                        response, envelope, messageId
+                    })
                 }
             })
         }

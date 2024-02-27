@@ -801,13 +801,16 @@ app.post('/contact-form', (req, res) => {
         }
     }
 
-    transporter.sendMail(mailOptions, (err, info) => {
+    transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
         if(err) {
-            console.error(err)
+            console.log("Formulário de contato: " + new Date())
+            console.log(err)
             req.flash('error_msg', `Houve um erro ao enviar este formulário: ${err}`)
             res.redirect('/contato')
         } else {
-            console.log(info)
+            console.log({
+                message: `Formulário de contato: ${new Date()}`,
+                response, envelope, messageId})
             req.flash('success_msg', `Formulário enviado com sucesso. Em breve nossa equipe entrará em contato.`)
             res.redirect('/contato')
         }

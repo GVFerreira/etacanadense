@@ -85,7 +85,7 @@
 
                 <label class="mb-2" for="gender">Gênero <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="gender" id="gender" required>
-                    <option selected disabled>Selecione</option>
+                    <option value="" selected disabled>Selecione</option>
                     <option value="Feminino">Feminino</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Outro">Outro</option>
@@ -96,7 +96,7 @@
                 
                 <label class="mb-2" for="countryBirth">País/território de nascimento <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" id="countryBirth" name="countryBirth" required>
-                    <option disabled>Selecione</option>
+                    <option value="" disabled>Selecione</option>
                     <option value="Afeganistão">Afeganistão</option>
                     <option value="Albânia">Albânia</option>
                     <option value="Argélia">Argélia</option>
@@ -560,7 +560,7 @@
 
                 <label class="mb-2" for="maritalStatus">Estado civil <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="maritalStatus" id="maritalStatus" required>
-                    <option selected disabled>Selecione</option>
+                    <option value="" selected disabled>Selecione</option>
                     <option value="Casado">Casado</option>
                     <option value="Divorciado">Divorciado</option>
                     <option value="Casamento anulado">Casamento anulado</option>
@@ -591,7 +591,7 @@
 
                 <label class="mb-2" for="occupation">Profissão <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="occupation" id="occupation" onchange="showDataOccupation(this.value)">
-                    <option selected disabled>Selecione</option>
+                    <option value="" selected disabled>Selecione</option>
                     <option value="Ocupações artísticas, culturais, recreativas e desportivas">Ocupações artísticas, culturais, recreativas e desportivas</option>
                     <option value="Ocupações de negócios, finanças e administração">Ocupações de negócios, finanças e administração</option>
                     <option value="Educação, direito e ocupações de serviços sociais, comunitários e governamentais">Educação, direito e ocupações de serviços sociais, comunitários e governamentais</option>
@@ -647,7 +647,7 @@
             
                 <label for="addressCountry">País <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="addressCountry" name="addressCountry" required>
-                    <option disabled>Selecione</option>
+                    <option value="" disabled>Selecione</option>
                     <option value="Afeganistão">Afeganistão</option>
                     <option value="Albânia">Albânia</option>
                     <option value="Argélia">Argélia</option>
@@ -968,7 +968,7 @@
                 
                 <label for="theseConditions">Você tem uma dessas condições? <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="theseConditions" name="theseConditions" required>
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Sífilis não tratada">Sífilis não tratada</option>
                     <option value="Dependência de drogas ou álcool não tratada">Dependência de drogas ou álcool não tratada</option>
                     <option value="Condição de saúde mental não tratada com psicose">Condição de saúde mental não tratada com psicose</option>
@@ -1047,7 +1047,7 @@
 
             <label class="mb-2" for="employmentCountry" >País/território <span class="text-red">* (obrigatório)</span></label>
             <select class="form-select w-50 mb-3" id="employmentCountry" name="employmentCountry" required>
-                <option disabled>Selecione</option>
+                <option value="" disabled>Selecione</option>
                 <option value="Afeganistão">Afeganistão</option>
                 <option value="Albânia">Albânia</option>
                 <option value="Argélia">Argélia</option>
@@ -1298,7 +1298,7 @@
 
             <label class="mb-2" for="employmentFromDateYear">Desde que ano? <span class="text-red">* (obrigatório)</span></label>
             <select class="form-select w-50 mb-3" name="employmentFromDateYear" id="employmentFromDateYear">
-                <option selected disabled>Selecione o ano</option>
+                <option value="" selected disabled>Selecione o ano</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
                 <option value="2022">2022</option>
@@ -1431,7 +1431,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Locutores e outros artistas">Locutores e outros artistas</option>
                     <option value="Atletas, treinadores, árbitros e ocupações relacionadas">Atletas, treinadores, árbitros e ocupações relacionadas</option>
                     <option value="Artistas criativos e performáticos">Artistas criativos e performáticos</option>
@@ -1448,7 +1448,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Ocupações administrativas e regulatórias">Ocupações administrativas e regulatórias</option>
                     <option value="Supervisores de serviços administrativos">Supervisores de serviços administrativos</option>
                     <option value="Auditores, contadores e profissionais de investimento">Auditores, contadores e profissionais de investimento</option>
@@ -1470,7 +1470,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Colégio e outros instrutores vocacionais">Colégio e outros instrutores vocacionais</option>
                     <option value="Provedores de cuidados domiciliares e ocupações de apoio educacional">Provedores de cuidados domiciliares e ocupações de apoio educacional</option>
                     <option value="Juízes, advogados e notários">Juízes, advogados e notários</option>
@@ -1489,7 +1489,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Auxiliar ocupações em apoio aos serviços de saúde">Auxiliar ocupações em apoio aos serviços de saúde</option>
                     <option value="Tecnólogos e técnicos médicos">Tecnólogos e técnicos médicos</option>
                     <option value="Optometristas, quiropráticos, outros profissionais de saúde que diagnosticam e tratam">Optometristas, quiropráticos, outros profissionais de saúde que diagnosticam e tratam</option>
@@ -1511,7 +1511,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Gerentes de serviços administrativos">Gerentes de serviços administrativos</option>
                     <option value="Gerentes de vendas corporativas">Gerentes de vendas corporativas</option>
                     <option value="Legisladores e alta administração, incluindo funcionários políticos">Legisladores e alta administração, incluindo funcionários políticos</option>
@@ -1539,7 +1539,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Controle central e operadores de processo em processamento e fabricação">Controle central e operadores de processo em processamento e fabricação</option>
                     <option value="Trabalhadores em processamento, fabricação e serviços públicos">Trabalhadores em processamento, fabricação e serviços públicos</option>
                     <option value="Operadores de máquinas e trabalhadores relacionados no processamento de produtos químicos, plásticos e borracha">Operadores de máquinas e trabalhadores relacionados no processamento de produtos químicos, plásticos e borracha</option>
@@ -1561,7 +1561,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Oficial de Controle Aeroespacial">Oficial de Controle Aeroespacial</option>
                     <option value="Operador de Controle Aeroespacial">Operador de Controle Aeroespacial</option>
                     <option value="Diretor de Engenharia Aeroespacial">Diretor de Engenharia Aeroespacial</option>
@@ -1638,7 +1638,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Arquitetos, urbanistas e agrimensores">Arquitetos, urbanistas e agrimensores</option>
                     <option value="Engenheiros civis, mecânicos, elétricos e químicos">Engenheiros civis, mecânicos, elétricos e químicos</option>
                     <option value="Profissionais de informática e sistemas de informação">Profissionais de informática e sistemas de informação</option>
@@ -1662,7 +1662,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Trabalhadores da agricultura e horticultura">Trabalhadores da agricultura e horticultura</option>
                     <option value="Empreiteiros e supervisores em agricultura, horticultura e operações e serviços relacionados">Empreiteiros e supervisores em agricultura, horticultura e operações e serviços relacionados</option>
                     <option value="Empreiteiros e supervisores em mineração, petróleo e gás">Empreiteiros e supervisores em mineração, petróleo e gás</option>
@@ -1686,7 +1686,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Açougueiros e padeiros">Açougueiros e padeiros</option>
                     <option value="caixas">caixas</option>
                     <option value="Chefs e cozinheiros">Chefs e cozinheiros</option>
@@ -1719,7 +1719,7 @@
             boxEmploymentTitle.innerHTML += `
                 <label for="employmentTitle" class="mb-2">Cargo <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select mb-3 w-50" id="employmentTitle" name="employmentTitle">
-                    <option selected disabled>Por favor selecione</option>
+                    <option value="" selected disabled>Por favor selecione</option>
                     <option value="Técnicos de serviços automotivos">Técnicos de serviços automotivos</option>
                     <option value="Carpinteiros e marceneiros">Carpinteiros e marceneiros</option>
                     <option value="Empreiteiros e supervisores em comércios industriais, elétricos e de construção e trabalhadores relacionados">Empreiteiros e supervisores em comércios industriais, elétricos e de construção e trabalhadores relacionados</option>
@@ -1771,7 +1771,7 @@
                     </div>
                     <div class="col-6">
                         <select class="form-select mb-3" name="travelTimeZone" id="travelTimeZone" required>
-                            <option disabled>Selecione o fuso horário</option>
+                            <option value="" disabled>Selecione o fuso horário</option>
                             <option value="Horário do Acre">Horário do Acre</option>
                             <option value="Horário do Afeganistão">Horário do Afeganistão</option>
                             <option value="Horário do Alasca">Horário do Alasca</option>

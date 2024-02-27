@@ -114,11 +114,14 @@ router.post('/process-payment', (req, res) => {
                 }
             }
     
-            transporter.sendMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                  console.error(err)
+                console.log("Pagamento aprovado (cartão primeira tentativa): " + new Date())
+                console.log(err)
               } else {
-                  console.log(info)
+                  console.log({
+                      message: `Pagamento aprovado (cartão primeira tentativa): ${new Date()}`,
+                      response, envelope, messageId})
               }
             })
           } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
@@ -133,15 +136,18 @@ router.post('/process-payment', (req, res) => {
                 context: {
                   nome: visa.firstName,
                   codeETA: visa.codeETA,
-                  transactionid: savedPayment._id
+                  transactionid: savedPayment.transactionId
                 }
             }
     
-            transporter.sendMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                  console.error(err)
+                console.log("Pagamento recusado (cartão primeira tentativa): " + new Date())
+                console.log(err)
               } else {
-                  console.log(info)
+                  console.log({
+                      message: `Pagamento recusado (cartão primeira tentativa): ${new Date()}`,
+                      response, envelope, messageId})
               }
             })
           }
@@ -224,11 +230,14 @@ router.post("/process-payment-pix", (req, res) => {
                 }
             }
     
-            transporter.sendMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                  console.error(err)
+                console.log("Pagamento aprovado (pix primeira tentativa): " + new Date())
+                console.log(err)
               } else {
-                  console.log(info)
+                  console.log({
+                      message: `Pagamento aprovado (pix primeira tentativa): ${new Date()}`,
+                      response, envelope, messageId})
               }
             })
           }
@@ -321,7 +330,6 @@ router.post('/process-payment-retry', async (req, res) => {
 
         const mailOptions = {
             from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-            to: 'gvfwebdesign@gmail.com',
             to: process.env.CANADENSE_RECEIVER_MAIL,
             subject: 'Pagamento aprovado',
             template: 'pagamento-aprovado',
@@ -331,11 +339,14 @@ router.post('/process-payment-retry', async (req, res) => {
             }
         }
 
-        transporter.sendMail(mailOptions, (err, info) => {
+        transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
           if(err) {
-              console.error(err)
+            console.log("Pagamento aprovado (cartão outras tentativas): " + new Date())
+            console.log(err)
           } else {
-              console.log(info)
+              console.log({
+                  message: `Pagamento aprovado (cartão outras tentativas): ${new Date()}`,
+                  response, envelope, messageId})
           }
         })
       } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled' || savedPayment.status === 'refunded' || savedPayment.status === 'charged_back') {
@@ -350,14 +361,18 @@ router.post('/process-payment-retry', async (req, res) => {
             context: {
               nome: visa.firstName,
               codeETA: visa.codeETA,
+              transactionid: savedPayment.transactionId
             }
         }
 
-        transporter.sendMail(mailOptions, (err, info) => {
+        transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
           if(err) {
-              console.error(err)
+            console.log("Pagamento recusado (cartão outras tentativas): " + new Date())
+            console.log(err)
           } else {
-              console.log(info)
+              console.log({
+                  message: `Pagamento recusado (cartão outras tentativas): ${new Date()}`,
+                  response, envelope, messageId})
           }
         })
       }
@@ -432,11 +447,14 @@ router.post("/process-payment-pix-retry", async (req, res) => {
                 }
             }
     
-            transporter.sendMail(mailOptions, (err, info) => {
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                  console.error(err)
+                console.log("Pagamento aprovado (pix outras tentativas): " + new Date())
+                console.log(err)
               } else {
-                  console.log(info)
+                  console.log({
+                      message: `Pagamento aprovado (pix outras tentativas): ${new Date()}`,
+                      response, envelope, messageId})
               }
             })
           }
@@ -494,12 +512,14 @@ router.post('/webhooks', (req, res, next) => {
                       subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
                       template: 'aviso-eta',
                     },
-                    (err, info) => {
+                    (err, {response, envelope, messageId}) => {
                       if(err) {
-                          console.error(err)
-                          
+                        console.log("Confirmação de recebimento (Webhook): " + new Date())
+                        console.log(err)
                       } else {
-                          console.log(info)
+                          console.log({
+                              message: `Confirmação de recebimento (Webhook): ${new Date()}`,
+                              response, envelope, messageId})
                       }
                     })
     
@@ -516,11 +536,14 @@ router.post('/webhooks', (req, res, next) => {
                         codeETA: visa.codeETA,
                       }
                     },
-                    (err, info) => {
+                    (err, {response, envelope, messageId}) => {
                       if(err) {
-                          console.error(err)
+                        console.log("Pagamento aprovado (Webhook): " + new Date())
+                        console.log(err)
                       } else {
-                          console.log(info)
+                          console.log({
+                              message: `Pagamento aprovado (Webhook): ${new Date()}`,
+                              response, envelope, messageId})
                       }
                   })
                 } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
@@ -535,15 +558,18 @@ router.post('/webhooks', (req, res, next) => {
                       context: {
                         nome: visa.firstName,
                         codeETA: visa.codeETA,
-                        transactionid: payment._id
+                        transactionid: payment.transactionId
                       }
                   }
           
                   transporter.sendMail(mailOptions, (err, info) => {
                     if(err) {
-                        console.error(err)
+                      console.log("Pagamento recusado (Webhook): " + new Date())
+                      console.log(err)
                     } else {
-                        console.log(info)
+                        console.log({
+                            message: `Pagamento recusado (Webhook): ${new Date()}`,
+                            response, envelope, messageId})
                     }
                   })
                 }
