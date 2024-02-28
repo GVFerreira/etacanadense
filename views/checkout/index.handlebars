@@ -80,16 +80,16 @@
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <input type="text" id="form-checkout__cardholderName" class="form-control mb-3">
+                                            <input type="text" id="form-checkout__cardholderName" class="form-control mb-3" required>
                                             <div class="row">
                                                 <div class="col-4">
-                                                    <select id="form-checkout__identificationType" class="form-select mb-3"></select>
+                                                    <select id="form-checkout__identificationType" class="form-select mb-3" required></select>
                                                 </div>
                                                 <div class="col-8">
-                                                    <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3">
+                                                    <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3" required>
                                                 </div>
                                             </div>
-                                            <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3">
+                                            <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3" required>
                                             <input type="text" id="form-checkout__deviceId" class="form-control mb-3 d-none">
                                         </div>
                                     </div>
@@ -113,24 +113,24 @@
                                 <form id="form-checkout-pix">
                                     <div class="row">
                                         <div class="col-12 col-md-6">
-                                            <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome">
+                                            <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome" required>
                                         </div>
                                         <div class="col-12 col-md-6">
-                                            <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome">
+                                            <input id="form-checkout-pix__payerLastName" name="payerLastName" type="text" class="form-control mb-3" placeholder="Sobrenome" required>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-4 col-md-3">
-                                            <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select">
+                                            <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select" required>
                                                 <option value="CPF">CPF</option>
                                                 <option value="CNPJ">CNPJ</option>
                                             </select>
                                         </div>
                                         <div class="col-8 col-md-9">
-                                            <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento">
+                                            <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento" required>
                                         </div>
                                     </div>
-                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}">
+                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}" required>
                                     <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                                 </form>
                                 <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
