@@ -60,7 +60,7 @@
                                 <span class="btn btn-success px-1 py-1 mx-3 fw-bold">5% OFF</span>
                             </button>
                         </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                             <div class="accordion-body container__payment">                      
                                 <form id="form-checkout-pix">
                                     <div class="row">
@@ -97,7 +97,7 @@
                                 Cartão de crédito
                             </button>
                         </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <form id="form-checkout">
                                     <div class="row">
@@ -368,6 +368,7 @@
     //Atualizar valor em tela
     const qtyVisas = parseFloat("{{qtyVisas}}")
     const total = qtyVisas * 139.65
+    $('.totalAmount1').text('R$ 139,65')
     $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
 
     $(document).ready(function() {

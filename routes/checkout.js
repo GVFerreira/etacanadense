@@ -35,7 +35,11 @@ mercadopago.configure({
   sandbox: true
 })
 
-router.get('/', (req, res) => {
+
+///////////////
+// PAGAMENTO //
+///////////////
+router.get('/', async (req, res) => {
   const sessionaData = req.session.aplicacaoStep
 
   if('visaID' in sessionaData) {
@@ -44,7 +48,10 @@ router.get('/', (req, res) => {
     const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
     const visas = req.session.visas.ids
     const qtyVisas = visas.length
-    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey, visas, qtyVisas})
+
+    const visasData = await Visa.find({_id: { $in: visas }})
+
+    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey, visas, visasData, qtyVisas})
   } else {
     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
     res.redirect(`/aplicacao?etapa=4`)
@@ -69,8 +76,8 @@ router.post('/process-payment', (req, res) => {
     payer: {
       email: payer.email,
       identification: {
-        type: payer.identification.docType,
-        number: payer.identification.docNumber
+        type: payer.identification.type,
+        number: payer.identification.number
       }
     }
   }).then(async (response) => {
@@ -82,8 +89,8 @@ router.post('/process-payment', (req, res) => {
       const newPayment = new Payment({
         transaction_amount: data.transaction_amount,
         transactionId: data.id,
-        docType: payer.identification.docType,
-        docNumber: payer.identification.docNumber,
+        docType: payer.identification.type,
+        docNumber: payer.identification.number,
         status: data.status,
         status_details: data.status_detail,
         payment_type_id: data.payment_type_id,
@@ -125,6 +132,40 @@ router.post('/process-payment', (req, res) => {
               }
             })
           } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
+            const visas = savedPayment.visaIDs
+            const qtyVisas = visas.length
+            let linkStripe
+
+            switch (qtyVisas) {
+              case 1:
+                linkStripe = "https://buy.stripe.com/eVa3gb94k9EF52w002"
+                break
+
+              case 2:
+                linkStripe = "https://buy.stripe.com/dR69Ez6WccQR66A6or"
+                break
+              
+              case 3:
+                linkStripe = "https://buy.stripe.com/eVag2X5S8cQRfHa5ko"
+                break
+
+              case 4:
+                linkStripe = "https://buy.stripe.com/fZe8Ava8o045fHa5kp"
+                break
+              
+              case 5:
+                linkStripe = "https://buy.stripe.com/cN27wr4O4bMNfHa4gm"
+                break
+
+              case 6:
+                linkStripe = "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD"
+                break
+                
+              default:
+                linkStripe = "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+                break
+            }
+
             transporter.use('compile', hbs(handlebarOptions))
     
             const mailOptions = {
@@ -136,7 +177,8 @@ router.post('/process-payment', (req, res) => {
                 context: {
                   nome: visa.firstName,
                   codeETA: visa.codeETA,
-                  transactionid: savedPayment.transactionId
+                  transactionid: savedPayment.transactionId,
+                  linkStripe
                 }
             }
     
@@ -262,24 +304,34 @@ router.post("/process-payment-pix", (req, res) => {
   })
 })
 
+
+//////////////////////
+// NOVAS TENTATIVAS //
+//////////////////////
 router.get('/retry/:id', async (req, res) => {
   const title = 'Checkout - '
   const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
   const payment = await Payment.findOne({transactionId: req.params.id}).populate('visaIDs')
-
-  res.render('checkout/retry', {payment, title, publicKey})
+  
+  if (!payment) {
+    req.flash('success_msg', 'Esse pagamento foi alterado')
+    res.redirect('/')
+  } else {
+    const qtyVisas = payment.visaIDs.length
+    res.render('checkout/retry', {payment, title, publicKey, qtyVisas, transactionid: req.params.id})
+  }
 })
 
 router.get('/retry-email', async (req, res) => {
   const title = 'Checkout - '
   const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
   const payment = await Payment.findOne({transactionId: req.query.transactionid}).populate('visaIDs')
-  const qtyVisas = payment.visaIDs.length
 
   if (!payment) {
     req.flash('success_msg', 'Esse pagamento foi alterado')
     res.redirect('/')
   } else {
+    const qtyVisas = payment.visaIDs.length
     res.render('checkout/retry-email', {payment, title, publicKey, qtyVisas, transactionid: req.query.transactionid})
   }
 
@@ -304,14 +356,16 @@ router.post('/process-payment-retry', async (req, res) => {
     payer: {
       email: payer.email,
       identification: {
-        type: payer.identification.docType,
-        number: payer.identification.docNumber
+        type: payer.identification.type,
+        number: payer.identification.number
       }
     }
   })
   
-  payment.transactionId = updatedPayment.response.id
   payment.transaction_amount = updatedPayment.response.transaction_amount
+  payment.transactionId = updatedPayment.response.id
+  payment.docType
+  docNumber
   payment.status = updatedPayment.response.status
   payment.status_details = updatedPayment.response.status_detail
   payment.payment_type_id = updatedPayment.response.payment_type_id
@@ -350,6 +404,40 @@ router.post('/process-payment-retry', async (req, res) => {
           }
         })
       } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled' || savedPayment.status === 'refunded' || savedPayment.status === 'charged_back') {
+        const visas = savedPayment.visaIDs
+        const qtyVisas = visas.length
+        let linkStripe
+
+        switch (qtyVisas) {
+          case 1:
+            linkStripe = "https://buy.stripe.com/eVa3gb94k9EF52w002"
+            break
+
+          case 2:
+            linkStripe = "https://buy.stripe.com/dR69Ez6WccQR66A6or"
+            break
+          
+          case 3:
+            linkStripe = "https://buy.stripe.com/eVag2X5S8cQRfHa5ko"
+            break
+
+          case 4:
+            linkStripe = "https://buy.stripe.com/fZe8Ava8o045fHa5kp"
+            break
+          
+          case 5:
+            linkStripe = "https://buy.stripe.com/cN27wr4O4bMNfHa4gm"
+            break
+
+          case 6:
+            linkStripe = "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD"
+            break
+            
+          default:
+            linkStripe = "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+            break
+        }
+        
         transporter.use('compile', hbs(handlebarOptions))
 
         const mailOptions = {
@@ -361,7 +449,8 @@ router.post('/process-payment-retry', async (req, res) => {
             context: {
               nome: visa.firstName,
               codeETA: visa.codeETA,
-              transactionid: savedPayment.transactionId
+              transactionid: savedPayment.transactionId,
+              linkStripe
             }
         }
 
@@ -386,7 +475,7 @@ router.post('/process-payment-retry', async (req, res) => {
   })
 })
 
-router.post("/process-payment-pix-retry", async (req, res) => {
+router.post('/process-payment-pix-retry', async (req, res) => {
   const requestBody = req.body
 
   const payment = await Payment.findOne({_id: req.query.transactionid}).populate('visaIDs')
@@ -479,6 +568,68 @@ router.post("/process-payment-pix-retry", async (req, res) => {
   })
 })
 
+
+////////////////
+// AUXILIARES //
+////////////////
+router.get('/verify-pix-payment', (req, res) => {
+  Payment.findOne({transactionId: req.query.transactionID}).then((response) => {
+    return res.json(response)
+  }).catch(error => {
+      console.error(error)
+      res.status(500).json({ error: "Erro ao verificar pagamento" })
+  })
+})
+
+router.get('/pix', (req, res) => {
+  const title = 'PIX - '
+  const { id, status, qr_code } = req.query
+  const qr_code_base = req.session.aplicacaoStep.qr_code_base
+  
+  res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
+})
+
+router.get('/obrigado', (req, res) => {
+    const { status, status_detail, transaction_id } = req.query
+
+    res.render('checkout/obrigado', { status, status_detail, transaction_id })
+})
+
+router.get('/recusado', (req, res) => {
+  const { status, status_detail, transaction_id } = req.query
+
+  res.render('checkout/recusado', { status, status_detail, transaction_id })
+})
+
+router.get('/em_processo', (req, res) => {
+    const { status, status_detail, transaction_id } = req.query
+
+    res.render('checkout/em_processo', { status, status_detail, transaction_id })
+})
+
+router.get('/error', (req, res) => {
+  res.send('Error')
+})
+
+function validateError(error) {
+  let errorMessage = 'Unknown error cause'
+  let errorStatus = 400
+
+  if(error.cause) {
+    const sdkErrorMessage = error.cause[0].description
+    errorMessage = sdkErrorMessage || errorMessage
+
+    const sdkErrorStatus = error.status
+    errorStatus = sdkErrorStatus || errorStatus
+  }
+
+  return { errorMessage, errorStatus }
+}
+
+
+//////////////
+// WEBHOOKS //
+//////////////
 router.post('/webhooks', (req, res, next) => {
   const { body } = req
   const { data: data_webhook } = body
@@ -547,19 +698,54 @@ router.post('/webhooks', (req, res, next) => {
                       }
                   })
                 } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
+                  const visas = payment.visaIDs
+                  const qtyVisas = visas.length
+                  let linkStripe
+
+                  switch (qtyVisas) {
+                    case 1:
+                      linkStripe = "https://buy.stripe.com/eVa3gb94k9EF52w002"
+                      break
+
+                    case 2:
+                      linkStripe = "https://buy.stripe.com/dR69Ez6WccQR66A6or"
+                      break
+                    
+                    case 3:
+                      linkStripe = "https://buy.stripe.com/eVag2X5S8cQRfHa5ko"
+                      break
+
+                    case 4:
+                      linkStripe = "https://buy.stripe.com/fZe8Ava8o045fHa5kp"
+                      break
+                    
+                    case 5:
+                      linkStripe = "https://buy.stripe.com/cN27wr4O4bMNfHa4gm"
+                      break
+
+                    case 6:
+                      linkStripe = "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD"
+                      break
+                      
+                    default:
+                      linkStripe = "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+                      break
+                  }
+                  
                   transporter.use('compile', hbs(handlebarOptions))
           
                   const mailOptions = {
-                      from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-                      to: visa.contactEmail,
-                      bcc: process.env.CANADENSE_RECEIVER_MAIL,
-                      subject: 'Pagamento recusado',
-                      template: 'pagamento-recusado',
-                      context: {
-                        nome: visa.firstName,
-                        codeETA: visa.codeETA,
-                        transactionid: payment.transactionId
-                      }
+                    from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                    to: visa.contactEmail,
+                    bcc: process.env.CANADENSE_RECEIVER_MAIL,
+                    subject: 'Pagamento recusado',
+                    template: 'pagamento-recusado',
+                    context: {
+                      nome: visa.firstName,
+                      codeETA: visa.codeETA,
+                      transactionid: payment.transactionId,
+                      linkStripe
+                    }
                   }
           
                   transporter.sendMail(mailOptions, (err, info) => {
@@ -594,59 +780,5 @@ router.post('/webhooks', (req, res, next) => {
 
   res.status(200).send("OK")
 })
-
-router.get('/verify-pix-payment', (req, res) => {
-  Payment.findOne({transactionId: req.query.transactionID}).then((response) => {
-    return res.json(response)
-  }).catch(error => {
-      console.error(error)
-      res.status(500).json({ error: "Erro ao verificar pagamento" })
-  })
-})
-
-router.get('/pix', (req, res) => {
-  const title = 'PIX - '
-  const { id, status, qr_code } = req.query
-  const qr_code_base = req.session.aplicacaoStep.qr_code_base
-  
-  res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
-})
-
-router.get('/obrigado', (req, res) => {
-    const { status, status_detail, transaction_id } = req.query
-
-    res.render('checkout/obrigado', { status, status_detail, transaction_id })
-})
-
-router.get('/recusado', (req, res) => {
-  const { status, status_detail, transaction_id } = req.query
-
-  res.render('checkout/recusado', { status, status_detail, transaction_id })
-})
-
-router.get('/em_processo', (req, res) => {
-    const { status, status_detail, transaction_id } = req.query
-
-    res.render('checkout/em_processo', { status, status_detail, transaction_id })
-})
-
-router.get('/error', (req, res) => {
-  res.send('Error')
-})
-
-function validateError(error) {
-  let errorMessage = 'Unknown error cause'
-  let errorStatus = 400
-
-  if(error.cause) {
-    const sdkErrorMessage = error.cause[0].description
-    errorMessage = sdkErrorMessage || errorMessage
-
-    const sdkErrorStatus = error.status
-    errorStatus = sdkErrorStatus || errorStatus
-  }
-
-  return { errorMessage, errorStatus }
-}
 
 module.exports = router

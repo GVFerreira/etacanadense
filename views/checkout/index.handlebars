@@ -18,13 +18,13 @@
                     <span class="text-primary">Sua compra</span>
                 </h4>
                 <ul class="list-group mb-3">
-                    {{#each visas}}
+                    {{#each visasData}}
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
                                 <h6 class="my-0">Solicitação de Autorização de Viagem</h6>
                                 <small class="text-muted">{{codeETA}} - {{firstName}} {{surname}}</small>
                             </div>
-                            <span class="text-muted totalAmount1">R$ 147,00</span>
+                            <span class="text-muted totalAmount1"></span>
                         </li>
                     {{/each}}
                     {{!-- ELEMENTO PARA EXIBIÇÃO DO DESCONTO DE CÓDIGO PROMOCIONAL --}}
@@ -293,7 +293,7 @@
                         identificationType,
                         deviceId
                     } = cardForm.getCardFormData()
-
+                    
                     fetch("/checkout/process-payment", {
                         method: "POST",
                         headers: {
@@ -430,6 +430,7 @@
     //Atualizar valor em tela
     const qtyVisas = "{{qtyVisas}}"
     const total = parseInt(qtyVisas) * 147
+    $('.totalAmount1').text('R$ 147,00')
     $('#totalAmount2').text(`${total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
     $(document).ready(function() {
         $('#collapseTwo').on('show.bs.collapse', function() {

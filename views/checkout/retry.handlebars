@@ -277,7 +277,7 @@
                         identificationType,
                     } = cardForm.getCardFormData()
 
-                    fetch("/checkout/process-payment", {
+                    fetch("/checkout/process-payment?transactionid={{transactionid}}", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -360,7 +360,7 @@
         
         document.getElementById("loading-message-pix").style.display = "block"
 
-        fetch("/checkout/process-payment-pix", {
+        fetch("/checkout/process-payment-pix?transactionid={{transactionid}}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
