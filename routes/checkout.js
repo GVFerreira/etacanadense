@@ -314,7 +314,7 @@ router.get('/retry/:id', async (req, res) => {
   const payment = await Payment.findOne({transactionId: req.params.id}).populate('visaIDs')
   
   if (!payment) {
-    req.flash('success_msg', 'Esse pagamento foi alterado')
+    req.flash('error_msg', 'Esse pagamento não existe ou já foi concluído')
     res.redirect('/')
   } else {
     const qtyVisas = payment.visaIDs.length
@@ -323,17 +323,18 @@ router.get('/retry/:id', async (req, res) => {
 })
 
 router.get('/retry-email', async (req, res) => {
-  const title = 'Checkout - '
-  const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
-  const payment = await Payment.findOne({transactionId: req.query.transactionid}).populate('visaIDs')
-
-  if (!payment) {
-    req.flash('success_msg', 'Esse pagamento foi alterado')
-    res.redirect('/')
-  } else {
+  try {
+    const title = 'Checkout - '
+    const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
+    const payment = await Payment.findOne({transactionId: req.query.transactionid}).populate('visaIDs')
     const qtyVisas = payment.visaIDs.length
+
     res.render('checkout/retry-email', {payment, title, publicKey, qtyVisas, transactionid: req.query.transactionid})
+  } catch {
+    req.flash('error_msg', 'Esse pagamento não existe ou já foi concluído')
+    res.redirect('/')
   }
+  
 
 })
 

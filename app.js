@@ -851,6 +851,43 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
+app.get('/teste', (req, res) => {
+    res.render('email/pagamento-recusado', {
+            nome: 'Gustavo',
+            codeETA: 'HEXA6',
+            transactionid: '1231312313',
+            linkStripe: 'https://buy.stripe.com/eVa3gb94k9EF52w002'
+        }
+    )
+})
+
+app.get('/teste-envio', (req, res) => {
+    transporter.use('compile', hbs(handlebarOptions))
+
+    const mailOptions = {
+        from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+        to: 'gvfwebdesign@gmail.com',
+        subject: 'Teste',
+        template: 'pagamento-recusado',
+        context: {
+            nome: 'Gustavo',
+            codeETA: 'HEXA6',
+            transactionid: '1231312313',
+            linkStripe: 'https://buy.stripe.com/eVa3gb94k9EF52w002'
+        }
+    }
+
+    transporter.sendMail(mailOptions, (err) => {
+        if(err) {
+            req.flash('error_msg', `Houve um erro ao enviar este formulário: ${err}`)
+            res.redirect('/teste')
+        } else {
+            req.flash('success_msg', 'E-mail enviado com sucesso.')
+            res.redirect('/teste')
+        }
+    })
+})
+
 app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
