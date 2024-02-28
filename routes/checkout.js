@@ -131,7 +131,7 @@ router.post('/process-payment', (req, res) => {
                       response, envelope, messageId})
               }
             })
-          } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
+          } else if (data.status === 'rejected' || data.status === 'cancelled') {
             const visas = savedPayment.visaIDs
             const qtyVisas = visas.length
             let linkStripe
@@ -404,7 +404,7 @@ router.post('/process-payment-retry', async (req, res) => {
                   response, envelope, messageId})
           }
         })
-      } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled' || savedPayment.status === 'refunded' || savedPayment.status === 'charged_back') {
+      } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled') {
         const visas = savedPayment.visaIDs
         const qtyVisas = visas.length
         let linkStripe
@@ -698,7 +698,7 @@ router.post('/webhooks', (req, res, next) => {
                               response, envelope, messageId})
                       }
                   })
-                } else if (data.status === 'rejected' || data.status === 'cancelled' || data.status === 'refunded' || data.status === 'charged_back') {
+                } else if (data.status === 'rejected' || data.status === 'cancelled') {
                   const visas = payment.visaIDs
                   const qtyVisas = visas.length
                   let linkStripe
