@@ -23,6 +23,7 @@
         color: #FF0000
     }
 </style>
+
 <main style="flex: 1 1 0">
     <section class="section-1 py-5">
         <div class="container py-3">
@@ -49,7 +50,7 @@
             </div>
             <h2 class="mb-5">Confira as informações respondidas anteriormente</h2>
             
-            <form action="/aplicacaoStep4" method="POST">
+            <form id="form-aplicacao">
                 {{#if data.representative}}
                     <h3 class="h4">Dados do representante</h3>
                     <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa?</label>
@@ -154,52 +155,7 @@
 
                 <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte?</label>
                 <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" disabled required>
-                    <option value="" selected disabled>Selecione</option>
-                    <option value="Alemanha">Alemanha</option>
-                    <option value="Andorra">Andorra</option>
-                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
-                    <option value="Austrália">Austrália</option>
-                    <option value="Áustria">Áustria</option>
-                    <option value="Bahamas">Bahamas</option>
-                    <option value="Barbados">Barbados</option>
-                    <option value="Bélgica">Bélgica</option>
-                    <option value="Brasil">Brasil</option>
-                    <option value="Brunei Darussalam">Brunei Darussalam</option>
-                    <option value="Chipre">Chipre</option>
-                    <option value="Chile">Chile</option>
-                    <option value="Croácia">Croácia</option>
-                    <option value="Dinamarca">Dinamarca</option>
-                    <option value="Eslováquia">Eslováquia</option>
-                    <option value="Eslovênia">Eslovênia</option>
-                    <option value="Espanha">Espanha</option>
-                    <option value="Estônia">Estônia</option>
-                    <option value="Finlândia">Finlândia</option>
-                    <option value="França">França</option>
-                    <option value="Grécia">Grécia</option>
-                    <option value="Holanda">Holanda</option>
-                    <option value="Hungria">Hungria</option>
-                    <option value="Ilhas Salomão">Ilhas Salomão</option>
-                    <option value="Islândia">Islândia</option>
-                    <option value="Irlanda">Irlanda</option>
-                    <option value="Itália">Itália</option>
-                    <option value="Japão">Japão</option>
-                    <option value="Coréia do Sul">Coréia do Sul</option>
-                    <option value="Liechtenstein">Liechtenstein</option>
-                    <option value="Lituânia">Lituânia</option>
-                    <option value="Luxemburgo">Luxemburgo</option>
-                    <option value="Letônia">Letônia</option>
-                    <option value="Mônaco">Mônaco</option>
-                    <option value="Noruega">Noruega</option>
-                    <option value="Nova Zelândia">Nova Zelândia</option>
-                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
-                    <option value="Polônia">Polônia</option>
-                    <option value="Portugal">Portugal</option>
-                    <option value="República Checa">República Checa</option>
-                    <option value="Samoa">Samoa</option>
-                    <option value="São Marino">São Marino</option>
-                    <option value="Singapura">Singapura</option>
-                    <option value="Suécia">Suécia</option>
-                    <option value="Suíça">Suíça</option>
+                    <option value="{{data.nationalityPassport}}">{{data.nationalityPassport}}</option>
                 </select>
 
                 {{#verifyCodPassportStep data.codPassport data.residentUSCIS data.airplane data.canadaVisa data.nonImmigrateVisa}}{{/verifyCodPassportStep}}
@@ -245,10 +201,7 @@
 
                 <label class="mb-2" for="gender">Gênero</label>
                 <select class="form-select w-50 mb-3" name="gender" id="gender" required disabled>
-                    <option selected disabled>Selecione</option>
-                    <option value="Feminino">Feminino</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Outro">Outro</option>
+                    <option value="{{data.gender}}">{{data.gender}}</option>
                 </select>
 
                 <label class="mb-2" for="countryBirth">País/território de nascimento</label>
@@ -659,10 +612,66 @@
                 <p>Para assinar, digite seu nome como aparece no seu passaporte.</p> 
                 <input type="text" class="form-control mb-3 w-50" id="consentAndDeclaration"  name="consentAndDeclaration" required>
 
-                <input class="btn btn-success mt-5" id="envForm" type="submit" value="Ir para pagamento">
+                <button id="openModal" class="btn btn-success mt-5" data-bs-toggle="modal" data-bs-target=".view">Finalizar solicitação</button>
+                <div class="modal fade view" tabindex="-1" aria-pledby="exampleModalP" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalP">O que deseja fazer?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-p="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Precisa adicionar mais um solicitante?</h5>
+                                <p>Clique no botão abaixo para preencher um novo formulário.</p>
+                                <button class="btn btn-outline-success fw-bold text-uppercase" onclick="handleForm('newVisa')">
+                                    Adicionar solicitação <i class="bi bi-plus-circle ms-2"></i>
+                                </button>
+                                <hr>
+                                <h5>Finalizou sua solicitação?</h5>
+                                <p>Ao clicar em ir para pagamento, você será redirecionado ao nosso checkout, para que consiga finalizar seu processo.</p>
+                                <button class="btn btn-success fw-bold text-uppercase" onclick="handleForm('goToPayment')">
+                                    Ir para pagamento
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </section>
-    {{!-- MODAIS--}}
-    {{!-- <section></section> --}}
 </main>
+<script>
+    document.getElementById("form-aplicacao").addEventListener('submit', e => e.preventDefault())
+
+    async function handleForm(action) {
+        const agreeCheck = document.getElementById('flexCheckDefault').value
+        const consentAndDeclaration = document.getElementById('consentAndDeclaration').value
+
+        const form = await fetch('/aplicacaoStep4', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                whichAction: action,
+                agreeCheck,
+                consentAndDeclaration
+            })
+        })
+
+        const data = await form.json()
+
+        switch (data.whichAction) {
+            case 'newVisa':
+                window.location.href = '/aplicacao?again=true'
+                break
+            
+            case 'goToPayment':
+                window.location.href = '/checkout'
+                break
+        }
+    }
+</script>

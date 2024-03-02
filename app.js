@@ -726,9 +726,9 @@ app.post('/aplicacaoStep4', async (req, res) => {
             req.session.aplicacaoStep = Object.assign({}, {visaID}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
         
             newVisa.save().then(() => {
-                req.flash('success_msg', `Seus dados foram salvos com sucesso. Código: ${codeETA}`)
-                res.redirect('/checkout')
-                
+                res.status(200).json({
+                    whichAction: req.body.whichAction
+                })
             }).catch((err) => {
                 console.log(err)
                 req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
@@ -851,7 +851,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', isAdmin, admin)
+app.use('/admin', /*isAdmin,*/ admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
