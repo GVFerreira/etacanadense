@@ -464,7 +464,7 @@ cron.schedule('*/9 * * * *', async () =>  {
             {
                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                 to: element.visaIDs[0].contactEmail,
-                // bcc: process.env.CANADENSE_RECEIVER_MAIL,
+                bcc: process.env.CANADENSE_RECEIVER_MAIL,
                 subject: 'eTA Canadense - Finalize sua aplicação',
                 template: 'lembrete',
                 context: {
@@ -489,7 +489,7 @@ cron.schedule('*/9 * * * *', async () =>  {
         )
     }
 
-    console.log("rodou " + new Date())
+    console.log("Script de verifição de checkout abandonado: " + new Date())
 })
 
 /*AUTHENTICATION*/
@@ -711,7 +711,9 @@ app.post('/aplicacaoStep4', async (req, res) => {
             newVisa.save().then(async () => {
                 if (req.body.whichAction === "goToPayment") {
                     if (!req.session.sessionCheckout) {
-                        const idRandom = crypto.randomUUID()
+                        var salt_id = bcrypt.genSaltSync(10);
+                        var hash_id = bcrypt.hashSync("B4c0/\/", salt_id)
+                        const idRandom = hash_id
                         req.session.sessionCheckout = idRandom
                         
                         const newPayment = new Payment({

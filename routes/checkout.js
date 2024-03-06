@@ -380,7 +380,7 @@ router.post('/process-payment-retry', async (req, res) => {
   payment.transaction_amount = updatedPayment.response.transaction_amount
   payment.transactionId = updatedPayment.response.id
   payment.docType = payer.identification.type
-  payment.docNumber = payer.response.identification.number
+  payment.docNumber = payer.identification.number
   payment.status = updatedPayment.response.status
   payment.status_details = updatedPayment.response.status_detail
   payment.payment_type_id = updatedPayment.response.payment_type_id
@@ -871,6 +871,12 @@ router.get('/recusado', (req, res) => {
   const { status, status_detail, transaction_id } = req.query
 
   res.render('checkout/recusado', { status, status_detail, transaction_id })
+})
+
+router.get('/recusado_retry', (req, res) => {
+  const { status, status_detail, transaction_id } = req.query
+
+  res.render('checkout/recusado_retry', { status, status_detail, transaction_id })
 })
 
 router.get('/em_processo', (req, res) => {

@@ -265,7 +265,7 @@
                                     break
                                 
                                 case 'rejected':
-                                    window.location.href = `/checkout/recusado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
+                                    window.location.href = `/checkout/recusado_retry?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
                                     break
                                 
                                 default:
