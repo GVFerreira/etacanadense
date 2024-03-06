@@ -86,20 +86,23 @@ router.post('/process-payment', (req, res) => {
       const sessionData = req.session.aplicacaoStep
       const sessionsIDs = req.session.visas.ids
 
-      const newPayment = new Payment({
-        transaction_amount: data.transaction_amount,
-        transactionId: data.id,
-        docType: payer.identification.type,
-        docNumber: payer.identification.number,
-        status: data.status,
-        status_details: data.status_detail,
-        payment_type_id: data.payment_type_id,
-        installments: data.installments,
-        visaIDs: sessionsIDs,
-        createdAt: new Date(data.date_created)
-      })
-
-
+      const newPayment = await Payment.findOneAndUpdate(
+        { idCheckout: req.session.sessionCheckout },
+        {
+          $set: {
+            transaction_amount: data.transaction_amount,
+            transactionId: data.id,
+            docType: payer.identification.type,
+            docNumber: payer.identification.number,
+            status: data.status,
+            status_details: data.status_detail,
+            payment_type_id: data.payment_type_id,
+            installments: data.installments,
+            visaIDs: sessionsIDs
+          }
+        }
+      )
+      
       const savedPayment = await newPayment.save()
 
       for (const element of sessionsIDs) {
@@ -126,16 +129,20 @@ router.post('/process-payment', (req, res) => {
                 console.log("Pagamento aprovado (cartão primeira tentativa): " + new Date())
                 console.log(err)
               } else {
-                  console.log({
-                      message: `Pagamento aprovado (cartão primeira tentativa): ${new Date()}`,
-                      response, envelope, messageId})
+                console.log({
+                  message: `Pagamento aprovado (cartão primeira tentativa): ${new Date()}`,
+                  response,
+                  envelope,
+                  messageId
+                })
               }
             })
+
           } else if (data.status === 'rejected' || data.status === 'cancelled') {
             const visas = savedPayment.visaIDs
             const qtyVisas = visas.length
+            
             let linkStripe
-
             switch (qtyVisas) {
               case 1:
                 linkStripe = "https://buy.stripe.com/eVa3gb94k9EF52w002"
@@ -167,7 +174,7 @@ router.post('/process-payment', (req, res) => {
             }
 
             transporter.use('compile', hbs(handlebarOptions))
-    
+
             const mailOptions = {
                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
                 to: visa.contactEmail,
@@ -236,20 +243,24 @@ router.post("/process-payment-pix", (req, res) => {
       const sessionData = req.session.aplicacaoStep
       const sessionsIDs = req.session.visas.ids
 
-      const newPayment = new Payment({
-        transaction_amount: data.transaction_amount,
-        transactionId: data.id,
-        docType: requestBody.payer.identification.type,
-        docNumber: requestBody.payer.identification.number,
-        status: data.status,
-        status_details: data.status_detail,
-        payment_type_id: data.payment_type_id,
-        installments: data.installments,
-        qrCode: data.point_of_interaction.transaction_data.qr_code,
-        qrCodeBase64: data.point_of_interaction.transaction_data.qr_code_base64,
-        visaIDs: sessionsIDs,
-        createdAt: new Date(data.date_created)
-      })
+      const newPayment = await Payment.findOneAndUpdate(
+        { idCheckout: req.session.sessionCheckout },
+        {
+          $set: {
+            transaction_amount: data.transaction_amount,
+            transactionId: data.id,
+            docType: payer.identification.type,
+            docNumber: payer.identification.number,
+            status: data.status,
+            status_details: data.status_detail,
+            payment_type_id: data.payment_type_id,
+            qrCode: data.point_of_interaction.transaction_data.qr_code,
+            qrCodeBase64: data.point_of_interaction.transaction_data.qr_code_base64,
+            visaIDs: sessionsIDs,
+            createdAt: new Date(data.date_created)
+          }
+        }
+      )
 
       const savedPayment = await newPayment.save()
 
@@ -277,9 +288,12 @@ router.post("/process-payment-pix", (req, res) => {
                 console.log("Pagamento aprovado (pix primeira tentativa): " + new Date())
                 console.log(err)
               } else {
-                  console.log({
-                      message: `Pagamento aprovado (pix primeira tentativa): ${new Date()}`,
-                      response, envelope, messageId})
+                console.log({
+                  message: `Pagamento aprovado (pix primeira tentativa): ${new Date()}`,
+                  response,
+                  envelope,
+                  messageId
+                })
               }
             })
           }
@@ -365,8 +379,259 @@ router.post('/process-payment-retry', async (req, res) => {
   
   payment.transaction_amount = updatedPayment.response.transaction_amount
   payment.transactionId = updatedPayment.response.id
-  payment.docType
-  docNumber
+  payment.docType = payer.identification.type
+  payment.docNumber = payer.response.identification.number
+  payment.status = updatedPayment.response.status
+  payment.status_details = updatedPayment.response.status_detail
+  payment.payment_type_id = updatedPayment.response.payment_type_id
+  payment.installments = updatedPayment.response.installments
+  payment.createdAt = new Date(updatedPayment.response.date_created)
+
+  const savedPayment = await payment.save()
+
+  for (const visa of visas) {
+    Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } });
+
+    if (visa) {
+      await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
+      if(savedPayment.status === 'approved') {
+        transporter.use('compile', hbs(handlebarOptions))
+
+        const mailOptions = {
+          from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+          to: process.env.CANADENSE_RECEIVER_MAIL,
+          subject: 'Pagamento aprovado',
+          template: 'pagamento-aprovado',
+          context: {
+            nome: visa.firstName,
+            codeETA: visa.codeETA,
+          }
+        }
+
+        transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
+          if(err) {
+            console.log("Pagamento aprovado (cartão outras tentativas): " + new Date())
+            console.log(err)
+          } else {
+            console.log({
+              message: `Pagamento aprovado (cartão outras tentativas): ${new Date()}`,
+              response,
+              envelope,
+              messageId
+            })
+          }
+        })
+      } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled') {
+        const visas = savedPayment.visaIDs
+        const qtyVisas = visas.length
+        
+        let linkStripe
+        switch (qtyVisas) {
+          case 1:
+            linkStripe = "https://buy.stripe.com/eVa3gb94k9EF52w002"
+            break
+
+          case 2:
+            linkStripe = "https://buy.stripe.com/dR69Ez6WccQR66A6or"
+            break
+          
+          case 3:
+            linkStripe = "https://buy.stripe.com/eVag2X5S8cQRfHa5ko"
+            break
+
+          case 4:
+            linkStripe = "https://buy.stripe.com/fZe8Ava8o045fHa5kp"
+            break
+          
+          case 5:
+            linkStripe = "https://buy.stripe.com/cN27wr4O4bMNfHa4gm"
+            break
+
+          case 6:
+            linkStripe = "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD"
+            break
+            
+          default:
+            linkStripe = "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+            break
+        }
+        
+        transporter.use('compile', hbs(handlebarOptions))
+
+        const mailOptions = {
+            from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+            to: visa.contactEmail,
+            bcc: process.env.CANADENSE_RECEIVER_MAIL,
+            subject: 'Pagamento recusado',
+            template: 'pagamento-recusado',
+            context: {
+              nome: visa.firstName,
+              codeETA: visa.codeETA,
+              transactionid: savedPayment.transactionId,
+              linkStripe
+            }
+        }
+
+        transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
+          if(err) {
+            console.log("Pagamento recusado (cartão outras tentativas): " + new Date())
+            console.log(err)
+          } else {
+            console.log({
+              message: `Pagamento recusado (cartão outras tentativas): ${new Date()}`,
+              response,
+              envelope,
+              messageId
+            })
+          }
+        })
+      }
+    }
+  }
+
+  res.status(200).json({
+    id: updatedPayment.response.id,
+    status: updatedPayment.response.status,
+    detail: updatedPayment.response.status_detail
+  })
+})
+
+router.post('/process-payment-pix-retry', async (req, res) => {
+  const requestBody = req.body
+
+  const payment = await Payment.findOne({transactionId: req.query.transactionid}).populate('visaIDs')
+  const visas = payment.visaIDs
+  const qtyVisas = visas.length
+
+  mercadopago.payment.create({
+    transaction_amount: qtyVisas * 139.65,
+    payment_method_id: "pix",
+    description: 'Solicitação de Autorização de Viagem - Canadá',
+    notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
+    payer: {
+      email: requestBody.payer.email,
+      first_name: requestBody.payer.firstName,
+      last_name: requestBody.payer.lastName,
+      identification: {
+        type: requestBody.payer.identification.type,
+        number: requestBody.payer.identification.number,
+      }
+    }
+  }).then(async (response) => {
+    try {
+      const { response: data } = response
+      payment.transaction_amount = data.transaction_amount,
+      payment.transactionId = data.id,
+      payment.docType = requestBody.payer.identification.type,
+      payment.docNumber = requestBody.payer.identification.number,
+      payment.status = data.status,
+      payment.status_details = data.status_detail,
+      payment.payment_type_id = data.payment_type_id,
+      payment.installments = data.installments,
+      payment.qrCode = data.point_of_interaction.transaction_data.qr_code,
+      payment.qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64,
+      payment.visaIDs = visas,
+      payment.createdAt = new Date(data.date_created)
+  
+      const savedPayment = await payment.save()
+
+      for (const element of visas) {
+        const visa = await Visa.findOne({ _id: element })
+  
+        if (visa) {
+          await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
+          if(data.status === 'approved') {
+            transporter.use('compile', hbs(handlebarOptions))
+    
+            const mailOptions = {
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: process.env.CANADENSE_RECEIVER_MAIL,
+                subject: 'Pagamento aprovado',
+                template: 'pagamento-aprovado',
+                context: {
+                  nome: visa.firstName,
+                  codeETA: visa.codeETA,
+                }
+            }
+    
+            transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
+              if(err) {
+                console.log("Pagamento aprovado (pix outras tentativas): " + new Date())
+                console.log(err)
+              } else {
+                console.log({
+                  message: `Pagamento aprovado (pix outras tentativas): ${new Date()}`,
+                  response,
+                  envelope,
+                  messageId
+                })
+              }
+            })
+          }
+        }
+      }
+
+      const qr_code_base = data.point_of_interaction.transaction_data.qr_code_base64
+      req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
+      res.status(200).json({
+        id: data.id,
+        status: data.status,
+        detail: data.status_detail,
+        qrCode: data.point_of_interaction.transaction_data.qr_code,
+        qrCodeBase64: data.point_of_interaction.transaction_data.qr_code_base64
+      })
+
+    } catch (error){
+      console.log(error)
+      const { errorMessage, errorStatus }  = validateError(error)
+      res.status(errorStatus).json({ error_message: errorMessage })
+    }
+  })
+})
+
+router.get('/abandoned', async (req, res) => {
+  try {
+    const title = 'Checkout - '
+    const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
+    const payment = await Payment.findOne({idCheckout: req.query.idcheckout}).populate('visaIDs')
+    const qtyVisas = payment.visaIDs.length
+
+    res.render('checkout/abandoned', {payment, title, publicKey, qtyVisas, idcheckout: req.query.idcheckout})
+  } catch {
+    req.flash('error_msg', 'Esse pagamento não existe ou já foi concluído')
+    res.redirect('/')
+  }
+})
+
+router.post('/process-payment-abandoned', async (req, res) => {
+  const { body } = req
+  const { payer } = body
+
+  const payment = await Payment.findOne({idCheckout: req.query.idcheckout}).populate('visaIDs')
+  const visas = payment.visaIDs
+  const qtyVisas = visas.length
+
+  const updatedPayment = await mercadopago.payment.create({
+    transaction_amount: qtyVisas * 147.00,
+    token: body.token,
+    description: 'Solicitação de Autorização de Viagem - Canadá',
+    installments: Number(body.installments),
+    payment_method_id: body.paymentMethodId,
+    issuer_id: body.issuerId,
+    notification_url: "https://etacanadense.com.br/checkout/webhooks?source_news=webhook",
+    payer: {
+      email: payer.email,
+      identification: {
+        type: payer.identification.type,
+        number: payer.identification.number
+      }
+    }
+  })
+  
+  payment.transaction_amount = updatedPayment.response.transaction_amount
+  payment.transactionId = updatedPayment.response.id
+  payment.docType = payer.identification.type
+  payment.docNumber = payer.identification.number
   payment.status = updatedPayment.response.status
   payment.status_details = updatedPayment.response.status_detail
   payment.payment_type_id = updatedPayment.response.payment_type_id
@@ -385,7 +650,7 @@ router.post('/process-payment-retry', async (req, res) => {
 
         const mailOptions = {
             from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-            to: process.env.CANADENSE_RECEIVER_MAIL,
+            // to: process.env.CANADENSE_RECEIVER_MAIL,
             subject: 'Pagamento aprovado',
             template: 'pagamento-aprovado',
             context: {
@@ -396,12 +661,15 @@ router.post('/process-payment-retry', async (req, res) => {
 
         transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
           if(err) {
-            console.log("Pagamento aprovado (cartão outras tentativas): " + new Date())
+            console.log("Pagamento aprovado (cartão checkout abandonado): " + new Date())
             console.log(err)
           } else {
-              console.log({
-                  message: `Pagamento aprovado (cartão outras tentativas): ${new Date()}`,
-                  response, envelope, messageId})
+            console.log({
+              message: `Pagamento aprovado (cartão checkout abandonado): ${new Date()}`,
+              response,
+              envelope,
+              messageId
+            })
           }
         })
       } else if (savedPayment.status === 'rejected' || savedPayment.status === 'cancelled') {
@@ -457,12 +725,15 @@ router.post('/process-payment-retry', async (req, res) => {
 
         transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
           if(err) {
-            console.log("Pagamento recusado (cartão outras tentativas): " + new Date())
+            console.log("Pagamento recusado (cartão abandonado): " + new Date())
             console.log(err)
           } else {
-              console.log({
-                  message: `Pagamento recusado (cartão outras tentativas): ${new Date()}`,
-                  response, envelope, messageId})
+            console.log({
+              message: `Pagamento recusado (cartão abandonado): ${new Date()}`,
+              response,
+              envelope,
+              messageId
+            })
           }
         })
       }
@@ -476,10 +747,10 @@ router.post('/process-payment-retry', async (req, res) => {
   })
 })
 
-router.post('/process-payment-pix-retry', async (req, res) => {
+router.post('/process-payment-pix-abandoned', async (req, res) => {
   const requestBody = req.body
 
-  const payment = await Payment.findOne({_id: req.query.transactionid}).populate('visaIDs')
+  const payment = await Payment.findOne({idCheckout: req.query.idcheckout}).populate('visaIDs')
   const visas = payment.visaIDs
   const qtyVisas = visas.length
 
@@ -500,21 +771,18 @@ router.post('/process-payment-pix-retry', async (req, res) => {
   }).then(async (response) => {
     try {
       const { response: data } = response
-
-      
-        payment.transaction_amount = data.transaction_amount,
-        payment.transactionId = data.id,
-        payment.docType = requestBody.payer.identification.type,
-        payment.docNumber = requestBody.payer.identification.number,
-        payment.status = data.status,
-        payment.status_details = data.status_detail,
-        payment.payment_type_id = data.payment_type_id,
-        payment.installments = data.installments,
-        payment.qrCode = data.point_of_interaction.transaction_data.qr_code,
-        payment.qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64,
-        payment.visaIDs = visas,
-        payment.createdAt = new Date(data.date_created)
-  
+      payment.transaction_amount = data.transaction_amount,
+      payment.transactionId = data.id,
+      payment.docType = requestBody.payer.identification.type,
+      payment.docNumber = requestBody.payer.identification.number,
+      payment.status = data.status,
+      payment.status_details = data.status_detail,
+      payment.payment_type_id = data.payment_type_id,
+      payment.installments = data.installments,
+      payment.qrCode = data.point_of_interaction.transaction_data.qr_code,
+      payment.qrCodeBase64 = data.point_of_interaction.transaction_data.qr_code_base64,
+      payment.visaIDs = visas,
+      payment.createdAt = new Date(data.date_created)
 
       const savedPayment = await payment.save()
 
@@ -539,12 +807,15 @@ router.post('/process-payment-pix-retry', async (req, res) => {
     
             transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                console.log("Pagamento aprovado (pix outras tentativas): " + new Date())
+                console.log("Pagamento aprovado (pix abandonado): " + new Date())
                 console.log(err)
               } else {
-                  console.log({
-                      message: `Pagamento aprovado (pix outras tentativas): ${new Date()}`,
-                      response, envelope, messageId})
+                console.log({
+                  message: `Pagamento aprovado (pix abandonado): ${new Date()}`,
+                  response,
+                  envelope,
+                  messageId
+                })
               }
             })
           }

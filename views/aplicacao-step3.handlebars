@@ -569,7 +569,7 @@
                     <option value="Nunca casou / Solteiro">Nunca casou / Solteiro</option>
                 </select>
 
-                <label class="mb-2" for="appliedToCanada">Você já solicitou ou obteve um visto, um eTA ou uma permissão para visitar, morar, trabalhar ou estudar no Canadá? <span class="text-red">* (obrigatório)</span></label>
+                <label class="mb-2">Você já solicitou ou obteve um visto, um eTA ou uma permissão para visitar, morar, trabalhar ou estudar no Canadá? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="appliedToCanada" id="appliedToCanada1" onchange="showUCI(this.value)" value="0" required>
@@ -977,7 +977,7 @@
 
                 <label for="canadaDuringStayDetails">Indique brevemente se há detalhes adicionais pertinentes à sua inscrição.</label>
                 <p>Por exemplo, uma necessidade urgente de viajar para o Canadá. Forneça detalhes relevantes para evitar atrasos no processamento de sua inscrição.</p>
-                <textarea rows="5" class="form-control mb-3 w-50" id="canadaDuringStayDetails" name="canadaDuringStayDetails" maxlength="250"></textarea>
+                <textarea rows="5" class="form-control mb-3 w-50" id="canadaDuringStayDetails" name="canadaDuringStayDetails" maxlength="250">{{data.canadaDuringStayDetails}}</textarea>
 
                 <input class="btn btn-success mt-5" id="envForm" type="submit" value="Próximo">
             </form>
@@ -1022,6 +1022,16 @@
     </section>
 </main>
 <script>
+    if ("{{data.appliedToCanada}}" === "1") {
+        const appliedToCanada = document.getElementById("appliedToCanada2")
+        if(appliedToCanada !== "") appliedToCanada.checked = true
+        showUCI("{{data.appliedToCanada}}")
+
+    } else if ("{{data.appliedToCanada}}" === "0") {
+        const appliedToCanada = document.getElementById("appliedToCanada1")
+        if(appliedToCanada !== "") appliedToCanada.checked = true
+    }
+
     function showUCI(value) {
          let dynamicUCI = document.getElementById('dynamicUCI')
         dynamicUCI.innerHTML = ''
@@ -1036,6 +1046,11 @@
         }
     }
 
+    if ("{{data.occupation}}")  {
+        showDataOccupation("{{data.occupation}}")
+        "{{data.employmentTitle}}" ? document.getElementById('employmentTitle').value = "{{data.employmentTitle}}" : ""
+    }
+
     function showDataOccupation(value) {
         let boxEmploymentTitle = document.getElementById('boxEmploymentTitle')
         let employmentDetails = document.getElementById('employmentDetails')
@@ -1043,7 +1058,7 @@
         
         let contentEmploymentDetails = `
             <label for="employmentCompanyName">Nome do empregador ou escola, conforme o caso. <span class="text-red">* (obrigatório)</span></label>
-            <input type="text" class="form-control mb-3 w-50" id="employmentCompanyName" name="employmentCompanyName" required>
+            <input type="text" class="form-control mb-3 w-50" id="employmentCompanyName" name="employmentCompanyName" value="{{data.employmentCompanyName}}" required>
 
             <label class="mb-2" for="employmentCountry" >País/território <span class="text-red">* (obrigatório)</span></label>
             <select class="form-select w-50 mb-3" id="employmentCountry" name="employmentCountry" required>
@@ -1294,7 +1309,7 @@
             </select>
 
             <label class="mb-2" for="employmentCity">Cidade/município <span class="text-red">* (obrigatório)</span></label>
-            <input type="text" class="form-control mb-3 w-50" id="employmentCity"  name="employmentCity">
+            <input type="text" class="form-control mb-3 w-50" id="employmentCity" name="employmentCity" value="{{data.employmentCity}}">
 
             <label class="mb-2" for="employmentFromDateYear">Desde que ano? <span class="text-red">* (obrigatório)</span></label>
             <select class="form-select w-50 mb-3" name="employmentFromDateYear" id="employmentFromDateYear">
@@ -1755,6 +1770,16 @@
         }
     }
 
+    if ("{{data.travelWhen}}" === "1") {
+        const travelWhen = document.getElementById("travelWhen2")
+        if(travelWhen !== "") travelWhen.checked = true
+        showTravel("{{data.travelWhen}}")
+
+    } else if ("{{data.travelWhen}}" === "0") {
+        const travelWhen = document.getElementById("travelWhen1")
+        if(travelWhen !== "") travelWhen.checked = true
+    }
+
     function showTravel(value) {
         let dynamicTravel = document.getElementById('dynamicTravel')
         dynamicTravel.innerHTML = ''
@@ -1938,6 +1963,16 @@
         }
     }
 
+    if ("{{data.refusedVisaToCanda}}" === "1") {
+        const refusedVisaToCanda = document.getElementById("refusedVisaToCanda2")
+        if(refusedVisaToCanda !== "") refusedVisaToCanda.checked = true
+        showRefused("{{data.refusedVisaToCanda}}")
+
+    } else if ("{{data.refusedVisaToCanda}}" === "0") {
+        const refusedVisaToCanda = document.getElementById("refusedVisaToCanda1")
+        if(refusedVisaToCanda !== "") refusedVisaToCanda.checked = true
+    }
+
     function showRefused(value) {
         let dynamicRefused = document.getElementById('dynamicRefused')
         dynamicRefused.innerHTML = ''
@@ -1948,6 +1983,16 @@
                 <textarea rows="5" class="form-control mb-3 w-50"  id="refusedVisaToCandaDetails" name="refusedVisaToCandaDetails" maxlength="500" required>{{data.refusedVisaToCandaDetails}}</textarea>
             `
         }
+    }
+
+    if ("{{data.criminalOffenceAnywhere}}" === "1") {
+        const criminalOffenceAnywhere = document.getElementById("criminalOffenceAnywhere2")
+        if(criminalOffenceAnywhere !== "") criminalOffenceAnywhere.checked = true
+        showCriminal("{{data.criminalOffenceAnywhere}}")
+
+    } else if ("{{data.criminalOffenceAnywhere}}" === "0") {
+        const criminalOffenceAnywhere = document.getElementById("criminalOffenceAnywhere1")
+        if(criminalOffenceAnywhere !== "") criminalOffenceAnywhere.checked = true
     }
 
     function showCriminal(value) {
@@ -1962,6 +2007,34 @@
         }
     }
 
+    if ("{{data.tuberculosis}}" === "1") {
+        const tuberculosis = document.getElementById("tuberculosis2")
+        if(tuberculosis !== "") tuberculosis.checked = true
+        showTuberculosis("{{data.tuberculosis}}")
+
+        if ("{{data.tuberculosisResultCareWorker}}" === "1") {
+            const tuberculosisResultCareWorker = document.getElementById("tuberculosisResultCareWorker2")
+            if(tuberculosisResultCareWorker !== "") tuberculosisResultCareWorker.checked = true
+            showTuberculosisDiagnosed("{{data.tuberculosisResultCareWorker}}")
+
+            if ("{{data.diagnosedWithTuberculosis}}" === "1") {
+                const diagnosedWithTuberculosis = document.getElementById("diagnosedWithTuberculosis2")
+                if(diagnosedWithTuberculosis !== "") diagnosedWithTuberculosis.checked = true
+                
+            } else if ("{{data.diagnosedWithTuberculosis}}" === "0") {
+                const diagnosedWithTuberculosis = document.getElementById("diagnosedWithTuberculosis1")
+                if(diagnosedWithTuberculosis !== "") diagnosedWithTuberculosis.checked = true
+            }
+            
+        } else if ("{{data.tuberculosisResultCareWorker}}" === "0") {
+            const tuberculosisResultCareWorker = document.getElementById("tuberculosisResultCareWorker1")
+            if(tuberculosisResultCareWorker !== "") tuberculosisResultCareWorker.checked = true
+        }
+
+    } else if ("{{data.tuberculosis}}" === "0") {
+        const tuberculosis = document.getElementById("tuberculosis1")
+        if(tuberculosis !== "") tuberculosis.checked = true
+    }
     function showTuberculosis(value) {
         let dynamicTuberculosis = document.getElementById('dynamicTuberculosis')
         dynamicTuberculosis.innerHTML = ''
@@ -2014,6 +2087,7 @@
         }
     }
 
+    //Handle functions
     function validPresentDay(element) {
         // Remove alerta anterior, se existir
         const existingAlert = document.getElementById(`alertDate${element.id}`)
@@ -2121,6 +2195,11 @@
         const travelTimeZone = document.getElementById("travelTimeZone")
         if(travelTimeZone)
             if(travelTimeZone) travelTimeZone.value = "{{data.travelTimeZone}}"
+
+        const theseConditions = document.getElementById("theseConditions")
+        if(theseConditions)
+            if(theseConditions) theseConditions.value = "{{data.theseConditions}}"
+        
     }
 </script>
 

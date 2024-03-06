@@ -136,6 +136,9 @@ const handle = handlebars.create({
                 case 'charged_back':
                     return '<span class="alert-danger p-1">Estornado</span>'
                 
+                case 'Checkout em andamento':
+                    return '<span class="alert-warning p-1">Checkout em andamento</span>'
+                
                 default:
                     return '<span class="alert-warning p-1">Pendente</span>'
 
@@ -362,7 +365,8 @@ const handle = handlebars.create({
             return output
         },
         formatTransactionAmount: (value) => {
-            return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            const amount = value || 0
+            return amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         },
         styleBorderPayment: (status) => {
             switch(status) {
@@ -444,85 +448,54 @@ const mercadopago = require('./config/mercadoPago')
 const cron = require('node-cron')
 
 /***** Tarefa que faz a verificação do checkout abandonado *****/
-// cron.schedule('*/10 * * * *', async () =>  {
-//     const visas = await Visa.find({createdAt: { $lt: new Date(Date.now() - 20 * 60 * 1000) }, pagamento: null})
+cron.schedule('*/9 * * * *', async () =>  {
+    const payment = await Payment.find({
+        status: "Checkout em andamento",
+        createdAt: {
+            $gt: new Date(Date.now() - 18 * 60 * 1000),
+            $lt: new Date(Date.now() - 7 * 60 * 1000)
+        }
+    }).populate('visaIDs')
 
-//     for (const visa of visas) {
-//         transporter.use('compile', hbs(handlebarOptions))
+    for (const element of payment) {
+        transporter.use('compile', hbs(handlebarOptions))
 
-//         transporter.sendMail(
-//             {
-//                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-//                 to: visa.contactEmail,
-//                 replyTo: `eTA Canadense <${process.env.CANADENSE_RECEIVER_MAIL}>`,
-//                 // bcc: process.env.CANADENSE_RECEIVER_MAIL,
-//                 subject: 'eTA Canadense - Finalize sua aplicação',
-//                 template: 'lembrete-pix',
-//                 context: {
-//                     fullname: `${visa.firstName} ${visa.surname}`,
-//                     codeETA: visa.codeETA,
-//                     visaID: visa._id
-//                 }
-//             },
-//             (err, {response, envelope, messageId}) => {
-//                 if(err) {
-//                     console.error("Lembrete de pagamento: " + new Date())
-//                     console.error(err)
-//                 } else {
-//                     console.log({
-//                         message: "Lembrete de pagamento: " + new Date(),
-//                         response,
-//                         envelope,
-//                         messageId
-//                     })
-//                 }
-//             }
-//         )
-//     }
-// })
+        transporter.sendMail(
+            {
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: element.visaIDs[0].contactEmail,
+                // bcc: process.env.CANADENSE_RECEIVER_MAIL,
+                subject: 'eTA Canadense - Finalize sua aplicação',
+                template: 'lembrete',
+                context: {
+                    fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
+                    codeETA: element.visaIDs[0].codeETA,
+                    idcheckout: element.idCheckout
+                }
+            },
+            (err, {response, envelope, messageId}) => {
+                if(err) {
+                    console.error("Lembrete de pagamento: " + new Date())
+                    console.error(err)
+                } else {
+                    console.log({
+                        message: "Lembrete de pagamento: " + new Date(),
+                        response,
+                        envelope,
+                        messageId
+                    })
+                }
+            }
+        )
+    }
 
-// /***** Tarefa que faz a verificação dos PIX pendentes *****/
-// cron.schedule('*/3 * * * *', async () =>  {
-//     const payment = await Payment.find({status: "pending", createdAt: { $gt: new Date(Date.now() - 7 * 60 * 1000) }}).populate('visaIDs')
-
-//     payment.forEach(element => {
-//         transporter.use('compile', hbs(handlebarOptions))
-
-//         transporter.sendMail(
-//             {
-//                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-//                 to: element.visaIDs[0].contactEmail,
-//                 bcc: process.env.CANADENSE_RECEIVER_MAIL,
-//                 subject: 'eTA Canadense - Finalize sua aplicação',
-//                 template: 'lembrete-pix',
-//                 context: {
-//                     fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
-//                     codeETA: element.visaIDs[0].codeETA,
-//                     transactionid: element.transactionId
-//                 }
-//             },
-//             (err, {response, envelope, messageId}) => {
-//                 if(err) {
-//                     console.error("Lembrete de pagamento: " + new Date())
-//                     console.error(err)
-//                 } else {
-//                     console.log({
-//                         message: "Lembrete de pagamento: " + new Date(),
-//                         response,
-//                         envelope,
-//                         messageId
-//                     })
-//                 }
-//             }
-//         )
-//     })
-// })
+    console.log("rodou " + new Date())
+})
 
 /*AUTHENTICATION*/
 const passport = require("passport")
 require("./config/auth")(passport)
 const { isAdmin } = require('./helpers/isAdmin')
-
 
 /*SETTINGS*/
 app.use(cors({
@@ -555,6 +528,7 @@ app.use((req, res, next) => {
     res.locals.user = req.user || null
     next()
 })
+
 app.use(cookieParser())
 
 app.use((req, res, next) => {
@@ -611,8 +585,8 @@ app.get('/aplicacao', (req, res) => {
     }
 
     if(parseInt(req.query.etapa) === 2) {
-        const sessionaData = req.session.aplicacaoStep
-        if('representative' in sessionaData ) {
+        const sessionData = req.session.aplicacaoStep
+        if('representative' in sessionData ) {
             const title = "Validação - "
             res.render('aplicacao-step2', { title, data: req.session.aplicacaoStep })
         } else {
@@ -623,8 +597,8 @@ app.get('/aplicacao', (req, res) => {
     }
 
     if(parseInt(req.query.etapa) === 3) {
-        const sessionaData = req.session.aplicacaoStep
-        if('document' in sessionaData) {
+        const sessionData = req.session.aplicacaoStep
+        if('document' in sessionData) {
             const title = "Documentos - "
             const { canadaVisa, nonImmigrateVisa } = req.session.aplicacaoStep
             if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
@@ -638,10 +612,10 @@ app.get('/aplicacao', (req, res) => {
                             <i class="bi bi-question-circle-fill btn p-0"></i>
                         </a>
                     </span>
-                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="9" required>
+                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="9" value="${sessionData.numVisaNonImmigrate ? sessionData.numVisaNonImmigrate : ""}" required>
 
                     <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
-                    <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" required>   
+                    <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" value="${sessionData.dateVisaNonImmigrate ? sessionData.dateVisaNonImmigrate : ""}" required>   
                 `
                 res.render('aplicacao-step3', {title, dynamicData, data: req.session.aplicacaoStep})
             } else {
@@ -655,8 +629,8 @@ app.get('/aplicacao', (req, res) => {
     }
 
     if(parseInt(req.query.etapa) === 4) {
-        const sessionaData = req.session.aplicacaoStep
-        if('numPassport' in sessionaData) {
+        const sessionData = req.session.aplicacaoStep
+        if('numPassport' in sessionData) {
             const title = "Conferência - "
             res.render('aplicacao-step4', {title, data: req.session.aplicacaoStep})
         } else {
@@ -701,21 +675,29 @@ app.post('/aplicacaoStep3', (req, res) => {
 
 app.post('/aplicacaoStep4', async (req, res) => {
     bcrypt.genSalt(10, (error, salt) => {
+        if (error) {
+            console.error('Erro ao gerar o salt:', error)
+            return res.status(500).send('Erro interno no servidor')
+        }
+
         let code = ''
+
         bcrypt.hash(code, salt, (error, hash) => {
-            let codeETA = ''
+            if (error) {
+                console.error('Erro ao gerar o hash:', error)
+                return res.status(500).send('Erro interno no servidor')
+            }
+
             code = hash
-            codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
+            const codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
             const agreeCheck = req.body.agreeCheck
             const consentAndDeclaration = req.body.consentAndDeclaration
 
-            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA}))
-
+            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }))
             const visaID = newVisa._id
 
             let sessionIDs
-
             if (req.session.visas && req.session.visas.ids) {
                 sessionIDs = req.session.visas.ids
                 sessionIDs.push(visaID)
@@ -723,21 +705,46 @@ app.post('/aplicacaoStep4', async (req, res) => {
                 sessionIDs = [visaID]
                 req.session.visas = { ids: sessionIDs }
             }
-            req.session.aplicacaoStep = Object.assign({}, {visaID}, req.session.aplicacaoStep, {agreeCheck, consentAndDeclaration, codeETA})
-        
-            newVisa.save().then(() => {
-                res.status(200).json({
-                    whichAction: req.body.whichAction
-                })
-            }).catch((err) => {
+
+            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA })
+
+            newVisa.save().then(async () => {
+                if (req.body.whichAction === "goToPayment") {
+                    if (!req.session.sessionCheckout) {
+                        const idRandom = crypto.randomUUID()
+                        req.session.sessionCheckout = idRandom
+                        
+                        const newPayment = new Payment({
+                            idCheckout: idRandom,
+                            status: "Checkout em andamento",
+                            visaIDs: sessionIDs
+                        })
+
+                        await newPayment.save()
+
+                    } else {
+                        await Payment.findOneAndUpdate(
+                            { idCheckout: req.session.sessionCheckout },
+                            {
+                                $set: {
+                                    visaIDs: sessionIDs
+                                }
+                            }
+                        )
+                    }
+                }
+
+                res.status(200).json({ whichAction: req.body.whichAction })
+            }).catch(err => {
                 console.log(err)
                 req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
                 res.redirect('/aplicacao')
                 req.session.destroy()
             })
-        })      
+        })
     })
 })
+
 
 app.get('/acompanhar-solicitacao', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
@@ -851,7 +858,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', /*isAdmin,*/ admin)
+app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 

@@ -29,10 +29,6 @@
         <div class="container py-3">
             <h1>Solicitação de Autorização Eletrônica de Viagem (eTA)</h1>
             <hr>
-            {{#each errors}}
-                <div class="alert alert-danger">{{text}}</div>
-            {{else}}
-            {{/each}}
             <h2>Progresso da sua solicitação</h2>
             <div class="progress mt-3 mb-5" style="height: 25px;">
                 <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -506,7 +502,7 @@
                             </div>
                         </div>
                         <label for="diagnosedWithTuberculosis">Você já foi diagnosticado com tuberculose?</label>
-                        {{#if diagnosedWithTuberculosis}}
+                        {{#if data.diagnosedWithTuberculosis}}
                             <div class="p-2 w-50 d-flex flex-row gap-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="diagnosedWithTuberculosis" id="diagnosedWithTuberculosis1" value="0" disabled required>
@@ -571,7 +567,7 @@
                 {{/if}}
                 
                 <label class="mb-2" for="theseConditions">Você tem uma dessas condições?</label>
-                <select class="form-select mb-3 w-50" id="theseConditions" name="theseConditions" disabled required>
+                <select class="form-control mb-3 w-50" id="theseConditions" name="theseConditions" disabled required>
                     <option value="{{data.theseConditions}}">{{data.theseConditions}}</option>
                 </select>
 
@@ -643,6 +639,7 @@
         </div>
     </section>
 </main>
+
 <script>
     document.getElementById("form-aplicacao").addEventListener('submit', e => e.preventDefault())
 

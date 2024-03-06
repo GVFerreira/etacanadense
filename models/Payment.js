@@ -2,13 +2,14 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema
 
 const Payment = new Schema({
+    idCheckout: {
+        type: String
+    },
     transaction_amount: {
         type: Number,
-        required: true
     },
     transactionId: {
         type: String,
-        required: true,
     },
     docType: {
         type: String
@@ -22,11 +23,9 @@ const Payment = new Schema({
     },
     status_details: {
         type: String,
-        required: true,
     },
     payment_type_id: {
         type: String,
-        required: true
     },
     installments: {
         type: Number
@@ -43,7 +42,8 @@ const Payment = new Schema({
     }],
     createdAt: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now
     }
 })
 

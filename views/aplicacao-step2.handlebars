@@ -21,15 +21,12 @@
         color: #FF0000
     }
 </style>
+
 <main style="flex: 1 1 0">
     <section class="section-1 py-5">
         <div class="container py-3">
             <h1>Solicitação de Autorização Eletrônica de Viagem (eTA)</h1>
             <hr>
-            {{#each errors}}
-                <div class="alert alert-danger">{{text}}</div>
-            {{else}}
-            {{/each}}
             <h2>Progresso da sua solicitação</h2>
             <div class="progress mt-3 mb-5" style="height: 25px;">
                 <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -45,6 +42,7 @@
                     <p class="m-0 p-0">4. Conferência</p>
                 </div>
             </div>
+
             <form action="/aplicacaoStep2" method="POST">
                 <label class="mb-0" for="document">Qual documento de viagem você pretende usar para viajar ao Canadá? <span class="text-red">* (obrigatório)</span></label>
                 <span class="d-block small mb-2">
@@ -57,7 +55,9 @@
                     <option value="" selected disabled>Selecione</option>
                     <option value="Passaporte – comum/regular">Passaporte – comum/regular</option>
                 </select>
+
                 <div class="mb-3" id="dynamicFields"></div>
+                
                 <input class="btn btn-success mt-5" id="envForm" type="submit" value="Próximo">
             </form>
         </div>
@@ -101,6 +101,13 @@
     </section>
 </main>
 <script>
+    if ("{{data.document}}") {
+        const documentPass = document.getElementById("document")
+        if(documentPass !== "") documentPass.value = "{{data.document}}"
+
+        showFields("{{data.document}}")
+    } 
+
     function showFields(type) {
         let dynamicFields = document.getElementById('dynamicFields')
         dynamicFields.innerHTML = ''
@@ -166,6 +173,15 @@
                 </select>
                 <div id="dynamicUSCIS"></div>
             `
+            if ("{{data.codPassport}}") {
+                const codPassport = document.getElementById("codPassport")
+                if(codPassport !== "") codPassport.value = "{{data.codPassport}}"
+
+                showUSCIS("{{data.codPassport}}")        
+            }
+
+            const envForm = document.getElementById('envForm')
+            envForm.disabled = true
         }
     }
     
@@ -192,6 +208,27 @@
                 </div>
                 <div id="dynamicAviao"></div>
             `
+            if (parseInt("{{data.residentUSCIS}}")) {
+                const residentUSCIS = document.getElementById("residentUSCIS2")
+                if(residentUSCIS !== "") residentUSCIS.checked = true
+
+            } else if (parseInt("{{data.residentUSCIS}}") == 0) {
+                const residentUSCIS = document.getElementById("residentUSCIS1")
+                if(residentUSCIS !== "") residentUSCIS.checked = true
+
+                showAviao(parseInt("{{data.residentUSCIS}}"))
+            
+                if (parseInt("{{data.airplane}}")) {
+                    const airplane = document.getElementById("airplane2")
+                    if(airplane !== "") airplane.checked = true
+                    showCanadaVisa(parseInt("{{data.airplane}}"))
+
+                } else if (parseInt("{{data.airplane}}") == 0) {
+                    const airplane = document.getElementById("airplane1")
+                    if(airplane !== "") airplane.checked = true
+                }
+            }
+
             const envForm = document.getElementById('envForm')
             envForm.disabled = "disabled"
 
@@ -248,6 +285,12 @@
                 </select>
                 <div id="dynamicAviao"></div>
             `
+            
+            if ("{{data.nationalityPassport}}") {
+                const nationalityPassport = document.getElementById("nationalityPassport")
+                if(nationalityPassport !== "") nationalityPassport.value = "{{data.nationalityPassport}}"
+            }
+
             const envForm = document.getElementById('envForm')
             envForm.disabled = ""
 
@@ -335,9 +378,36 @@
                     </div>
                 </div>
             `
+
             dynamicAviao.innerHTML += `
                 <div id="dynamicCanadaVisa"></div>
             `
+
+            if ("{{data.nationalityPassport}}") {
+                const nationalityPassport = document.getElementById("nationalityPassport")
+                if(nationalityPassport !== "") nationalityPassport.value = "{{data.nationalityPassport}}"
+            }
+
+            if (parseInt("{{data.airplane}}")) {
+                const airplane = document.getElementById("airplane2")
+                if(airplane !== "") airplane.checked = true
+
+            } else if (parseInt("{{data.airplane}}") == 0) {
+                const airplane = document.getElementById("airplane1")
+                if(airplane !== "") airplane.checked = true
+            }
+
+            if (parseInt("{{data.airplane}}")) {
+                const airplane = document.getElementById("airplane2")
+                if(airplane !== "") airplane.checked = true
+
+                showCanadaVisa(parseInt("{{data.airplane}}"))
+
+            } else if (parseInt("{{data.airplane}}") == 0) {
+                const airplane = document.getElementById("airplane1")
+                if(airplane !== "") airplane.checked = true
+            }
+
         }
     }
     
@@ -354,6 +424,7 @@
             const envForm = document.getElementById('envForm')
             envForm.disabled = "disabled"
         } else if (type === 1) {
+            
             dynamicCanadaVisa.innerHTML += `
                 <label for="canadaVisa" class="mt-3">Nos últimos 10 anos, você possuiu um visto canadense de residente temporário válido? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
@@ -370,10 +441,21 @@
                         </label>
                     </div>
                 </div>
-            `
-            dynamicCanadaVisa.innerHTML += `
                 <div id="dynamicNonImmigrateVisa"></div>
             `
+
+            if (parseInt("{{data.canadaVisa}}")) {
+                const canadaVisa = document.getElementById("canadaVisa2")
+                if(canadaVisa !== "") canadaVisa.checked = true
+                showNonImmigrateVisa(parseInt("{{data.canadaVisa}}"))
+
+            } else {
+                const canadaVisa = document.getElementById("canadaVisa1")
+                if(canadaVisa !== "") canadaVisa.checked = true
+                showNonImmigrateVisa(parseInt("{{data.canadaVisa}}"))
+            }
+
+            
         }
     }
     
@@ -383,13 +465,13 @@
             <label for="nonImmigrateVisa" class="mt-3">Você atualmente possui um visto válido de não-imigrante nos EUA? <span class="text-red">* (obrigatório)</span></label>
             <div class="p-2 w-50 d-flex flex-row gap-4">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" onchange="showDangerText(0)" value="0" required="required">
+                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa1" onclick="showDangerText(0)" value="0" required="required">
                     <label class="form-check-label" for="nonImmigrateVisa1">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" onchange="showDangerText(1)" value="1" required="required">
+                    <input class="form-check-input" type="radio" name="nonImmigrateVisa" id="nonImmigrateVisa2" onclick="showDangerText(1)" value="1" required="required">
                     <label class="form-check-label" for="nonImmigrateVisa2">
                         Sim
                     </label>
@@ -397,10 +479,21 @@
             </div>
             <input type="hidden" id="valueCanadaVisa" value="${type}">
             <div id="finalDangerText"></div>
-
         `
+
+        if (parseInt("{{data.nonImmigrateVisa}}")) {
+            const nonImmigrateVisa = document.getElementById("nonImmigrateVisa2")
+            if(nonImmigrateVisa !== "") nonImmigrateVisa.checked = true
+
+        } else {
+            
+            const nonImmigrateVisa = document.getElementById("nonImmigrateVisa1")
+            if(nonImmigrateVisa !== "") nonImmigrateVisa.checked = true
+        }
+        
+
     }
-    
+
     function showDangerText(type) {
         let finalDangerText = document.getElementById('finalDangerText')
         const canadaVisa = document.getElementById('valueCanadaVisa').value
@@ -412,13 +505,14 @@
                     <p class="m-0">Com base nas suas respostas, você não pode solicitar um eTA. Você pode precisar de um visto ou outro tipo de documento de viagem para viajar para o Canadá.</p>
                 </div>
             `
+
             const envForm = document.getElementById('envForm')
             envForm.disabled = "disabled"
         } else  {
             const envForm = document.getElementById('envForm')
             envForm.disabled = ""
-        }
-    }
 
+        }   
+    }
 </script>
 

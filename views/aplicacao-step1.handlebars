@@ -28,10 +28,6 @@
         <div class="container py-3">
             <h1>Solicitação de Autorização Eletrônica de Viagem (eTA)</h1>
             <hr>
-            {{#each errors}}
-                <div class="alert alert-danger">{{text}}</div>
-            {{else}}
-            {{/each}}
             <h2>Progresso da sua solicitação</h2>
             <div class="progress mt-3 mb-5" style="height: 25px;">
                 <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
@@ -49,18 +45,39 @@
             </div>
             <form action="/aplicacaoStep1" method="POST">
                 <label class="mb-2" for="representative">Você é responsável ou representante que apresenta a solicitação de eTA em nome de outra pessoa? <span class="text-red">* (obrigatório)</span></label>
-                <select class="form-select w-50 mb-3" name="representative" id="representative" onchange="showFields(this.value)" required>
-                    <option value="" selected disabled>Selecione</option>
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-                </select>
+                <div class="p-2 w-50 d-flex flex-row gap-4 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representative" id="representative1" value="0" onchange="showFields(this.value)" required>
+                        <label class="form-check-label" for="representative1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representative" id="representative2" value="1" onchange="showFields(this.value)" required>
+                        <label class="form-check-label" for="representative2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+
                 <div class="mb-3" id="dynamicFields"></div>
+
                 <input class="btn btn-success mt-5" type="submit" value="Próximo">
             </form>
         </div>
     </section>
 </main>
 <script>
+    if (parseInt("{{data.representative}}")) {
+        const representative = document.getElementById("representative2")
+        if(representative !== "") representative.checked = true
+
+        showFields("{{data.representative}}")
+    } else if (parseInt("{{data.representative}}") == 0) {
+        const representative = document.getElementById("representative1")
+        if(representative !== "") representative.checked = true
+    }
+
     function showFields(type) {
         let dynamicFields = document.getElementById('dynamicFields')
         dynamicFields.innerHTML = ''
@@ -70,6 +87,22 @@
         } else if (type === '1') {
             dynamicFields.innerHTML += '<h2>Detalhes do responsável ou representante</h2><hr>'
             dynamicFields.innerHTML += `
+                <label for="representativePayed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome? <span class="text-red">* (obrigatório)</span></label>
+                <div class="p-2 w-50 d-flex flex-row gap-4 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed1" value="0" required>
+                        <label class="form-check-label" for="representativePayed1">
+                            Não
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="representativePayed" id="representativePayed2" value="1" required>
+                        <label class="form-check-label" for="representativePayed2">
+                            Sim
+                        </label>
+                    </div>
+                </div>
+
                 <label for="representativeRelationship">Eu sou <span class="text-red">* (obrigatório)</span></label>
                 <select class="form-select w-50 mb-3" name="representativeRelationship" id="representativeRelationship" onchange="relationType(this.value)" required>
                     <option value="" selected disabled>Selecione</option>
@@ -81,14 +114,25 @@
                     <option value="Agente de viagens">Agente de viagens</option>
                 </select>
 
-                <label for="representativePayed">Você está sendo pago para representar o requerente e preencher o formulário em seu nome? <span class="text-red">* (obrigatório)</span></label>
-                <select class="form-select w-50 mb-3" name="representativePayed" id="representativePayed" required>
-                    <option value="" selected disabled>Selecione</option>
-                    <option value="0">Não</option>
-                    <option value="1">Sim</option>
-                </select>
                 <div id="relationFields"></div>
             `
+
+            if (parseInt("{{data.representativePayed}}")) {
+                const representativePayed = document.getElementById("representativePayed2")
+                if(representativePayed !== "") representativePayed.checked = true
+
+            } else if (parseInt("{{data.representativePayed}}") == 0) {
+                const representativePayed = document.getElementById("representativePayed1")
+                console.log(representativePayed)
+                if(representativePayed !== "") representativePayed.checked = true
+            }
+
+            if (parseInt("{{data.representative}}")) {
+                const representativeRelationship = document.getElementById("representativeRelationship")
+                if(representativeRelationship !== "") representativeRelationship.value = "{{data.representativeRelationship}}"
+
+                relationType("{{data.representativeRelationship}}")
+            }
         }
     }
 
