@@ -249,8 +249,8 @@ router.post("/process-payment-pix", (req, res) => {
           $set: {
             transaction_amount: data.transaction_amount,
             transactionId: data.id,
-            docType: payer.identification.type,
-            docNumber: payer.identification.number,
+            docType: requestBody.payer.identification.type,
+            docNumber: requestBody.payer.identification.number,
             status: data.status,
             status_details: data.status_detail,
             payment_type_id: data.payment_type_id,
