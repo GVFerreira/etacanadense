@@ -747,7 +747,6 @@ app.post('/aplicacaoStep4', async (req, res) => {
     })
 })
 
-
 app.get('/acompanhar-solicitacao', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted

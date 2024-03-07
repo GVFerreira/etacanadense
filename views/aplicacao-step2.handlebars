@@ -106,7 +106,7 @@
         if(documentPass !== "") documentPass.value = "{{data.document}}"
 
         showFields("{{data.document}}")
-    } 
+    }
 
     function showFields(type) {
         let dynamicFields = document.getElementById('dynamicFields')
@@ -173,16 +173,22 @@
                 </select>
                 <div id="dynamicUSCIS"></div>
             `
-            if ("{{data.codPassport}}") {
-                const codPassport = document.getElementById("codPassport")
-                if(codPassport !== "") codPassport.value = "{{data.codPassport}}"
-
-                showUSCIS("{{data.codPassport}}")        
-            }
 
             const envForm = document.getElementById('envForm')
             envForm.disabled = true
         }
+    }
+
+    if ("{{data.codPassport}}") {
+        const codPassport = document.getElementById("codPassport")
+        if(codPassport !== "") codPassport.value = "{{data.codPassport}}"
+
+        showUSCIS("{{data.codPassport}}")        
+    }
+
+    if ("{{data.nationalityPassport}}") {
+        const nationalityPassport = document.getElementById("nationalityPassport")
+        if(nationalityPassport !== "") nationalityPassport.value = "{{data.nationalityPassport}}"       
     }
     
     function showUSCIS(codPassport) {
@@ -191,6 +197,55 @@
 
         if (codPassport === 'ATG (Antígua e Barbuda)' || codPassport === 'BRA (Brasil)') {
             dynamicUSCIS.innerHTML += `
+                <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte? <span class="text-red">* (obrigatório)</span></label>
+                <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" required>
+                    <option value="" selected disabled>Selecione</option>
+                    <option value="Alemanha">Alemanha</option>
+                    <option value="Andorra">Andorra</option>
+                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Austrália">Austrália</option>
+                    <option value="Áustria">Áustria</option>
+                    <option value="Bahamas">Bahamas</option>
+                    <option value="Barbados">Barbados</option>
+                    <option value="Bélgica">Bélgica</option>
+                    <option value="Brasil">Brasil</option>
+                    <option value="Brunei Darussalam">Brunei Darussalam</option>
+                    <option value="Chipre">Chipre</option>
+                    <option value="Chile">Chile</option>
+                    <option value="Croácia">Croácia</option>
+                    <option value="Dinamarca">Dinamarca</option>
+                    <option value="Eslováquia">Eslováquia</option>
+                    <option value="Eslovênia">Eslovênia</option>
+                    <option value="Espanha">Espanha</option>
+                    <option value="Estônia">Estônia</option>
+                    <option value="Finlândia">Finlândia</option>
+                    <option value="França">França</option>
+                    <option value="Grécia">Grécia</option>
+                    <option value="Holanda">Holanda</option>
+                    <option value="Hungria">Hungria</option>
+                    <option value="Ilhas Salomão">Ilhas Salomão</option>
+                    <option value="Islândia">Islândia</option>
+                    <option value="Irlanda">Irlanda</option>
+                    <option value="Itália">Itália</option>
+                    <option value="Japão">Japão</option>
+                    <option value="Coréia do Sul">Coréia do Sul</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Lituânia">Lituânia</option>
+                    <option value="Luxemburgo">Luxemburgo</option>
+                    <option value="Letônia">Letônia</option>
+                    <option value="Mônaco">Mônaco</option>
+                    <option value="Noruega">Noruega</option>
+                    <option value="Nova Zelândia">Nova Zelândia</option>
+                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
+                    <option value="Polônia">Polônia</option>
+                    <option value="Portugal">Portugal</option>
+                    <option value="República Checa">República Checa</option>
+                    <option value="Samoa">Samoa</option>
+                    <option value="São Marino">São Marino</option>
+                    <option value="Singapura">Singapura</option>
+                    <option value="Suécia">Suécia</option>
+                    <option value="Suíça">Suíça</option>
+                </select>
                 <label for="residentUSCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
@@ -208,26 +263,6 @@
                 </div>
                 <div id="dynamicAviao"></div>
             `
-            if (parseInt("{{data.residentUSCIS}}")) {
-                const residentUSCIS = document.getElementById("residentUSCIS2")
-                if(residentUSCIS !== "") residentUSCIS.checked = true
-
-            } else if (parseInt("{{data.residentUSCIS}}") == 0) {
-                const residentUSCIS = document.getElementById("residentUSCIS1")
-                if(residentUSCIS !== "") residentUSCIS.checked = true
-
-                showAviao(parseInt("{{data.residentUSCIS}}"))
-            
-                if (parseInt("{{data.airplane}}")) {
-                    const airplane = document.getElementById("airplane2")
-                    if(airplane !== "") airplane.checked = true
-                    showCanadaVisa(parseInt("{{data.airplane}}"))
-
-                } else if (parseInt("{{data.airplane}}") == 0) {
-                    const airplane = document.getElementById("airplane1")
-                    if(airplane !== "") airplane.checked = true
-                }
-            }
 
             const envForm = document.getElementById('envForm')
             envForm.disabled = "disabled"
@@ -285,16 +320,25 @@
                 </select>
                 <div id="dynamicAviao"></div>
             `
-            
-            if ("{{data.nationalityPassport}}") {
-                const nationalityPassport = document.getElementById("nationalityPassport")
-                if(nationalityPassport !== "") nationalityPassport.value = "{{data.nationalityPassport}}"
-            }
 
             const envForm = document.getElementById('envForm')
             envForm.disabled = ""
 
         }
+    }
+
+    if (parseInt("{{data.residentUSCIS}}") === 0) {
+        const residentUSCIS = document.getElementById("residentUSCIS1")
+        if(residentUSCIS !== "") residentUSCIS.checked = true
+        showAviao(parseInt("{{data.residentUSCIS}}"))
+
+    }
+
+    if (parseInt("{{data.airplane}}") === 1) {
+        const airplane = document.getElementById("airplane2")
+        if(airplane !== "") airplane.checked = true
+        showCanadaVisa(parseInt("{{data.airplane}}"))
+
     }
     
     function showAviao(type) {
@@ -312,56 +356,6 @@
                 
         } else if (type === 0) {
             dynamicAviao.innerHTML += `
-                <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte? <span class="text-red">* (obrigatório)</span></label>
-                <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" required>
-                    <option value="" selected disabled>Selecione</option>
-                    <option value="Alemanha">Alemanha</option>
-                    <option value="Andorra">Andorra</option>
-                    <option value="Antígua e Barbuda">Antígua e Barbuda</option>
-                    <option value="Austrália">Austrália</option>
-                    <option value="Áustria">Áustria</option>
-                    <option value="Bahamas">Bahamas</option>
-                    <option value="Barbados">Barbados</option>
-                    <option value="Bélgica">Bélgica</option>
-                    <option value="Brasil">Brasil</option>
-                    <option value="Brunei Darussalam">Brunei Darussalam</option>
-                    <option value="Chipre">Chipre</option>
-                    <option value="Chile">Chile</option>
-                    <option value="Croácia">Croácia</option>
-                    <option value="Dinamarca">Dinamarca</option>
-                    <option value="Eslováquia">Eslováquia</option>
-                    <option value="Eslovênia">Eslovênia</option>
-                    <option value="Espanha">Espanha</option>
-                    <option value="Estônia">Estônia</option>
-                    <option value="Finlândia">Finlândia</option>
-                    <option value="França">França</option>
-                    <option value="Grécia">Grécia</option>
-                    <option value="Holanda">Holanda</option>
-                    <option value="Hungria">Hungria</option>
-                    <option value="Ilhas Salomão">Ilhas Salomão</option>
-                    <option value="Islândia">Islândia</option>
-                    <option value="Irlanda">Irlanda</option>
-                    <option value="Itália">Itália</option>
-                    <option value="Japão">Japão</option>
-                    <option value="Coréia do Sul">Coréia do Sul</option>
-                    <option value="Liechtenstein">Liechtenstein</option>
-                    <option value="Lituânia">Lituânia</option>
-                    <option value="Luxemburgo">Luxemburgo</option>
-                    <option value="Letônia">Letônia</option>
-                    <option value="Mônaco">Mônaco</option>
-                    <option value="Noruega">Noruega</option>
-                    <option value="Nova Zelândia">Nova Zelândia</option>
-                    <option value="Papua Nova Guiné">Papua Nova Guiné</option>
-                    <option value="Polônia">Polônia</option>
-                    <option value="Portugal">Portugal</option>
-                    <option value="República Checa">República Checa</option>
-                    <option value="Samoa">Samoa</option>
-                    <option value="São Marino">São Marino</option>
-                    <option value="Singapura">Singapura</option>
-                    <option value="Suécia">Suécia</option>
-                    <option value="Suíça">Suíça</option>
-                </select>
-
                 <label for="airplane" class="mt-3">Você está viajando para o Canadá de avião? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
                     <div class="form-check">
@@ -382,31 +376,6 @@
             dynamicAviao.innerHTML += `
                 <div id="dynamicCanadaVisa"></div>
             `
-
-            if ("{{data.nationalityPassport}}") {
-                const nationalityPassport = document.getElementById("nationalityPassport")
-                if(nationalityPassport !== "") nationalityPassport.value = "{{data.nationalityPassport}}"
-            }
-
-            if (parseInt("{{data.airplane}}")) {
-                const airplane = document.getElementById("airplane2")
-                if(airplane !== "") airplane.checked = true
-
-            } else if (parseInt("{{data.airplane}}") == 0) {
-                const airplane = document.getElementById("airplane1")
-                if(airplane !== "") airplane.checked = true
-            }
-
-            if (parseInt("{{data.airplane}}")) {
-                const airplane = document.getElementById("airplane2")
-                if(airplane !== "") airplane.checked = true
-
-                showCanadaVisa(parseInt("{{data.airplane}}"))
-
-            } else if (parseInt("{{data.airplane}}") == 0) {
-                const airplane = document.getElementById("airplane1")
-                if(airplane !== "") airplane.checked = true
-            }
 
         }
     }
@@ -443,21 +412,21 @@
                 </div>
                 <div id="dynamicNonImmigrateVisa"></div>
             `
-
-            if (parseInt("{{data.canadaVisa}}")) {
+            if (parseInt("{{data.canadaVisa}}") === 1) {
                 const canadaVisa = document.getElementById("canadaVisa2")
                 if(canadaVisa !== "") canadaVisa.checked = true
-                showNonImmigrateVisa(parseInt("{{data.canadaVisa}}"))
 
-            } else {
+            } else if (parseInt("{{data.canadaVisa}}") === 0) {
                 const canadaVisa = document.getElementById("canadaVisa1")
                 if(canadaVisa !== "") canadaVisa.checked = true
-                showNonImmigrateVisa(parseInt("{{data.canadaVisa}}"))
+
             }
 
-            
+            showNonImmigrateVisa(parseInt("{{data.canadaVisa}}"))
         }
     }
+
+    
     
     function showNonImmigrateVisa(type) {
         let dynamicNonImmigrateVisa = document.getElementById('dynamicNonImmigrateVisa')
@@ -480,17 +449,16 @@
             <input type="hidden" id="valueCanadaVisa" value="${type}">
             <div id="finalDangerText"></div>
         `
-
-        if (parseInt("{{data.nonImmigrateVisa}}")) {
+        if (parseInt("{{data.nonImmigrateVisa}}") === 1) {
             const nonImmigrateVisa = document.getElementById("nonImmigrateVisa2")
             if(nonImmigrateVisa !== "") nonImmigrateVisa.checked = true
 
-        } else {
-            
+        } else if (parseInt("{{data.nonImmigrateVisa}}") === 0) {
             const nonImmigrateVisa = document.getElementById("nonImmigrateVisa1")
             if(nonImmigrateVisa !== "") nonImmigrateVisa.checked = true
         }
-        
+
+        showDangerText(parseInt("{{data.nonImmigrateVisa}}"))
 
     }
 
@@ -509,6 +477,7 @@
             const envForm = document.getElementById('envForm')
             envForm.disabled = "disabled"
         } else  {
+            console.log("entrou aqui")
             const envForm = document.getElementById('envForm')
             envForm.disabled = ""
 
