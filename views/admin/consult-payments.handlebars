@@ -6,20 +6,22 @@
 <main class="my-5" style="flex: 1 1 0">
     <section>
         <div class="container">
-            <h1 class="p-0 mb-2">Consulte os pagamentos</h1>
+            <h1 class="p-0 mb-3">Consulte os pagamentos</h1>
             <div class="card">
                 <div class="card-header">
+                    {{!-- Filtro --}}
+                    <h2 class="h3">Filtro</h2>
                     <form method="GET" class="mb-2">
                         <div class="d-flex align-items-end gap-5">
                             <div>
-                                <p class="sort">Ordem de criação:</p>
+                                <label class="sort">Ordem de criação:</label>
                                 <select name="sort" id="sort" class="form-select">
                                     <option value="DESC">Recente -> Antigo</option>
                                     <option value="ASC">Antigo -> Recente</option>
                                 </select>
                             </div>
                             <div>
-                                <p class="limit">Limite por página:</p>
+                                <label class="limit">Limite por página:</label>
                                 <select name="limit" id="limit" class="form-select">
                                     <option value="10">10</option>
                                     <option value="20">20</option>
@@ -28,10 +30,10 @@
                                 </select>
                             </div>
                             <div>
-                                <p class="filter">Filtro por status:</p>
+                                <label class="filter">Status:</label>
                                 <select name="filter" id="filter" class="form-select">
                                     <option value="approved">Aprovado</option>
-                                    <option value="in_process">Em processamento</option>
+                                    <option value="in_process">Pendente</option>
                                     <option value="rejected">Rejeitado</option>
                                 </select>
                             </div>
@@ -39,6 +41,39 @@
                                 <input type="text" name="page" id="page" value="1">
                             </div>
                             <input type="submit" value="Filtrar" class="btn btn-primary">
+                        </div>
+                    </form>
+                    <hr>
+                    {{!-- Extração de relatório --}}
+                    <h2 class="h3">Relatório</h2>
+                    <form action="/admin/extract-payments" method="post">
+                        <div class="d-flex align-items-end gap-5">
+                            <div>
+                                <label for="initialDate">Data inicial:</label>
+                                <input type="date" name="initialDate" id="initialDate" class="form-control" required>
+                            </div>
+
+                            <div>
+                                <label for="finalDate">Data final:</label>
+                                <input type="date" name="finalDate" id="finalDate" class="form-control" required>
+                            </div>
+
+                            <div>
+                                <label for="selectedStatus">Status:</label>
+                                <select class="form-select" name="selectedStatus" id="selectedStatus" required>
+                                    <option value="" disabled>Selecione</option>
+                                    <option value="all">Todos</option>
+                                    <option value="pending">Pendente</option>
+                                    <option value="approved">Aprovado</option>
+                                    <option value="rejected">Recusado</option>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-success">
+                                    Extrair relatório
+                                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -92,7 +127,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <form action="/admin/edit-payment/{{id}}" method="POST">
-                                                <label class="mb-2" for="statusPayment">Status do pagamento</label>
+                                                <label class="mb-2" for="statusPayment{{id}}">Status do pagamento</label>
                                                 <select class="form-select mb-3" name="statusPayment" id="statusPayment{{id}}" required>
                                                     <option value="" disabled>Selecione</option>
                                                     <option value="pending">Pendente</option>

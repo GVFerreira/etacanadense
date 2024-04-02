@@ -87,7 +87,7 @@
                                                     <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3" required>
                                                 </div>
                                             </div>
-                                            <input type="email" id="form-checkout__cardholderEmail" value="{{data.contactEmail}}" class="form-control mb-3" required>
+                                            <input type="email" id="form-checkout__cardholderEmail" value="{{sessionData.contactEmail}}" class="form-control mb-3" required>
                                             <input type="text" id="form-checkout__deviceId" class="form-control mb-3 d-none">
                                         </div>
                                     </div>
@@ -128,7 +128,7 @@
                                             <input id="form-checkout-pix__identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento" required>
                                         </div>
                                     </div>
-                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{data.contactEmail}}" required>
+                                    <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{sessionData.contactEmail}}" required>
                                     <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                                 </form>
                                 <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>

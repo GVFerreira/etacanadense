@@ -40,18 +40,24 @@ mercadopago.configure({
 // PAGAMENTO //
 ///////////////
 router.get('/', async (req, res) => {
-  const sessionaData = req.session.aplicacaoStep
+  const sessionData = req.session.aplicacaoStep
+  const title = 'Checkout - '
 
-  if('visaID' in sessionaData) {
-    const title = 'Checkout - '
-    const data = req.session.aplicacaoStep
+  if('visaID' in sessionData) {
     const publicKey = process.env.MERCADO_PAGO_SAMPLE_PUBLIC_KEY
     const visas = req.session.visas.ids
     const qtyVisas = visas.length
 
-    const visasData = await Visa.find({_id: { $in: visas }})
+    try {
+      const visasData = await Visa.find({_id: { $in: visas }})
+      res.render('checkout/index', {title, sessionData, publicKey, visas, visasData, qtyVisas})
+    } catch (err) {
+      console.log("Erro ao carregar o checkout (index): " + new Date())
+      console.log(err)
+      req.flash('error_msg', 'Não foi possível carregar o checkout. Se o erro persistir, entre em contato através do e-mail contato@etacanadense.com.br')
+      res.redirect('/')
+    }
 
-    res.render('checkout/index', {title, mercadoPagoAccessToken, data, publicKey, visas, visasData, qtyVisas})
   } else {
     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
     res.redirect(`/aplicacao?etapa=4`)

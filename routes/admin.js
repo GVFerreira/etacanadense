@@ -21,6 +21,8 @@ const uploadAttach = require('../helpers/uploadAttachments')
 
 const PDFPrinter = require("pdfmake")
 
+const Excel = require('exceljs')
+
 require('dotenv').config()
 
 //////////////////
@@ -456,6 +458,96 @@ router.post('/edit-payment/:id', async (req, res) => {
         console.log(err)
         req.flash('error', `Ocorreu um erro: ${err}`)
         res.redirect('/admin/consult-payments')
+    }
+})
+
+router.post('/extract-payments', async (req, res) => {
+    try {
+        const initialDate = new Date(`${req.body.initialDate}T03:00:00.000z`)
+        const finalDate_ = new Date(`${req.body.finalDate}T02:59:59.999z`)
+        const finalDate = finalDate_.setDate(finalDate_.getDate() + 1)
+        
+        // Verificar se a data inicial é menor do que a data final
+        if (initialDate >= finalDate_) {
+            req.flash('error_msg', 'A data inicial deve ser anterior à data final.');
+            return res.status(400).redirect('/admin/consult-payments');
+        }
+        
+        
+        const selectedStatus = req.body.selectedStatus
+        
+        let statusArray
+        switch (selectedStatus) {
+            case 'approved':
+                statusArray = ['approved']
+                break
+            case 'pending':
+                statusArray = ['pending', 'authorized', 'in_process', 'in_mediation']
+                break
+            case 'rejected':
+                statusArray = ['rejected', 'cancelled', 'refunded', 'charged_back']
+                break
+        }
+
+        // Se a opção "todos" não estiver selecionada, definir o filtro de status
+        let statusFilter = {}
+        if (selectedStatus !== 'all') {
+            statusFilter = { status: selectedStatus }
+        }
+
+        const workbook = new Excel.Workbook()
+        const worksheet = workbook.addWorksheet('Pagamentos - eTA Canadense')
+
+        worksheet.columns = [
+          { header: 'ID Pagamento', key: 'id', width: 15 },
+          { header: 'Doc', key: 'doc', width: 10 },
+          { header: 'Numero', key: 'number', width: 20 },
+          { header: 'Nome', key: 'name', width: 25 },
+          { header: 'Sobrenome', key: 'surname', width: 40 },
+          { header: 'Valor', key: 'value', width: 15 },
+          { header: 'Data', key: 'date', width: 20},
+        ]
+
+        const payments = await Payment.find({
+            $and: [
+                {
+                    createdAt: {
+                        $gte: initialDate,
+                        $lte: finalDate
+                    }
+                },
+                statusFilter // Aplicar filtro de status
+            ]
+        }).populate('visaIDs')
+
+        // Adicionar dados ao relatório
+        for (const element of payments) {
+            worksheet.addRow({
+                id: element.transactionId,
+                doc: element.docType,
+                number: element.docNumber,
+                name: element.visaIDs[0].firstName,
+                surname: element.visaIDs[0].surname,
+                value: element.transaction_amount,
+                date: element.createdAt.toLocaleString()
+            })
+        }
+    
+        // Escrever o workbook em um buffer
+        const buffer = await workbook.xlsx.writeBuffer()
+
+        const fileName = `Pagamentos_${new Date()}.xlsx`
+    
+        // Enviar o buffer como uma resposta HTTP para download
+        res.setHeader('Content-Disposition', `attachment; filename=${fileName}`)
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        res.send(buffer)
+
+    } catch (err) {
+        console.error('Erro ao gerar o relatório:', err)
+        req.flash('error_msg', "Erro ao gerar o relatório. " + err)
+        res.status(500).redirect('/admin/consult-payments')
+        
     }
 })
 
