@@ -5,36 +5,43 @@ const Payment = new Schema({
     idCheckout: {
         type: String
     },
+    idClient: {
+        type: Number
+    },
+    idOrder: {
+        type: Number
+    },
     transaction_amount: {
-        type: Number,
+        type: Number
     },
     transactionId: {
-        type: String,
+        type: String
     },
     docType: {
-        type: String
+        type: String,
+        default: 'CPF'
     },
     docNumber: {
         type: String
     },
     status: {
         type: String,
-        required: true,
+        required: true
     },
     status_details: {
-        type: String,
+        type: String
     },
     payment_type_id: {
-        type: String,
+        type: String
     },
     installments: {
         type: Number
     },
     qrCode: {
-        type: String,
+        type: String
     },
     qrCodeBase64: {
-        type: String,
+        type: String
     },
     visaIDs: [{ 
         type: Schema.Types.ObjectId,

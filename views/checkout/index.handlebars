@@ -1,14 +1,13 @@
 <link rel="stylesheet" href="/css/checkout.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<script src="https://www.mercadopago.com/v2/security.js" view="checkout"></script>
+
 <main>
     <div class="container container__payment">
         <div class="py-5 text-center">
-            <img class="d-block mx-auto mb-4" src="/img/mercadopago-logo.webp" alt="" width="auto" height="57">
+            <img class="d-block mx-auto mb-4" src="/img/appmax.webp" alt="" width="auto" height="57">
             <h1>Checkout</h1>
             <p class="lead">
-                Esta página está protegida por todas as etapas de segurança do Mercado Pago.
+                Esta página está protegida por todas as etapas de segurança da AppMax.
             </p>
         </div>
 
@@ -62,37 +61,112 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <form id="form-checkout">
-                                    <div class="row">
-                                        <div class="col-12 col-md-6">
-                                            <div id="form-checkout__cardNumber" class="form-control mb-3" style="height: 2.3rem"></div>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div id="form-checkout__securityCode" class="form-control mb-3" style="height: 2.3rem"></div>
-                                                    <select id="form-checkout__issuer" class="form-select mb-3"></select>
-                                                </div>
-                                                <div class="col">
-                                                    <div id="form-checkout__expirationDate" class="form-control mb-3" style="height: 2.3rem"></div>
-                                                    <select id="form-checkout__installments" class="form-select mb-3"></select>
-                                                </div>
-                                            </div>
+                                <form action="/checkout/process-payment" method="POST">
+                                    <label class="mb-2" for="cardholderName">Nome completo</label>
+                                    <input type="text" name="cardholderName" id="cardholderName" class="form-control mb-3" required>
+
+                                    <div class="row mb-3">
+                                        <div class="col-4 col-md-3">
+                                            <select id="identificationType" name="identificationType" type="text" class="form-select" required>
+                                                <option value="CPF">CPF</option>
+                                                <option value="CNPJ">CNPJ</option>
+                                            </select>
                                         </div>
-                                        <div class="col-12 col-md-6">
-                                            <input type="text" id="form-checkout__cardholderName" class="form-control mb-3" required>
-                                            <div class="row">
-                                                <div class="col-4">
-                                                    <select id="form-checkout__identificationType" class="form-select mb-3" required></select>
-                                                </div>
-                                                <div class="col-8">
-                                                    <input type="text" id="form-checkout__identificationNumber" class="form-control mb-3" required>
-                                                </div>
-                                            </div>
-                                            <input type="email" id="form-checkout__cardholderEmail" value="{{sessionData.contactEmail}}" class="form-control mb-3" required>
-                                            <input type="text" id="form-checkout__deviceId" class="form-control mb-3 d-none">
+                                        <div class="col-8 col-md-9">
+                                            <input id="identificationNumber" name="identificationNumber" type="text" class="form-control" placeholder="Número do documento" required>
                                         </div>
                                     </div>
-                                    <button type="submit" id="form-checkout__submit" class="btn btn-primary">Pagar com cartão</button>
-                                    <p id="loading-message" style="display: none">Efetuando pagamento, aguarde...</p>
+
+                                    <label class="mb-2" for="cardNumber">Número do cartão</label>
+                                    <input type="text" name="cardNumber" id="cardNumber" class="form-control mb-3" maxlength="16" placeholder="0000 0000 0000 0000" required>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="mb-2">Validade</label>
+                                            <div class="row g-0">
+                                                <div class="col">
+                                                    <select name="expirationMonth" id="expirationMonth" class="form-select mb-2" required>
+                                                        <option value="0" selected disabled>MM</option>
+                                                        <option value="1">01</option>
+                                                        <option value="2">02</option>
+                                                        <option value="3">03</option>
+                                                        <option value="4">04</option>
+                                                        <option value="5">05</option>
+                                                        <option value="6">06</option>
+                                                        <option value="7">07</option>
+                                                        <option value="8">08</option>
+                                                        <option value="9">09</option>
+                                                        <option value="10">10</option>
+                                                        <option value="11">11</option>
+                                                        <option value="12">12</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col">
+                                                    <select name="expirationYear" id="expirationYear" class="form-select mb-3" required>
+                                                        <option value="0" selected disabled>AA</option>
+                                                        <option value="24">2024</option>
+                                                        <option value="25">2025</option>
+                                                        <option value="26">2026</option>
+                                                        <option value="27">2027</option>
+                                                        <option value="28">2028</option>
+                                                        <option value="29">2029</option>
+                                                        <option value="30">2030</option>
+                                                        <option value="31">2031</option>
+                                                        <option value="32">2032</option>
+                                                        <option value="33">2033</option>
+                                                        <option value="34">2034</option>
+                                                        <option value="35">2035</option>
+                                                        <option value="36">2036</option>
+                                                        <option value="37">2037</option>
+                                                        <option value="38">2038</option>
+                                                        <option value="39">2039</option>
+                                                        <option value="40">2040</option>
+                                                        <option value="41">2041</option>
+                                                        <option value="42">2042</option>
+                                                        <option value="43">2043</option>
+                                                        <option value="44">2044</option>
+                                                        <option value="45">2045</option>
+                                                        <option value="46">2046</option>
+                                                        <option value="47">2047</option>
+                                                        <option value="48">2048</option>
+                                                        <option value="49">2049</option>
+                                                        <option value="50">2050</option>
+                                                        <option value="51">2051</option>
+                                                        <option value="52">2052</option>
+                                                        <option value="53">2053</option>
+                                                        <option value="54">2054</option>
+                                                        <option value="55">2055</option>
+                                                        <option value="56">2056</option>
+                                                        <option value="57">2057</option>
+                                                        <option value="58">2058</option>
+                                                        <option value="59">2059</option>
+                                                        <option value="60">2060</option>
+                                                        <option value="61">2061</option>
+                                                        <option value="62">2062</option>
+                                                        <option value="63">2063</option>
+                                                        <option value="64">2064</option>
+                                                        <option value="65">2065</option>
+                                                        <option value="66">2066</option>
+                                                        <option value="67">2067</option>
+                                                        <option value="68">2068</option>
+                                                        <option value="69">2069</option>
+                                                        <option value="70">2070</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="mb-2" for="securityCode">Código de segurança</label>
+                                            <input name="securityCode" id="securityCode" class="form-control mb-3" maxlength="4" placeholder="123" required>
+                                        </div>
+                                    </div>
+
+                                    <select name="installments" id="installments" class="form-select mb-3" required>
+                                        {{#each installments}}
+                                            <option value="{{this}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">Pagar com cartão</button>
                                 </form>
                             </div>
                         </div>
@@ -108,7 +182,7 @@
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                             <div class="accordion-body container__payment">                      
-                                <form id="form-checkout-pix">
+                                <form action="/checkout/process-payment-pix" method="POST">
                                     <div class="row">
                                         <div class="col-12 col-md-6">
                                             <input id="form-checkout-pix__payerFirstName" name="payerFirstName" type="text" class="form-control mb-3" placeholder="Nome" required>
@@ -131,52 +205,6 @@
                                     <input id="form-checkout-pix__payerEmail" name="email" type="text" class="form-control mb-3" placeholder="E-mail" value="{{sessionData.contactEmail}}" required>
                                     <button type="submit" id="submit-checkout-pix" class="btn btn-primary">Pagar com PIX</button>
                                 </form>
-                                <p id="loading-message-pix" style="display: none">Efetuando pagamento, aguarde...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container container__result">
-        <div class="card">
-            <div class="card-header block-heading">
-                <h2 class="m-0 p-0">Resultado de pagamento</h2>
-            </div>
-            <div class="card-body content">
-                <div class="row">
-                    <div class="col-md-12 col-lg-12">
-                        <div class="items product info product-details">
-                            <div class="row justify-content-center">
-                                <div class="col-md-8 product-detail">
-                                    <div class="product-info py-3">
-                                        <div id="fail-response">
-                                            <p class="text-center font-weight-bold">Algo de errado aconteceu. Se seu pagamento foi efetuado, entre em contato com o suporte.</p>
-                                            <p id="error-message" class="text-center"></p>
-                                        </div>
-
-                                        <div id="success-response">
-                                            <div id="payment-main-status" class="mb-4 d-flex justify-content-center"></div>
-                                            <h3 class="fw-normal mb-3"><b>Status: </b><span id="payment-status"></span></h3>
-                                            <p><b>ID: </b><span id="payment-id"></span></p>
-                                            <p><b>Detail: </b><span id="payment-detail"></span></p>
-                                            <div id="pix-code-section" class="container text-center my-4">
-                                                <p>Escaneie o QR Code com seu aplicativo bancário para seguir com o pagamento:</p>
-                                                <img src="" id="qr-code-image" width="250px">
-                                                <p class="m-3">Ou você pode copiar e colar o código também:</p>
-                                                <div class="input-group mb-3" id="btnCopy" style="cursor: pointer">
-                                                    <span class="input-group-text btn btn-primary d-flex justify-content-center align-items-center" id="basic-addon1">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
-                                                            <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V2Zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6ZM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1H2Z"/>
-                                                        </svg>
-                                                    </span>
-                                                    <input type="text" id="pix-code" class="form-control form-control-plaintext ps-2" readonly aria-label="pix-code" aria-describedby="basic-addon1">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,208 +239,12 @@
     </div>
 </main>
 
-{{!-- Script para Cartão de Crédito --}}
-<script defer>
-    const mercadopago = new MercadoPago('{{publicKey}}')
-    setTimeout(() => {
-        const deviceId = window.MP_DEVICE_SESSION_ID
-        const formDeviceId = document.getElementById('form-checkout__deviceId')
-        formDeviceId.value = deviceId
-    }, 5000)
-
-    function loadCardForm(){
-        const payButton = document.getElementById("form-checkout__submit")
-        const validationErrorMessages= document.getElementById('validation-error-messages')
-
-        const cardForm = mercadopago.cardForm({
-            amount: "147.0",
-            iframe: true,
-            form: {
-                id: "form-checkout",
-                cardNumber: {
-                    id: "form-checkout__cardNumber",
-                    placeholder: "Número do cartão",
-                },
-                expirationDate: {
-                    id: "form-checkout__expirationDate",
-                    placeholder: "MM/YY",
-                },
-                securityCode: {
-                    id: "form-checkout__securityCode",
-                    placeholder: "Código de segurança",
-                },
-                cardholderName: {
-                    id: "form-checkout__cardholderName",
-                    placeholder: "Titular do cartão",
-                },
-                issuer: {
-                    id: "form-checkout__issuer",
-                    placeholder: "Bandeira",
-                },
-                installments: {
-                    id: "form-checkout__installments",
-                    placeholder: "Parcelas",
-                },        
-                identificationType: {
-                    id: "form-checkout__identificationType",
-                    placeholder: "Tipo de documento",
-                },
-                identificationNumber: {
-                    id: "form-checkout__identificationNumber",
-                    placeholder: "Número do documento",
-                },
-                cardholderEmail: {
-                    id: "form-checkout__cardholderEmail",
-                    placeholder: "E-mail",
-                },
-                deviceId: {
-                    id: "form-checkout__deviceId",
-                    placeholder: "Device ID"
-                }
-
-            },
-            callbacks: {
-                onFormMounted: (error) => {
-                    if (error) return console.warn("Form Mounted handling error: ", error)
-                    console.log("Form mounted")
-                },
-                onSubmit: (event) => {
-                    event.preventDefault()
-                    document.getElementById("loading-message").style.display = "block"
-
-                    const {
-                        paymentMethodId,
-                        issuerId,
-                        cardholderEmail: email,
-                        amount,
-                        token,
-                        installments,
-                        identificationNumber,
-                        identificationType,
-                        deviceId
-                    } = cardForm.getCardFormData()
-                    
-                    fetch("/checkout/process-payment", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            token,
-                            issuerId,
-                            paymentMethodId,
-                            transactionAmount: Number(amount),
-                            installments: Number(installments),
-                            deviceId,
-                            description: "Solicitação de Autorização de Viagem - Canadá",
-                            payer: {
-                                email,
-                                identification: {
-                                    type: identificationType,
-                                    number: identificationNumber
-                                }
-                            }
-                        })
-                    })
-                        .then((response) => {
-                            return response.json()
-                        })
-                        .then((response) => {
-                            switch(response.status) {
-                                case 'approved':
-                                    window.location.href = `/checkout/obrigado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
-                                    break
-                                
-                                case 'rejected':
-                                    window.location.href = `/checkout/recusado?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
-                                    break
-                                
-                                default:
-                                    window.location.href = `/checkout/em_processo?status_detail=${response.detail}&status=${response.status}&transaction_id=${response.id}`
-                            }
-                        })
-                        .catch(e => {
-                            console.error(e)
-                            alert(e)
-                        })
-                },
-                onFetching: (resource) => {
-                    console.log("Fetching resource: ", resource)
-
-                    payButton.setAttribute('disabled', true)
-                    return () => {
-                        payButton.removeAttribute("disabled")
-                    }
-
-                    // Animate progress bar
-                    const progressBar = document.querySelector(".progress-bar")
-                    progressBar.removeAttribute("value")
-
-                    return () => {
-                        progressBar.setAttribute("value", "0")
-                    }
-                }
-            }
-        })
-    }
-
-    loadCardForm()
-</script>
-
-{{!-- Script para PIX --}}
-<script defer>
-    document.getElementById("form-checkout-pix").addEventListener("submit", (event) => {
-        event.preventDefault()
-        sendPayment()
-    })
-
-    function sendPayment() {
-        const payerFirstName = document.getElementById("form-checkout-pix__payerFirstName").value
-        const payerLastName = document.getElementById("form-checkout-pix__payerLastName").value
-        const payerEmail = document.getElementById("form-checkout-pix__payerEmail").value
-
-        const identificationType = document.getElementById("form-checkout-pix__identificationType").value
-        const identificationNumber = document.getElementById("form-checkout-pix__identificationNumber").value
-        
-        document.getElementById("loading-message-pix").style.display = "block"
-
-        fetch("/checkout/process-payment-pix", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                transactionAmount: 139.65,
-                description: 'Solicitação de Autorização de Viagem - Canadá',
-                payer: {
-                    firstName: payerFirstName,
-                    lastName: payerLastName,
-                    email: payerEmail,
-                    identification: {
-                        type: identificationType,
-                        number: identificationNumber,
-                    }
-                },
-            }),
-        }).then((response) => {
-            return response.json()
-        }).then((response) => {
-            window.location.href = `/checkout/pix?id=${response.id}&status=${response.status}&qr_code=${response.qrCode}`
-        }).catch(error => {
-            alert("Unexpected error\n"+JSON.stringify(error))
-        })
-    }
-</script>
-
-{{!-- Scripts secundário --}}
 <script>
     //Exit intent
     let mouseout = 1
     function showExitModal() {
         $('#exitModal').modal('show')
     }
-
-    // Adiciona um ouvinte de evento ao documento
     document.addEventListener('mouseout', (e) => {
         // Verifica se o cursor está fora da janela
         if (e.relatedTarget === null) {
@@ -423,7 +255,6 @@
             }
         }
     })
-
 
     //Atualizar valor em tela
     const qtyVisas = "{{qtyVisas}}"

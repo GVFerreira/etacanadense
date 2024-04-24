@@ -443,12 +443,10 @@ const bcrypt = require('bcryptjs')
 
 const cookieParser = require('cookie-parser')
 
-const mercadopago = require('./config/mercadoPago')
-
 const cron = require('node-cron')
 
 /***** Tarefa que faz a verificação do checkout abandonado *****/
-cron.schedule('*/9 * * * *', async () =>  {
+cron.schedule('*/5 * * * *', async () =>  {
     const payment = await Payment.find({
         status: "Checkout em andamento",
         createdAt: {
@@ -498,9 +496,7 @@ require("./config/auth")(passport)
 const { isAdmin } = require('./helpers/isAdmin')
 
 /*SETTINGS*/
-app.use(cors({
-    origin: 'http://etacanadense.com.br'
-}))
+app.use(cors({ origin: 'https://etacanadense.com.br' }))
 app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
     secret: process.env.CANADENSE_SECRET,
@@ -539,21 +535,17 @@ app.use((req, res, next) => {
 })
 
 //Mongoose
-    mongoose.set('strictQuery', true)
-    mongoose.connect(process.env.CANADENSE_DB_STRING_CONNECT, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    }).then(() => {
-        console.log("MONGODB CONNECTED")
-    }).catch((err) => {
-        console.log(`Erro: ${err}`)
-    })
+mongoose.set('strictQuery', true)
+mongoose.connect(process.env.CANADENSE_DB_STRING_CONNECT, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("MONGODB CONNECTED")
+}).catch((err) => {
+    console.log(`Erro: ${err}`)
+})
 
-//Mercaado Pago
-    mercadopago.configure({
-        access_token: process.env.MERCADO_PAGO_SAMPLE_ACCESS_TOKEN,
-        sandbox: true,
-    })
+const baseURL = process.env.BASE_URL
 
 app.post('/accept-policy', (req, res, next) => {
     //Setar cookie de aceite de política por 1 ano
@@ -561,11 +553,14 @@ app.post('/accept-policy', (req, res, next) => {
     res.status(200).json({ message: 'Cookies aceitos com sucesso!' })
 })
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     req.session.destroy()
+
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
-    const metaDescription = "Garanta sua entrada no Canadá de forma descomplicada e segura com o eTA (Autorização Eletrônica de Viagem). Nosso processo de solicitação online simplifica sua jornada. Solicite seu eTA agora e aproveite uma viagem tranquila ao Canadá" 
+
+    const metaDescription = "Garanta sua entrada no Canadá de forma descomplicada e segura com o eTA (Autorização Eletrônica de Viagem). Nosso processo de solicitação online simplifica sua jornada. Solicite seu eTA agora e aproveite uma viagem tranquila ao Canadá"
+
     res.render('index', {showPolicyPopup, metaDescription})
 })
 
@@ -674,77 +669,102 @@ app.post('/aplicacaoStep3', (req, res) => {
 })
 
 app.post('/aplicacaoStep4', async (req, res) => {
-    bcrypt.genSalt(10, (error, salt) => {
-        if (error) {
-            console.error('Erro ao gerar o salt:', error)
-            return res.status(500).send('Erro interno no servidor')
-        }
+    /* Gera o codeETA, código de acompanhamento da solicitação de eTA. Este código é inserido nos e-mails
+    de comunicação e pode ser usado para consultar o status da solicitação */
+    const codeSalt = bcrypt.genSaltSync(10)
+    const codeETA = codeSalt.substring(10, 15).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
-        let code = ''
+    // Verifica se o código gerado já existe
+    const existingCodeETA = await Visa.findOne({ codeETA })
+    if (!existingCodeETA) {
+        const { agreeCheck, consentAndDeclaration, whichAction } = req.body
 
-        bcrypt.hash(code, salt, (error, hash) => {
-            if (error) {
-                console.error('Erro ao gerar o hash:', error)
-                return res.status(500).send('Erro interno no servidor')
-            }
-
-            code = hash
-            const codeETA = code.substring(40, 45).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
-
-            const agreeCheck = req.body.agreeCheck
-            const consentAndDeclaration = req.body.consentAndDeclaration
-
+        try {
             const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }))
             const visaID = newVisa._id
 
+            // Insere o(s) ID(s) na sessão
             let sessionIDs
             if (req.session.visas && req.session.visas.ids) {
+                //Se já existir um ID, coloque outro no array
                 sessionIDs = req.session.visas.ids
                 sessionIDs.push(visaID)
+                req.session.visas.ids = sessionIDs
             } else {
+                // Se não existir, crie o array e insira o ID nele
                 sessionIDs = [visaID]
                 req.session.visas = { ids: sessionIDs }
             }
 
+            // Agrupa as informações em apenas um objeto na sessão
             req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA })
 
-            newVisa.save().then(async () => {
-                if (req.body.whichAction === "goToPayment") {
-                    if (!req.session.sessionCheckout) {
-                        var salt_id = bcrypt.genSaltSync(10);
-                        var hash_id = bcrypt.hashSync("B4c0/\/", salt_id)
-                        const idRandom = hash_id
-                        req.session.sessionCheckout = idRandom
-                        
-                        const newPayment = new Payment({
-                            idCheckout: idRandom,
-                            status: "Checkout em andamento",
-                            visaIDs: sessionIDs
-                        })
+            // Salva as informações 
+            await newVisa.save()
 
-                        await newPayment.save()
-
-                    } else {
-                        await Payment.findOneAndUpdate(
-                            { idCheckout: req.session.sessionCheckout },
-                            {
-                                $set: {
-                                    visaIDs: sessionIDs
-                                }
-                            }
-                        )
-                    }
+            // Verifica a ação escolhida pelo usuário. Opções: goToPayment ou newVisa. Ir para pagamento ou Nova solicitação, respectivamente.
+            if (whichAction === "goToPayment") {
+                function formatTel(numberTel) {
+                    return numberTel.replace(/\D/g, '').slice(0, 11)
                 }
 
-                res.status(200).json({ whichAction: req.body.whichAction })
-            }).catch(err => {
-                console.log(err)
-                req.flash('error_msg', 'Ocorreu um erro no processamento dos seus dados. Preencha o formulário novamente. Erro: ' + err)
-                res.redirect('/aplicacao')
-                req.session.destroy()
-            })
-        })
-    })
+                if (!req.session.sessionCheckout) {
+                    //  Cria um ID da sessão do checkout
+                    const checkoutSalt = bcrypt.genSaltSync(10)
+                    req.session.sessionCheckout = checkoutSalt
+
+                    const newClient = await fetch(`${baseURL}/costumer`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            "access-token": process.env.APPMAX_ACCESS_TOKEN,
+                            "firstname": req.session.aplicacaoStep.firstName,
+                            "lastname": req.session.aplicacaoStep.surname,
+                            "email": req.session.aplicacaoStep.contactEmail,
+                            "telephone": formatTel(req.session.aplicacaoStep.contactTel),
+                            "ip": req.ip,
+                        })
+                    })
+
+                    const client = await newClient.json()
+
+                    if (client.success) {
+                        const newPayment = new Payment({
+                            idCheckout: checkoutSalt,
+                            idClient: client.data.id,
+                            status: "Checkout em andamento",
+                            visaIDs: req.session.visas.ids
+                        })
+    
+                        console.log(newPayment)
+                        await newPayment.save()
+                    } else {
+                        console.log(client)
+                    }
+
+                } else {
+                    // Se já houver um ID Checkout na sessão, apenas insere o ID da solicitação no registro do pagamento
+                    await Payment.findOneAndUpdate(
+                        { idCheckout: req.session.sessionCheckout },
+                        { $set: {
+                            visaIDs: sessionIDs
+                        }}
+                    )
+                }
+            }
+
+            res.status(200).json({ whichAction })
+        } catch (err) {
+            console.error(err)
+            req.flash('error_msg', 'Ocorreu um erro ao salvar seus dados')
+        }
+    } else {
+        req.flash("error_msg", "Tente enviar o formulário novamente")
+        res.redirect('/aplicacao?etapa=4')
+    }
+
 })
 
 app.get('/acompanhar-solicitacao', (req, res) => {
