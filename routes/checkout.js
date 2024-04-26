@@ -957,6 +957,7 @@ router.get('/em_processo', (req, res) => {
 router.post('/webhook', async (req, res, next) => {
   const { body } = req
   const payment = await Payment.findOne({idOrder: body.data.id})
+  console.log(body)
 
   if (body.event === "OrderApproved") {
     payment.status = 'approved'
