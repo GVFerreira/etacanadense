@@ -161,7 +161,7 @@
                                         </div>
                                     </div>
 
-                                    <select name="installments" id="installments" class="form-select mb-3" required>
+                                    <select name="installmentsInput" id="installmentsInput" class="form-select mb-3" required>
                                         {{#each installments}}
                                             <option value="{{this}}">{{this}}</option>
                                         {{/each}}
@@ -195,7 +195,6 @@
                                         <div class="col-4 col-md-3">
                                             <select id="form-checkout-pix__identificationType" name="identificationType" type="text" class="form-select" required>
                                                 <option value="CPF">CPF</option>
-                                                <option value="CNPJ">CNPJ</option>
                                             </select>
                                         </div>
                                         <div class="col-8 col-md-9">

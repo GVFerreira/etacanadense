@@ -34,7 +34,7 @@
 </style>
 <script>
     setInterval(() => {
-        fetch("/checkout/verify-pix-payment?transactionID={{id}}", {
+        fetch("/checkout/verify-pix-payment?idOrder={{id}}", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
