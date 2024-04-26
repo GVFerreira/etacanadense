@@ -957,11 +957,11 @@ router.get('/em_processo', (req, res) => {
 router.post('/webhook', async (req, res, next) => {
   const { body } = req
   const payment = await Payment.findOne({idOrder: body.data.id})
-  console.log(body)
 
-  if (body.event === "OrderApproved") {
+  if (body.event === "OrderApproved" || body.event === "OrderPaidByPix") {
     payment.status = 'approved'
     payment.status_details = 'accredited'
+    payment.payment_type_id = body.event === "OrderPaidByPix" ? "bank_transfer" : "credit_card"
 
     for (const element of payment.visaIDs) {
       const visa = await Visa.findOne({ _id: element })
