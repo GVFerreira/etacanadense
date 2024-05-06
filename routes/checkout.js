@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
             "installments": 12,
-            "total": qtyVisas * 147,
+            "total": qtyVisas * 1,
             "format": 2 
         })
       })
@@ -113,7 +113,8 @@ router.post('/process-payment', async (req, res) => {
             "sku": "835102",
             "name": "Assessoria - eTA Canadense",
             "qty": qtyVisas,
-            "price": pricePerVisa(),
+            // "price": pricePerVisa(),
+            "price": 1,
             "digital_product": 1
           },
         ],
@@ -145,8 +146,6 @@ router.post('/process-payment', async (req, res) => {
     })
     const cardPayment = await createPayment.json()
 
-    const sessionsIDs = req.session.visas.ids
-
     if (cardPayment.success) {
       const newPayment = await Payment.findOneAndUpdate(
         { idCheckout: req.session.sessionCheckout },
@@ -161,14 +160,13 @@ router.post('/process-payment', async (req, res) => {
             status_details: 'accredited',
             payment_type_id: 'credit_card',
             installments: separateInstallmentsAndValues(installmentsInput).installment,
-            visaIDs: sessionsIDs
+            visaIDs: visas
           }
         }
       )
-      
       const savedPayment = await newPayment.save()
 
-      for (const element of sessionsIDs) {
+      for (const element of visas) {
         const visa = await Visa.findOne({ _id: element })
 
         if (visa) {
@@ -207,11 +205,7 @@ router.post('/process-payment', async (req, res) => {
       }
 
     } else {
-      const payment = await Payment.findOne({ idCheckout: req.session.sessionCheckout })
-      const visas = payment.visaIDs
-      const qtyVisas = visas.length
-
-      await Payment.findOneAndUpdate(
+      const newPayment = await Payment.findOneAndUpdate(
         { idCheckout: req.session.sessionCheckout },
         {
           $set: {
@@ -224,52 +218,59 @@ router.post('/process-payment', async (req, res) => {
             status_details: 'cc_rejected_other_reason',
             payment_type_id: 'credit_card',
             installments: separateInstallmentsAndValues(installmentsInput).installment,
-            visaIDs: sessionsIDs
+            visaIDs: visas
           }
         }
       )
+      const savedPayment = await newPayment.save()
       
       // Script de e-mail recusado
-      // let linkStripe
-      // const links = {
-      //     1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
-      //     2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
-      //     3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
-      //     4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
-      //     5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
-      //     6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
-      // }
-      // linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+      let linkStripe
+      const links = {
+          1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
+          2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
+          3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
+          4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
+          5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
+          6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
+      }
+      linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
 
-      // for (const element of sessionsIDs) {
-      //   const visa = await Visa.findOne({ _id: element })
-      //   transporter.use('compile', hbs(handlebarOptions))
+      for (const element of visas) {
+        const visa = await Visa.findOne({ _id: element })
 
-      //   const mailOptions = {
-      //     from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-      //     to: visa.contactEmail,
-      //     bcc: process.env.CANADENSE_RECEIVER_MAIL,
-      //     subject: 'Pagamento recusado',
-      //     template: 'pagamento-recusado',
-      //     context: {
-      //       nome: visa.firstName,
-      //       codeETA: visa.codeETA,
-      //       transactionid: payment.idOrder,
-      //       linkStripe
-      //     }
-      //   }
+        if (visa) {
+          await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
 
-      //   transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
-      //     if(err) {
-      //       console.log("Pagamento recusado (cartão primeira tentativa): " + new Date())
-      //       console.log(err)
-      //     } else {
-      //         console.log({
-      //             message: `Pagamento recusado (cartão primeira tentativa): ${new Date()}`,
-      //             response, envelope, messageId})
-      //     }
-      //   })
-      // }
+          transporter.use('compile', hbs(handlebarOptions))
+
+          const mailOptions = {
+            from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+            to: visa.contactEmail,
+            bcc: process.env.CANADENSE_RECEIVER_MAIL,
+            subject: 'Pagamento recusado',
+            template: 'pagamento-recusado',
+            context: {
+              nome: visa.firstName,
+              codeETA: visa.codeETA,
+              transactionid: payment.idOrder,
+              linkStripe
+            }
+          }
+
+          transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
+            if(err) {
+              console.log("Pagamento recusado (cartão primeira tentativa): " + new Date())
+              console.log(err)
+            } else {
+              console.log({
+                message: `Pagamento recusado (cartão primeira tentativa): ${new Date()}`,
+                response, envelope, messageId
+              })
+            }
+          })
+        }
+      }
 
       res.redirect(`/checkout/recusado?status_detail='cc_rejected_other_reason'&status=rejected&transaction_id=${order.data.id}`)
 
@@ -281,7 +282,10 @@ router.post('/process-payment', async (req, res) => {
 })
 
 router.post("/process-payment-pix", async (req, res) => {
-  const { identificationType, identificationNumber } = req.body
+  const {
+    identificationType,
+    identificationNumber
+  } = req.body
 
   const visas = req.session.visas.ids
   const qtyVisas = visas.length
@@ -299,7 +303,8 @@ router.post("/process-payment-pix", async (req, res) => {
             "sku": "835102",
             "name": "Assessoria - eTA Canadense",
             "qty": qtyVisas,
-            "price": 139.65,
+            // "price": 139.65,
+            "price": 1,
             "digital_product": 1
           },
         ],
@@ -332,8 +337,6 @@ router.post("/process-payment-pix", async (req, res) => {
     })
     const pixPayment = await createPayment.json()
 
-    const sessionsIDs = req.session.visas.ids
-
     if (pixPayment.success) {
       const newPayment = await Payment.findOneAndUpdate(
         { idCheckout: req.session.sessionCheckout },
@@ -350,7 +353,7 @@ router.post("/process-payment-pix", async (req, res) => {
             installments: null,
             qrCode: pixPayment.data.pix_emv,
             qrCodeBase64: pixPayment.data.pix_qrcode,
-            visaIDs: sessionsIDs
+            visaIDs: visas
           }
         }
       )
@@ -369,8 +372,9 @@ router.post("/process-payment-pix", async (req, res) => {
       res.redirect('/checkout')
     }
   } catch (err) {
+    console.log("Erro ao criar o pagamento via PIX (primeiro checkout): " + new Date())
     console.log(err)
-    res.json(err)
+    res.redirect('/checkout')
   }
 })
 
@@ -954,7 +958,7 @@ router.get('/em_processo', (req, res) => {
 //////////////
 // WEBHOOKS //
 //////////////
-router.post('/webhook', async (req, res, next) => {
+router.post('/webhook', async (req, res) => {
   const { body } = req
   const payment = await Payment.findOne({idOrder: body.data.id})
 
@@ -1023,48 +1027,48 @@ router.post('/webhook', async (req, res, next) => {
     const visas = payment.visaIDs
     const qtyVisas = visas.length
 
-    // let linkStripe
-    // const links = {
-    //     1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
-    //     2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
-    //     3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
-    //     4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
-    //     5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
-    //     6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
-    // }
-    // linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+    let linkStripe
+    const links = {
+        1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
+        2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
+        3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
+        4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
+        5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
+        6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
+    }
+    linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
                   
     for (const element of payment.visaIDs) {
       const visa = await Visa.findOne({ _id: element })
         
       if (visa) {
-        // transporter.use('compile', hbs(handlebarOptions))
+        transporter.use('compile', hbs(handlebarOptions))
           
-        // const mailOptions = {
-        //   from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-        //   to: visa.contactEmail,
-        //   bcc: process.env.CANADENSE_RECEIVER_MAIL,
-        //   subject: 'Pagamento recusado',
-        //   template: 'pagamento-recusado',
-        //   context: {
-        //     nome: visa.firstName,
-        //     codeETA: visa.codeETA,
-        //     transactionid: payment.idOrder,
-        //     linkStripe
-        //   }
-        // }
+        const mailOptions = {
+          from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+          to: visa.contactEmail,
+          bcc: process.env.CANADENSE_RECEIVER_MAIL,
+          subject: 'Pagamento recusado',
+          template: 'pagamento-recusado',
+          context: {
+            nome: visa.firstName,
+            codeETA: visa.codeETA,
+            transactionid: payment.idOrder,
+            linkStripe
+          }
+        }
 
-        // transporter.sendMail(mailOptions, (err, info) => {
-        //   if(err) {
-        //     console.log("Pagamento recusado (Webhook): " + new Date())
-        //     console.log(err)
-        //   } else {
-        //     console.log({
-        //       message: `Pagamento recusado (Webhook): ${new Date()}`,
-        //       response, envelope, messageId
-        //     })
-        //   }
-        // })
+        transporter.sendMail(mailOptions, (err, info) => {
+          if(err) {
+            console.log("Pagamento recusado (Webhook): " + new Date())
+            console.log(err)
+          } else {
+            console.log({
+              message: `Pagamento recusado (Webhook): ${new Date()}`,
+              response, envelope, messageId
+            })
+          }
+        })
 
         payment.save().then(() => {
           res.status(200).end()
