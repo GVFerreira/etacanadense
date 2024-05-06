@@ -134,8 +134,8 @@ router.post('/process-payment', async (req, res) => {
           "CreditCard": {
             "number": cardNumber,
             "cvv": securityCode,
-            "month": expirationMonth,
-            "year": expirationYear,
+            "month": parseInt(expirationMonth),
+            "year": parseInt(expirationYear),
             "document_number": identificationNumber,
             "name": cardholderName,
             "installments": separateInstallmentsAndValues(installmentsInput).installment,
