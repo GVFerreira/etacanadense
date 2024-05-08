@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
             "installments": 12,
-            "total": qtyVisas * 1,
+            "total": qtyVisas * 10,
             "format": 2 
         })
       })
@@ -114,7 +114,7 @@ router.post('/process-payment', async (req, res) => {
             "name": "Assessoria - eTA Canadense",
             "qty": qtyVisas,
             // "price": pricePerVisa(),
-            "price": 1,
+            "price": 10,
             "digital_product": 1
           },
         ],
