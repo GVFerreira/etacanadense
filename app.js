@@ -446,49 +446,49 @@ const cookieParser = require('cookie-parser')
 const cron = require('node-cron')
 
 /***** Tarefa que faz a verificação do checkout abandonado *****/
-// cron.schedule('*/5 * * * *', async () =>  {
-//     const payment = await Payment.find({
-//         status: "Checkout em andamento",
-//         createdAt: {
-//             $gt: new Date(Date.now() - 18 * 60 * 1000),
-//             $lt: new Date(Date.now() - 7 * 60 * 1000)
-//         }
-//     }).populate('visaIDs')
+cron.schedule('*/5 * * * *', async () =>  {
+    const payment = await Payment.find({
+        status: "Checkout em andamento",
+        createdAt: {
+            $gt: new Date(Date.now() - 18 * 60 * 1000),
+            $lt: new Date(Date.now() - 7 * 60 * 1000)
+        }
+    }).populate('visaIDs')
 
-//     for (const element of payment) {
-//         transporter.use('compile', hbs(handlebarOptions))
+    for (const element of payment) {
+        transporter.use('compile', hbs(handlebarOptions))
 
-//         transporter.sendMail(
-//             {
-//                 from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-//                 to: element.visaIDs[0].contactEmail,
-//                 bcc: process.env.CANADENSE_RECEIVER_MAIL,
-//                 subject: 'eTA Canadense - Finalize sua aplicação',
-//                 template: 'lembrete',
-//                 context: {
-//                     fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
-//                     codeETA: element.visaIDs[0].codeETA,
-//                     idcheckout: element.idCheckout
-//                 }
-//             },
-//             (err, {response, envelope, messageId}) => {
-//                 if(err) {
-//                     console.error("Lembrete de pagamento: " + new Date())
-//                     console.error(err)
-//                 } else {
-//                     console.log({
-//                         message: "Lembrete de pagamento: " + new Date(),
-//                         response,
-//                         envelope,
-//                         messageId
-//                     })
-//                 }
-//             }
-//         )
-//     }
+        transporter.sendMail(
+            {
+                from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+                to: element.visaIDs[0].contactEmail,
+                bcc: process.env.CANADENSE_RECEIVER_MAIL,
+                subject: 'eTA Canadense - Finalize sua aplicação',
+                template: 'lembrete',
+                context: {
+                    fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
+                    codeETA: element.visaIDs[0].codeETA,
+                    idOrder: element.idOrder
+                }
+            },
+            (err, {response, envelope, messageId}) => {
+                if(err) {
+                    console.error("Lembrete de pagamento: " + new Date())
+                    console.error(err)
+                } else {
+                    console.log({
+                        message: "Lembrete de pagamento: " + new Date(),
+                        response,
+                        envelope,
+                        messageId
+                    })
+                }
+            }
+        )
+    }
 
-//     console.log("Script de verifição de checkout abandonado: " + new Date())
-// })
+    console.log("Script de verifição de checkout abandonado: " + new Date())
+})
 
 /*AUTHENTICATION*/
 const passport = require("passport")
