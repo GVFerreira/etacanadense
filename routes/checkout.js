@@ -829,7 +829,7 @@ router.post('/webhook', async (req, res) => {
   const payment = await Payment.findOne({idOrder: body.data.id})
 
   if(payment.status === 'approved') {
-    return res.status(200).send("OK")
+    return res.status(200)
   } else {
     if(body.event === "OrderApproved" || body.event === "OrderPaidByPix") {
       payment.status = 'approved'
@@ -891,70 +891,75 @@ router.post('/webhook', async (req, res) => {
         console.error(e)
         res.status(409).end()
       })
-  
-    } else {
-      const visas = payment.visaIDs
-      const qtyVisas = visas.length
-  
-      let linkStripe
-      const links = {
-          1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
-          2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
-          3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
-          4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
-          5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
-          6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
-      }
-      linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
-                    
-      for (const element of payment.visaIDs) {
-        const visa = await Visa.findOne({ _id: element })
-          
-        if (visa) {
-          transporter.use('compile', hbs(handlebarOptions))
-            
-          const mailOptions = {
-            from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-            to: visa.contactEmail,
-            bcc: process.env.CANADENSE_RECEIVER_MAIL,
-            subject: 'Pagamento recusado',
-            template: 'pagamento-recusado',
-            context: {
-              nome: visa.firstName,
-              codeETA: visa.codeETA,
-              transactionid: payment.idOrder,
-              linkStripe
-            }
-          }
-  
-          transporter.sendMail(mailOptions, (err, info) => {
-            if(err) {
-              console.log("Pagamento recusado (Webhook): " + new Date())
-              console.log(err)
-            } else {
-              console.log({
-                message: `Pagamento recusado (Webhook): ${new Date()}`,
-                response, envelope, messageId
-              })
-            }
-          })
-  
-          payment.save().then(() => {
-            res.status(200).end()
-          }).catch((e) => {
-            console.error(e)
-            res.status(409).end()
-          })
-        }
-      }
     }
+    
     res.status(202).send("OK")
   }
 })
 
-router.post('/webhook-teste', async (req, res) => {
-  console.log(req.body)
-  res.status(200)
+router.post('/webhook-rejected', async (req, res) => {
+  const { body } = req
+  const payment = await Payment.findOne({idOrder: body.data.id})
+
+  if(payment.status === 'approved') {
+    return res.status(200)
+  } else {
+    const visas = payment.visaIDs
+    const qtyVisas = visas.length
+  
+    let linkStripe
+    const links = {
+        1: "https://buy.stripe.com/eVa3gb94k9EF52w002",
+        2: "https://buy.stripe.com/dR69Ez6WccQR66A6or",
+        3: "https://buy.stripe.com/eVag2X5S8cQRfHa5ko",
+        4: "https://buy.stripe.com/fZe8Ava8o045fHa5kp",
+        5: "https://buy.stripe.com/cN27wr4O4bMNfHa4gm",
+        6: "https://buy.stripe.com/8wM5ojeoEaIJbqU8wD",
+    }
+    linkStripe = links[qtyVisas] || "https://buy.stripe.com/3cs1833K0cQR1QkdQQ"
+                    
+    for (const element of payment.visaIDs) {
+      const visa = await Visa.findOne({ _id: element })
+        
+      if (visa) {
+        transporter.use('compile', hbs(handlebarOptions))
+          
+        const mailOptions = {
+          from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+          to: visa.contactEmail,
+          bcc: process.env.CANADENSE_RECEIVER_MAIL,
+          subject: 'Pagamento recusado',
+          template: 'pagamento-recusado',
+          context: {
+            nome: visa.firstName,
+            codeETA: visa.codeETA,
+            transactionid: payment.idOrder,
+            linkStripe
+          }
+        }
+
+        transporter.sendMail(mailOptions, (err, info) => {
+          if(err) {
+            console.log("Pagamento recusado (Webhook): " + new Date())
+            console.log(err)
+          } else {
+            console.log({
+              message: `Pagamento recusado (Webhook): ${new Date()}`,
+              response, envelope, messageId
+            })
+          }
+        })
+
+        payment.save().then(() => {
+          res.status(200).end()
+        }).catch((e) => {
+          console.error(e)
+          res.status(409).end()
+        })
+      }
+    }
+    res.status(202).send("OK")
+  }
 })
 
 module.exports = router
