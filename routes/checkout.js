@@ -292,6 +292,13 @@ router.post("/process-payment-pix", async (req, res) => {
 
   try {
     const payment = await Payment.findOne({idCheckout: req.session.sessionCheckout})
+    
+    function expirateDate() {
+      let currentDate = new Date()
+      currentDate.setHours(currentDate.getHours() + 12)
+      let expirationDate = currentDate.toISOString().slice(0, 19).replace('T', ' ')
+      return expirationDate
+    }
 
     const newOrder = await fetch(`${process.env.BASE_URL}/order`, {
       method: "POST",
@@ -311,13 +318,6 @@ router.post("/process-payment-pix", async (req, res) => {
       })
     })
     const order = await newOrder.json()
-
-    function expirateDate() {
-      let currentDate = new Date()
-      currentDate.setHours(currentDate.getHours() + 12)
-      let expirationDate = currentDate.toISOString().slice(0, 19).replace('T', ' ')
-      return expirationDate
-    }
 
     const createPayment = await fetch(`${process.env.BASE_URL}/payment/pix`, {
       method: "POST",
@@ -357,7 +357,15 @@ router.post("/process-payment-pix", async (req, res) => {
         }
       )
       
-      await newPayment.save()
+      const savedPayment = await newPayment.save()
+
+      for (const element of visas) {
+        const visa = await Visa.findOne({ _id: element })
+
+        if (visa) {
+          await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
+        }
+      }
 
       const qr_code_base = pixPayment.data.pix_qrcode
       req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
@@ -892,7 +900,7 @@ router.post('/webhook', async (req, res) => {
         res.status(409).end()
       })
     }
-    
+
     res.status(202).send("OK")
   }
 })
