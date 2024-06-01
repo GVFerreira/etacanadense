@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
             "installments": 12,
-            "total": qtyVisas * 10,
+            "total": qtyVisas * 147,
             "format": 2 
         })
       })
@@ -276,7 +276,8 @@ router.post('/process-payment', async (req, res) => {
     }
   } catch (err) {
     console.log(err)
-    res.json(err)
+    req.flash('error_msg', 'Não foi possível processar seu pagamento. Tente novamente.')
+    res.redirect('/checkout')
   }
 })
 
@@ -949,6 +950,11 @@ router.post('/webhook', async (req, res) => {
     }
     res.status(202).send("OK")
   }
+})
+
+router.post('/webhook-teste', async (req, res) => {
+  console.log(req.body)
+  res.status(200)
 })
 
 module.exports = router
