@@ -625,7 +625,7 @@
                                 <hr>
                                 <h5>Finalizou sua solicitação?</h5>
                                 <p>Ao clicar em ir para pagamento, você será redirecionado ao nosso checkout, para que consiga finalizar seu processo.</p>
-                                <button class="btn btn-success fw-bold text-uppercase" onclick="handleForm('goToPayment')">
+                                <button class="btn btn-success fw-bold text-uppercase" id="goToPayment" onclick="handleForm('goToPayment')">
                                     Ir para pagamento
                                 </button>
                             </div>
@@ -644,6 +644,7 @@
     document.getElementById("form-aplicacao").addEventListener('submit', e => e.preventDefault())
 
     async function handleForm(action) {
+        document.getElementById('goToPayment').disabled = true
         const agreeCheck = document.getElementById('flexCheckDefault').value
         const consentAndDeclaration = document.getElementById('consentAndDeclaration').value
 
