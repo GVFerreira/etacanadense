@@ -822,21 +822,24 @@ app.get('/acompanhar-solicitacao', (req, res) => {
 })
 
 app.post('/consultando-solicitacao', (req, res) => {
-    const codeInsert = `${req.body.codeInsert}`.trim()
+    let codeInsert = `${req.body.codeInsert}`.trim()
     if(codeInsert === undefined || codeInsert === null || codeInsert === '') {
         req.flash('error_msg', 'Insira um e-mail ou código')
         res.redirect('/acompanhar-solicitacao')
     } else {
         if (req.body.filtroSelecionado === 'email') {
-            Visa.find({contactEmail: req.body.codeInsert}).populate('pagamento').then((search_result) => {
+            codeInsert.toLowerCase()
+            Visa.find({contactEmail: codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         } else if (req.body.filtroSelecionado === 'codigo') {
-            Visa.find({codeETA: req.body.codeInsert}).populate('pagamento').then((search_result) => {
+            codeInsert.toUpperCase()
+            Visa.find({codeETA: codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         } else if (req.body.filtroSelecionado === 'passaporte') {
-            Visa.find({numPassport: req.body.codeInsert}).populate('pagamento').then((search_result) => {
+            codeInsert.toUpperCase()
+            Visa.find({numPassport: codeInsert}).populate('pagamento').then((search_result) => {
                 res.render('status-solicitacao', { search_result })
             })
         }
