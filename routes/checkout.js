@@ -6,6 +6,8 @@ require('../models/Visa')
 const Visa = mongoose.model("visa")
 require('../models/Payment')
 const Payment = mongoose.model("payment")
+require('../models/Session')
+const Session = mongoose.model("session")
 
 const dotenv = require('dotenv')
 dotenv.config()
@@ -26,8 +28,9 @@ router.get('/', async (req, res) => {
   const title = 'Checkout - '
 
   if('visaID' in sessionData) {
-    const visas = req.session.visas.ids
+    const { visa_ids:visas } = await Session.findOne({session_id: req.query.session_id})
     const qtyVisas = visas.length
+
     try {
       const visasData = await Visa.find({_id: { $in: visas }})
 
@@ -38,14 +41,14 @@ router.get('/', async (req, res) => {
         },
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
-            "installments": 12,
+            "installments": 6,
             "total": qtyVisas * 147,
             "format": 2 
         })
       })
       const { data:installments } = await reqInstallments.json()
 
-      res.render('checkout/index', {title, sessionData, visas, visasData, qtyVisas, installments})
+      res.render('checkout/index', {title, sessionData, visas, visasData, qtyVisas, installments, session_id: req.query.session_id})
 
     } catch (err) {
       console.log("Erro ao carregar o checkout (index): " + new Date())
@@ -56,7 +59,30 @@ router.get('/', async (req, res) => {
 
   } else {
     req.flash('error_msg', 'Os campos na etapa 4 devem ser preenchidos.')
-    res.redirect(`/aplicacao?etapa=4`)
+    res.redirect(`/aplicacao?step=4`)
+  }
+})
+
+router.get('/remove-visa', async (req, res) => {
+  const session_id = req.query.session_id
+  const visa_id = req.query.visa_id
+
+  if(session_id) {
+    try {
+      await Session.findOneAndUpdate(
+        { session_id },
+        { $pull: { visa_ids: visa_id } },
+        { new: true } 
+      )
+
+      req.flash('success_msg', 'Aplicação excluída com sucesso.')
+      res.redirect(`/checkout?session_id=${session_id}`)
+    
+    } catch (err) {
+      console.log(err)
+      req.flash('error_msg', 'Não foi possível remover este item. Tente novamente.')
+      res.redirect(`/checkout?session_id=${session_id}`)
+    }
   }
 })
 
@@ -72,7 +98,7 @@ router.post('/process-payment', async (req, res) => {
     installmentsInput
   } = req.body
 
-  const visas = req.session.visas.ids
+  const { visa_ids:visas } = await Session.findOne({session_id: req.query.session_id})
   const qtyVisas = visas.length
 
   function separateInstallmentsAndValues (inputForm) {
@@ -198,7 +224,7 @@ router.post('/process-payment', async (req, res) => {
             }
           })
 
-          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${order.data.id}`)
+          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
           
         }
       }
@@ -240,7 +266,7 @@ router.post('/process-payment', async (req, res) => {
 
         if (visa) {
           await Visa.updateOne({ _id: visa._id }, { $set: { pagamento: savedPayment._id } })
-
+          
           transporter.use('compile', hbs(handlebarOptions))
 
           const mailOptions = {
@@ -252,7 +278,7 @@ router.post('/process-payment', async (req, res) => {
             context: {
               nome: visa.firstName,
               codeETA: visa.codeETA,
-              transactionid: payment.idOrder,
+              transactionid: savedPayment._id,
               linkStripe
             }
           }
@@ -271,7 +297,7 @@ router.post('/process-payment', async (req, res) => {
         }
       }
 
-      res.redirect(`/checkout/recusado?status_detail='cc_rejected_other_reason'&status=rejected&transaction_id=${order.data.id}`)
+      res.redirect(`/checkout/recusado?status_detail='cc_rejected_other_reason'&status=rejected&transaction_id=${savedPayment._id}`)
 
     }
   } catch (err) {
@@ -287,7 +313,7 @@ router.post("/process-payment-pix", async (req, res) => {
     identificationNumber
   } = req.body
 
-  const visas = req.session.visas.ids
+  const { visa_ids:visas } = await Session.findOne({session_id: req.query.session_id})
   const qtyVisas = visas.length
 
   try {
@@ -369,7 +395,7 @@ router.post("/process-payment-pix", async (req, res) => {
 
       const qr_code_base = pixPayment.data.pix_qrcode
       req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
-      res.status(201).redirect(`/checkout/pix?id=${order.data.id}&status=pending&qr_code=${pixPayment.data.pix_emv}`)
+      res.status(201).redirect(`/checkout/pix?id=${savedPayment._id}&status=pending&qr_code=${pixPayment.data.pix_emv}`)
 
     } else {
       console.log("Erro ao gerar PIX (primeiro checkout): " + new Date())
@@ -389,11 +415,13 @@ router.post("/process-payment-pix", async (req, res) => {
 //////////////////////
 // NOVAS TENTATIVAS //
 //////////////////////
+// Tentativa após pagamento recusado, mesma sessão
 router.get('/retry/:id', async (req, res) => {
   try {
     const title = 'Checkout - '
-    const payment = await Payment.findOne({idOrder: req.params.id}).populate('visaIDs') //retorna o pagamento pelo id do pedido
-    
+    const payment = await Payment.findOne({_id: req.params.id}).populate('visaIDs') //retorna o pagamento pelo id do pedido
+    const qtyVisas = payment.visaIDs.length
+
     // verifica se o pagamento existe
     if (!payment) {
       req.flash('error_msg', 'Esse pagamento não existe.')
@@ -405,26 +433,28 @@ router.get('/retry/:id', async (req, res) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
-            "installments": 12,
+            "installments": 6,
             "total": qtyVisas * 147,
             "format": 2 
         })
       })
       const { data:installments } = await reqInstallments.json()
-  
-      const qtyVisas = payment.visaIDs.length
+      
       res.render('checkout/retry', {payment, title, qtyVisas, installments, transactionid: req.params.id})
     } 
   } catch (e) {
-    req.flash('error_msg', 'Não foi prossível encontrar este pagamento')
+    console.log(e)
+    req.flash('error_msg', 'Não foi possível encontrar este pagamento')
     res.redirect('/')
   }
 })
 
+// Através do link do e-mail, pagamentos recusados e lembrete de pagamento
 router.get('/retry-email', async (req, res) => {
   try {
     const title = 'Checkout - '
-    const payment = await Payment.findOne({idOrder: req.query.transactionid}).populate('visaIDs') //retorna o pagamento pelo id do pedido
+    const payment = await Payment.findOne({_id: req.query.transactionid}).populate('visaIDs') //retorna o pagamento pelo id do pedido
+    const qtyVisas = payment.visaIDs.length
     
     // verifica se o pagamento existe
     if (!payment) {
@@ -437,31 +467,17 @@ router.get('/retry-email', async (req, res) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             "access-token": process.env.APPMAX_ACCESS_TOKEN,
-            "installments": 12,
+            "installments": 6,
             "total": qtyVisas * 147,
             "format": 2 
         })
       })
       const { data:installments } = await reqInstallments.json()
   
-      const qtyVisas = payment.visaIDs.length
       res.render('checkout/retry', {payment, title, qtyVisas, installments, transactionid: req.query.transactionid})
     } 
   } catch (e) {
     req.flash('error_msg', 'Não foi prossível encontrar este pagamento. Entre em contato com o suporte.')
-    res.redirect('/')
-  }
-})
-
-router.get('/abandoned', async (req, res) => {
-  try {
-    const title = 'Checkout - '
-    const payment = await Payment.findOne({idCheckout: req.query.idorder}).populate('visaIDs')
-    const qtyVisas = payment.visaIDs.length
-
-    res.render('checkout/abandoned', {payment, title, publicKey, qtyVisas, idorder: req.query.idorder})
-  } catch {
-    req.flash('error_msg', 'Esse pagamento não existe ou já foi concluído')
     res.redirect('/')
   }
 })
@@ -505,7 +521,7 @@ router.post('/process-payment-retry', async (req, res) => {
   }
 
   try {
-    const payment = await Payment.findOne({idOrder: transactionid})
+    const payment = await Payment.findOne({_id: transactionid})
 
     const visas = payment.visaIDs
     const qtyVisas = visas.length
@@ -605,7 +621,7 @@ router.post('/process-payment-retry', async (req, res) => {
             }
           })
 
-          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${order.data.id}`)
+          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
           
         }
       }
@@ -659,7 +675,7 @@ router.post('/process-payment-retry', async (req, res) => {
             context: {
               nome: visa.firstName,
               codeETA: visa.codeETA,
-              transactionid: payment.idOrder,
+              transactionid: savedPayment._id,
               linkStripe
             }
           }
@@ -678,7 +694,7 @@ router.post('/process-payment-retry', async (req, res) => {
         }
       }
 
-      res.redirect(`/checkout/recusado?status_detail='cc_rejected_other_reason'&status=rejected&transaction_id=${order.data.id}`)
+      res.redirect(`/checkout/recusado?status_detail='cc_rejected_other_reason'&status=rejected&transaction_id=${savedPayment._id}`)
 
     }
   } catch (err) {
@@ -769,7 +785,7 @@ router.post('/process-payment-pix-retry', async (req, res) => {
 
       const qr_code_base = pixPayment.data.pix_qrcode
       req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, {qr_code_base})
-      res.status(201).redirect(`/checkout/pix?id=${order.data.id}&status=pending&qr_code=${pixPayment.data.pix_emv}`)
+      res.status(201).redirect(`/checkout/pix?id=${savedPayment._id}&status=pending&qr_code=${pixPayment.data.pix_emv}`)
 
     } else {
       console.log("Erro ao gerar PIX (primeiro checkout): " + new Date())

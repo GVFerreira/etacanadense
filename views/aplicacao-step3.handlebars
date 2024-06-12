@@ -53,7 +53,7 @@
                     <p class="m-0 p-0">4. Conferência</p>
                 </div>
             </div>
-            <form action="/aplicacaoStep3" method="POST">
+            <form action="/aplicacaoStep3?session_id={{session_id}}" method="POST">
                 {{#if dynamicData}}
                     {{{dynamicData}}}
                 {{/if}}

@@ -156,7 +156,7 @@
 
                 {{#verifyCodPassportStep data.codPassport data.residentUSCIS data.airplane data.canadaVisa data.nonImmigrateVisa}}{{/verifyCodPassportStep}}
 
-                <a href="/aplicacao?etapa=2" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=2" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
 
                 <hr>
@@ -170,7 +170,7 @@
                     <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante</label>
                     <input type="date" class="form-control mb-3 w-25" id="dateVisaNonImmigrate" name="dateVisaNonImmigrate" value="{{data.dateVisaNonImmigrate}}" disabled required>
                     
-                    <a href="/aplicacao?etapa=3#numVisaNonImmigrate" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                    <a href="/aplicacao?step=3#numVisaNonImmigrate" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                     <hr>
                 {{/if}}
@@ -208,7 +208,7 @@
                 <label class="mb-2" for="cityBirth">Cidade/município de nascimento</label>
                 <input type="text" name="cityBirth" id="cityBirth" class="form-control w-50 mb-3" value="{{data.cityBirth}}" disabled required>
 
-                <a href="/aplicacao?etapa=3#numPassport" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#numPassport" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                 
                 <hr>
@@ -259,7 +259,7 @@
                     </div>
                 {{/if}}
 
-                <a href="/aplicacao?etapa=3#maritalStatus" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#maritalStatus" class="btn btn-primary fw-bold text-uppercase">Editar</a>
                 
                 <hr>
 
@@ -291,7 +291,7 @@
                     <option value="{{data.employmentFromDateYear}}">{{data.employmentFromDateYear}}</option>
                 </select>
 
-                <a href="/aplicacao?etapa=3#occupation" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#occupation" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                 <hr>
 
@@ -304,7 +304,7 @@
                 <label class="mb-2" for="contactTel">Celular</label>
                 <input type="tel" class="form-control mb-3 w-50" id="contactTel" name="contactTel" value="{{data.contactTel}}" disabled required>
 
-                <a href="/aplicacao?etapa=3#contactEmail" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#contactEmail" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                 <hr>
 
@@ -335,7 +335,7 @@
                     <option value="{{data.addressCountry}}">{{data.addressCountry}}</option>
                 </select>
 
-                <a href="/aplicacao?etapa=3#addressName" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#addressName" class="btn btn-primary fw-bold text-uppercase">Editar</a>
         
                 <hr>
 
@@ -390,7 +390,7 @@
                     </div>
                 {{/if}}
 
-                <a href="/aplicacao?etapa=3#travelWhen1" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#travelWhen1" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                 <hr>
 
@@ -575,7 +575,7 @@
                 <p>Por exemplo, uma necessidade urgente de viajar para o Canadá. Forneça detalhes relevantes para evitar atrasos no processamento de sua inscrição.</p>
                 <textarea rows="5" class="form-control mb-3 w-50" id="canadaDuringStayDetails" name="canadaDuringStayDetails" maxlength="250" disabled>{{data.canadaDuringStayDetails}}</textarea>
 
-                <a href="/aplicacao?etapa=3#refusedVisaToCanda1" class="btn btn-primary fw-bold text-uppercase">Editar</a>
+                <a href="/aplicacao?step=3#refusedVisaToCanda1" class="btn btn-primary fw-bold text-uppercase">Editar</a>
 
                 <h3 class="mt-4">Consentimento e declaração</h3>
 
@@ -619,7 +619,7 @@
                             <div class="modal-body">
                                 <h5>Precisa adicionar mais um solicitante?</h5>
                                 <p>Clique no botão abaixo para preencher um novo formulário.</p>
-                                <button class="btn btn-outline-success fw-bold text-uppercase" onclick="handleForm('newVisa')">
+                                <button class="btn btn-outline-success fw-bold text-uppercase" id="newVisa" onclick="handleForm('newVisa')">
                                     Adicionar solicitação <i class="bi bi-plus-circle ms-2"></i>
                                 </button>
                                 <hr>
@@ -644,11 +644,13 @@
     document.getElementById("form-aplicacao").addEventListener('submit', e => e.preventDefault())
 
     async function handleForm(action) {
+        document.getElementById('newVisa').disabled = true
         document.getElementById('goToPayment').disabled = true
         const agreeCheck = document.getElementById('flexCheckDefault').value
         const consentAndDeclaration = document.getElementById('consentAndDeclaration').value
 
-        const form = await fetch('/aplicacaoStep4', {
+        const session_id = "{{session_id}}"
+        const form = await fetch(`/aplicacaoStep4?session_id=${session_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -664,11 +666,11 @@
 
         switch (data.whichAction) {
             case 'newVisa':
-                window.location.href = '/aplicacao?again=true'
+                window.location.href = `/aplicacao?step=1&&session_id=${session_id}&again=true`
                 break
             
             case 'goToPayment':
-                window.location.href = '/checkout'
+                window.location.href = `/checkout?session_id=${session_id}`
                 break
         }
     }

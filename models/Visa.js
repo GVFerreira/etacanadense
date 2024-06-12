@@ -41,6 +41,7 @@ const Visa = new Schema({
     },
     document: {
         type: String,
+        uppercase: true,
         required: true
     },
     codPassport: {
@@ -140,6 +141,7 @@ const Visa = new Schema({
     },
     contactEmail: {
         type: String,
+        lowercase: true,
         required: true
     },
     contactTel : {

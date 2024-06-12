@@ -412,6 +412,13 @@ const handle = handlebars.create({
                 default:
                     return ''
             }
+        },
+        uniqueVisa: (visas) => {
+            if (visas && visas.length > 1) {
+                return true
+            } else {
+                return false
+            }
         }
     }
 })
@@ -423,6 +430,8 @@ require('./models/Visa')
 const Visa = mongoose.model("visa")
 require('./models/Payment')
 const Payment = mongoose.model("payment")
+require('./models/Session')
+const Session = mongoose.model("session")
 
 const nodemailer = require('nodemailer')
 const { transporter, handlebarOptions } = require('./helpers/senderMail')
@@ -468,7 +477,7 @@ cron.schedule('*/5 * * * *', async () =>  {
                 context: {
                     fullname: `${element.visaIDs[0].firstName} ${element.visaIDs[0].surname}`,
                     codeETA: element.visaIDs[0].codeETA,
-                    idOrder: element.idOrder
+                    idOrder: element._id
                 }
             },
             (err, {response, envelope, messageId}) => {
@@ -501,7 +510,8 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(session({
     secret: process.env.CANADENSE_SECRET,
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60000}
 }))
 app.use(flash())
 app.use(passport.initialize())
@@ -552,8 +562,6 @@ app.post('/accept-policy', (req, res, next) => {
 })
 
 app.get('/', async (req, res) => {
-    req.session.destroy()
-
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
 
@@ -562,154 +570,196 @@ app.get('/', async (req, res) => {
     res.render('index', {showPolicyPopup, metaDescription})
 })
 
-app.get('/aplicacao', (req, res) => {
-    const policyAccepted = req.cookies.policyAccepted
-    const showPolicyPopup = !policyAccepted
-    if(!parseInt(req.query.etapa)) {
-        const title = "Representante - "
-        const metaDescription = 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
-        if(req.query.again === "true") {
-            req.session.aplicacaoStep = {}
-            res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
+app.get('/aplicacao', async (req, res) => {
+    if (!req.query.step) {
+        const session = await Session.findOne({session_id: req.sessionID})
+        if(!session) {
+            const { session_id } = await Session.create({session_id: req.sessionID})
+            return res.redirect(`/aplicacao?step=1&session_id=${session_id}`)
         } else {
-            req.session.visas ? req.session.visas.ids = [] : null
-            res.render('aplicacao-step1', { showPolicyPopup, title, data: req.session.aplicacaoStep, metaDescription })
+            return res.redirect(`/aplicacao?step=1&session_id=${req.sessionID}`)
         }
-    }
-
-    if(parseInt(req.query.etapa) === 2) {
-        const sessionData = req.session.aplicacaoStep
-        if('representative' in sessionData ) {
-            const title = "Validação - "
-            res.render('aplicacao-step2', { title, data: req.session.aplicacaoStep })
-        } else {
-            req.flash('error_msg', 'Os campos na etapa 1 devem ser preenchidos.')
-            res.redirect(`/aplicacao`)
-        }
-
-    }
-
-    if(parseInt(req.query.etapa) === 3) {
-        const sessionData = req.session.aplicacaoStep
-        if('document' in sessionData) {
-            const title = "Documentos - "
-            const { canadaVisa, nonImmigrateVisa } = req.session.aplicacaoStep
-            if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
-                let dynamicData = `
-                    <h3 class="mt-4">Dados de não-imigrante</h3>
-
-                    <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
-                    <span class="d-block small mb-2">
-                        Confira no botão ao lado
-                        <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
-                            <i class="bi bi-question-circle-fill btn p-0"></i>
-                        </a>
-                    </span>
-                    <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="9" value="${sessionData.numVisaNonImmigrate ? sessionData.numVisaNonImmigrate : ""}" required>
-
-                    <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
-                    <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" value="${sessionData.dateVisaNonImmigrate ? sessionData.dateVisaNonImmigrate : ""}" required>   
-                `
-                res.render('aplicacao-step3', {title, dynamicData, data: req.session.aplicacaoStep})
+    } else {
+        if(req.query.step === '1') {
+            const title = "Representante - "
+            const metaDescription = 'Inicie o processo de solicitação de Autorização Eletrônica de Viagem para o Canadá. Siga nosso guia passo a passo para obter acesso rápido e fácil a este destino deslumbrante'
+    
+            if(req.query.again === "true") {
+                req.session.aplicacaoStep = {}
+                res.render('aplicacao-step1', { title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID  })
             } else {
-                res.render('aplicacao-step3', {title, dynamicData: '', data: req.session.aplicacaoStep})
+                req.session.visas ? req.session.visas.ids = [] : null
+                res.render('aplicacao-step1', { title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID })
             }
-        } else {
-            req.flash('error_msg', 'Os campos na etapa 2 devem ser preenchidos.')
-            res.redirect(`/aplicacao?etapa=2`)
         }
+    
+        if(req.query.step === '2') {
+            const sessionData = req.session.aplicacaoStep
+            if('representative' in sessionData ) {
+                const title = "Validação - "
+                res.render('aplicacao-step2', { title, data: req.session.aplicacaoStep, session_id: req.sessionID })
+            } else {
+                const { session_id } = await Session.findOne({session_id: req.sessionID})
+                if (session_id ) {
+                    req.flash('error_msg', 'Os campos na etapa 1 devem ser preenchidos.')
+                    res.redirect(`/aplicacao?step=1&session_id=${session_id}`)
+                } else {
+                    req.flash('error_msg', 'Sua sessão expirou')
+                    res.redirect('/aplicacao')
+                }
+            }
+    
+        }
+    
+        if(req.query.step === '3') {
+            const sessionData = req.session.aplicacaoStep
+            if('document' in sessionData) {
+                const title = "Documentos - "
+                const { canadaVisa, nonImmigrateVisa } = req.session.aplicacaoStep
+                if ((canadaVisa == "0" && nonImmigrateVisa == "1") || (canadaVisa == "1" && nonImmigrateVisa == "1")) {
+                    let dynamicData = `
+                        <h3 class="mt-4">Dados de não-imigrante</h3>
+    
+                        <label class="mb-2">Número do visto de não imigrante nos EUA <span class="text-red">* (obrigatório)</span></label>
+                        <span class="d-block small mb-2">
+                            Confira no botão ao lado
+                            <a type="button" data-bs-toggle="modal" data-bs-target="#documentModalNumVisaNonImmigrate">
+                                <i class="bi bi-question-circle-fill btn p-0"></i>
+                            </a>
+                        </span>
+                        <input type="text" class="form-control mb-3 w-50" name="numVisaNonImmigrate" id="numVisaNonImmigrate" maxlength="9" value="${sessionData.numVisaNonImmigrate ? sessionData.numVisaNonImmigrate : ""}" required>
+    
+                        <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
+                        <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" value="${sessionData.dateVisaNonImmigrate ? sessionData.dateVisaNonImmigrate : ""}" required>   
+                    `
+                    res.render('aplicacao-step3', {title, dynamicData, data: req.session.aplicacaoStep, session_id: req.sessionID})
+                } else {
+                    res.render('aplicacao-step3', {title, dynamicData: '', data: req.session.aplicacaoStep, session_id: req.sessionID})
+                }
+            } else {
+                const { session_id } = await Session.findOne({session_id: req.sessionID})
+                if (session_id ) {
+                    req.flash('error_msg', 'Os campos na etapa 2 devem ser preenchidos.')
+                    res.redirect(`/aplicacao?step=2&session_id=${session_id}`)
+                } else {
+                    req.flash('error_msg', 'Sua sessão expirou')
+                    res.redirect('/aplicacao')
+                }
+            }
+    
+        }
+    
+        if(req.query.step === '4') {
+            const sessionData = req.session.aplicacaoStep
+            if('numPassport' in sessionData) {
+                const title = "Conferência - "
+                res.render('aplicacao-step4', {title, data: req.session.aplicacaoStep, session_id: req.sessionID})
+            } else {
+                const { session_id } = await Session.findOne({session_id: req.sessionID})
+                if (session_id ) {
+                    req.flash('error_msg', 'Os campos na etapa 3 devem ser preenchidos.')
+                    res.redirect(`/aplicacao?step=3&session_id=${session_id}`)
+                } else {
+                    req.flash('error_msg', 'Sua sessão expirou')
+                    res.redirect('/aplicacao')
+                }
+            }
+        }
+    }
+})
+
+app.post('/aplicacaoStep1', async (req, res) => {
+    const session_id = req.query.session_id
+    const session = await Session.findOne({session_id})
+    if (session) {
+        req.session.aplicacaoStep = Object.assign({}, req.body)
+        req.session.aplicacaoStep.representative = parseInt(req.session.aplicacaoStep.representative)
+        req.session.aplicacaoStep.representative ? req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed) : 0
         
+        res.redirect(`/aplicacao?step=2&session_id=${session_id}`)
+    } else {
+        req.flash('error_msg', 'Sua sessão expirou')
+        res.redirect('/aplicacao')
     }
+})
 
-    if(parseInt(req.query.etapa) === 4) {
-        const sessionData = req.session.aplicacaoStep
-        if('numPassport' in sessionData) {
-            const title = "Conferência - "
-            res.render('aplicacao-step4', {title, data: req.session.aplicacaoStep})
-        } else {
-            req.flash('error_msg', 'Os campos na etapa 3 devem ser preenchidos.')
-            res.redirect(`/aplicacao?etapa=3`)
-        }
+app.post('/aplicacaoStep2', async (req, res) => {
+    const session_id = req.query.session_id
+    const session = await Session.findOne({session_id})
+
+    if (session) {
+        req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
+        req.session.aplicacaoStep.residentUSCIS = parseInt(req.session.aplicacaoStep.residentUSCIS)
+        req.session.aplicacaoStep.airplane = parseInt(req.session.aplicacaoStep.airplane)
+        req.session.aplicacaoStep.canadaVisa = parseInt(req.session.aplicacaoStep.canadaVisa)
+        req.session.aplicacaoStep.nonImmigrateVisa = parseInt(req.session.aplicacaoStep.nonImmigrateVisa)
+
+        res.redirect(`/aplicacao?step=3&session_id=${session_id}`)
+    } else {
+        req.flash('error_msg', 'Sua sessão expirou')
+        res.redirect('/aplicacao')
     }
-
 })
 
-app.post('/aplicacaoStep1', (req, res) => {
-    req.session.aplicacaoStep = Object.assign({}, req.body)
+app.post('/aplicacaoStep3', async (req, res) => {
+    const session_id = req.query.session_id
+    const session = await Session.findOne({session_id})
 
-    req.session.aplicacaoStep.representative = parseInt(req.session.aplicacaoStep.representative)
-    req.session.aplicacaoStep.representative ? req.session.aplicacaoStep.representativePayed = parseInt(req.session.aplicacaoStep.representativePayed) : 0
-    res.redirect('/aplicacao?etapa=2')
-})
-
-app.post('/aplicacaoStep2', (req, res) => {
-    req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
-    req.session.aplicacaoStep.residentUSCIS = parseInt(req.session.aplicacaoStep.residentUSCIS)
-    req.session.aplicacaoStep.airplane = parseInt(req.session.aplicacaoStep.airplane)
-    req.session.aplicacaoStep.canadaVisa = parseInt(req.session.aplicacaoStep.canadaVisa)
-    req.session.aplicacaoStep.nonImmigrateVisa = parseInt(req.session.aplicacaoStep.nonImmigrateVisa)
-    res.redirect('/aplicacao?etapa=3')
-})
-
-app.post('/aplicacaoStep3', (req, res) => {
-    req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
-    req.session.aplicacaoStep.appliedToCanada = parseInt(req.session.aplicacaoStep.appliedToCanada)
-    req.session.aplicacaoStep.travelWhen = parseInt(req.session.aplicacaoStep.travelWhen)
-    req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
-    req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
-    req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
-    const userTime = req.body.hora 
-
-    const userDate = moment(userTime, "HH:mm").toDate()
-
-    const formattedTime = moment(userDate).format("HH:mm")
-    res.redirect('/aplicacao?etapa=4')
+    if (session) {
+        req.session.aplicacaoStep = Object.assign({}, req.session.aplicacaoStep, req.body)
+        req.session.aplicacaoStep.appliedToCanada = parseInt(req.session.aplicacaoStep.appliedToCanada)
+        req.session.aplicacaoStep.travelWhen = parseInt(req.session.aplicacaoStep.travelWhen)
+        req.session.aplicacaoStep.refusedVisaToCanda = parseInt(req.session.aplicacaoStep.refusedVisaToCanda)
+        req.session.aplicacaoStep.criminalOffenceAnywhere = parseInt(req.session.aplicacaoStep.criminalOffenceAnywhere)
+        req.session.aplicacaoStep.tuberculosis = parseInt(req.session.aplicacaoStep.tuberculosis)
+        res.redirect(`/aplicacao?step=4&session_id=${session_id}`)
+    }
+    else {
+        req.flash('error_msg', 'Sua sessão expirou')
+        res.redirect('/aplicacao')
+    }  
 })
 
 app.post('/aplicacaoStep4', async (req, res) => {
     /* Gera o codeETA, código de acompanhamento da solicitação de eTA. Este código é inserido nos e-mails
     de comunicação e pode ser usado para consultar o status da solicitação */
-    const codeSalt = bcrypt.genSaltSync(10)
-    const codeETA = codeSalt.substring(10, 15).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
+    const codeSalt = bcrypt.genSaltSync(10);
+    const codeETA = codeSalt.substring(10, 15).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase();
 
     // Verifica se o código gerado já existe
-    const existingCodeETA = await Visa.findOne({ codeETA })
+    const existingCodeETA = await Visa.findOne({ codeETA });
+
     if (!existingCodeETA) {
-        const { agreeCheck, consentAndDeclaration, whichAction } = req.body
+        const { agreeCheck, consentAndDeclaration, whichAction } = req.body;
 
         try {
-            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }))
-            const visaID = newVisa._id
+            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }));
+            const visaID = newVisa._id;
 
-            // Insere o(s) ID(s) na sessão
-            let sessionIDs
-            if (req.session.visas && req.session.visas.ids) {
-                //Se já existir um ID, coloque outro no array
-                sessionIDs = req.session.visas.ids
-                sessionIDs.push(visaID)
-                req.session.visas.ids = sessionIDs
+            let session = await Session.findOne({ session_id: req.query.session_id });
+
+            if (session && session.visa_ids) {
+                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $push: { visa_ids: visaID } }, { new: true });
             } else {
-                // Se não existir, crie o array e insira o ID nele
-                sessionIDs = [visaID]
-                req.session.visas = { ids: sessionIDs }
+                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $set: { visa_ids: [visaID] } }, { new: true });
             }
 
             // Agrupa as informações em apenas um objeto na sessão
-            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA })
+            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA });
 
             // Salva as informações 
-            await newVisa.save()
+            await newVisa.save();
 
             // Verifica a ação escolhida pelo usuário. Opções: goToPayment ou newVisa. Ir para pagamento ou Nova solicitação, respectivamente.
             if (whichAction === "goToPayment") {
                 function formatTel(numberTel) {
-                    return numberTel.replace(/\D/g, '').slice(0, 11)
+                    return numberTel.replace(/\D/g, '').slice(0, 11);
                 }
 
                 if (!req.session.sessionCheckout) {
                     //  Cria um ID da sessão do checkout
-                    const checkoutSalt = bcrypt.genSaltSync(10)
-                    req.session.sessionCheckout = checkoutSalt
+                    const checkoutSalt = bcrypt.genSaltSync(10);
+                    req.session.sessionCheckout = checkoutSalt;
 
                     const newClient = await fetch(`${process.env.BASE_URL}/customer`, {
                         method: "POST",
@@ -724,45 +774,42 @@ app.post('/aplicacaoStep4', async (req, res) => {
                             "telephone": formatTel(req.session.aplicacaoStep.contactTel),
                             "ip": req.ip,
                         })
-                    })
+                    });
 
-                    const client = await newClient.json()
+                    const client = await newClient.json();
 
                     if (client.success) {
                         const newPayment = new Payment({
                             idCheckout: checkoutSalt,
                             idClient: client.data.id,
                             status: "Checkout em andamento",
-                            visaIDs: req.session.visas.ids
-                        })
-    
-                        await newPayment.save()
+                            visaIDs: session.visa_ids
+                        });
+                        
+                        await newPayment.save();
                     } else {
-                        console.log(client)
+                        console.log(client);
                     }
-
                 } else {
                     // Se já houver um ID Checkout na sessão, apenas insere o ID da solicitação no registro do pagamento
                     await Payment.findOneAndUpdate(
                         { idCheckout: req.session.sessionCheckout },
-                        { $set: {
-                            visaIDs: sessionIDs
-                        }}
-                    )
+                        { $set: { visaIDs: session.visa_ids } }
+                    );
                 }
             }
 
-            res.status(200).json({ whichAction })
+            res.status(200).json({ whichAction, session_id: req.query.session_id });
         } catch (err) {
-            console.error(err)
-            req.flash('error_msg', 'Ocorreu um erro ao salvar seus dados')
+            console.error(err);
+            req.flash('error_msg', 'Ocorreu um erro ao salvar seus dados');
+            res.status(500).json({ error: 'Ocorreu um erro ao salvar seus dados' });
         }
     } else {
-        req.flash("error_msg", "Tente enviar o formulário novamente")
-        res.redirect('/aplicacao?etapa=4')
+        req.flash("error_msg", "Tente enviar o formulário novamente");
+        res.redirect(`/aplicacao?step=4&session_id=${req.sessionID}`);
     }
-
-})
+});
 
 app.get('/acompanhar-solicitacao', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
