@@ -495,37 +495,37 @@ router.post('/process-payment-retry', async (req, res) => {
     transactionid
   } = req.body
 
-  function separateInstallmentsAndValues (inputForm) {
-    /// String original
-    let stringOriginal = inputForm
-
-    // Encontrando o índice do 'R$'
-    let indiceR$ = stringOriginal.indexOf('R$')
-
-    // Extraindo os 2 primeiros caracteres
-    let installments = stringOriginal.substr(0, 2)
-
-    // Extraindo os caracteres a partir do índice do 'R$' até o final
-    let valueInstallment = stringOriginal.substr(indiceR$ + 3)
-
-    // Convertendo o valor da parcela para float (substituindo ',' por '.' antes de converter)
-    let valueInstallmentFloat = parseFloat(valueInstallment.replace('.', '').replace(',', '.'))
-
-    return { installment: parseInt(installments), valueInstallmentFloat }
-  }
-
-  function pricePerVisa () {
-    const { installment, valueInstallmentFloat } = separateInstallmentsAndValues(installmentsInput)
-    const total = installment * valueInstallmentFloat
-    return total / qtyVisas
-  }
-
   try {
     const payment = await Payment.findOne({_id: transactionid})
 
     const visas = payment.visaIDs
     const qtyVisas = visas.length
 
+    function separateInstallmentsAndValues (inputForm) {
+      /// String original
+      let stringOriginal = inputForm
+
+      // Encontrando o índice do 'R$'
+      let indiceR$ = stringOriginal.indexOf('R$')
+
+      // Extraindo os 2 primeiros caracteres
+      let installments = stringOriginal.substr(0, 2)
+
+      // Extraindo os caracteres a partir do índice do 'R$' até o final
+      let valueInstallment = stringOriginal.substr(indiceR$ + 3)
+
+      // Convertendo o valor da parcela para float (substituindo ',' por '.' antes de converter)
+      let valueInstallmentFloat = parseFloat(valueInstallment.replace('.', '').replace(',', '.'))
+
+      return { installment: parseInt(installments), valueInstallmentFloat }
+    }
+
+    function pricePerVisa () {
+      const { installment, valueInstallmentFloat } = separateInstallmentsAndValues(installmentsInput)
+      const total = installment * valueInstallmentFloat
+      return total / qtyVisas
+    }
+    
     const newOrder = await fetch(`${process.env.BASE_URL}/order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
