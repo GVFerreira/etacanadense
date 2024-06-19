@@ -865,38 +865,21 @@ router.post('/webhook', async (req, res) => {
           
         if (visa) {
           transporter.use('compile', hbs(handlebarOptions))
-      
-          transporter.sendMail({
-              from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-              to: visa.contactEmail,
-              bcc: process.env.CANADENSE_RECEIVER_MAIL,
-              subject: `Confirmação de Recebimento Código ${visa.codeETA} - Autorização Eletrônica de Viagem Canadense`,
-              template: 'aviso-eta',
-            }, (err, {response, envelope, messageId}) => {
-              if(err) {
-                console.log("Confirmação de recebimento (Webhook): " + new Date())
-                console.log(err)
-              } else {
-                console.log({
-                  message: `Confirmação de recebimento (Webhook): ${new Date()}`,
-                  response, envelope, messageId
-                })
-              }
+
+          const mailOptions = {
+            from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
+            to: process.env.CANADENSE_RECEIVER_MAIL,
+            subject: 'Pagamento aprovado',
+            template: 'pagamento-aprovado',
+            context: {
+              nome: visa.firstName,
+              codeETA: visa.codeETA,
             }
-          )
+          }
       
-          transporter.sendMail({
-              from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-              to: process.env.CANADENSE_RECEIVER_MAIL,
-              subject: 'Pagamento aprovado',
-              template: 'pagamento-aprovado',
-              context: {
-                nome: visa.firstName,
-                codeETA: visa.codeETA,
-              }
-            }, (err, {response, envelope, messageId}) => {
+          transporter.sendMail(mailOptions, (err, {response, envelope, messageId}) => {
               if(err) {
-                console.log("Pagamento aprovado (Webhook): " + new Date())
+                console.log(`Pagamento aprovado (Webhook): ${new Date()}`)
                 console.log(err)
               } else {
                 console.log({
