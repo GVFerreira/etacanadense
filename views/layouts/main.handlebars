@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
-        {{>_gtm}}
+        {{{gtm}}}
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,11 +15,11 @@
         <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
         <style>
             * {
-                font-family: Lato, 'sans-serif';
+                font-family: Lato, 'sans-serif'
             }
             body {
                 margin: 0;
-                padding: 0;
+                padding: 0
             }
         </style>
         <title>{{title}}eTA Canadense</title>
@@ -29,7 +29,7 @@
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WMFR7925"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- End Google Tag Manager (noscript) -->
-        {{#if showPolicyPopup}}
+        {{!-- {{#if showPolicyPopup}}
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"></div>
             <div class="modal-dialog modal-sm policy-popup" id="modalPolicyCookies">
                 <div class="modal-content bg-light text-dark">
@@ -81,7 +81,7 @@
                     xhr.send(JSON.stringify({}));
                 });
             </script>
-        {{/if}}
+        {{/if}} --}}
         {{>_header}}
         {{#if error}}
             <div class="container">
