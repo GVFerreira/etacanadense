@@ -567,7 +567,7 @@ app.get('/', async (req, res) => {
 
     const metaDescription = "Garanta sua entrada no Canadá de forma descomplicada e segura com o eTA (Autorização Eletrônica de Viagem). Nosso processo de solicitação online simplifica sua jornada. Solicite seu eTA agora e aproveite uma viagem tranquila ao Canadá"
 
-    res.render('index', {gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", showPolicyPopup, metaDescription})
+    res.render('index', {showPolicyPopup, metaDescription})
 })
 
 app.get('/aplicacao', async (req, res) => {
@@ -586,10 +586,10 @@ app.get('/aplicacao', async (req, res) => {
     
             if(req.query.again === "true") {
                 req.session.aplicacaoStep = {}
-                res.render('aplicacao-step1', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID  })
+                res.render('aplicacao-step1', { title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID  })
             } else {
                 req.session.visas ? req.session.visas.ids = [] : null
-                res.render('aplicacao-step1', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID })
+                res.render('aplicacao-step1', { title, data: req.session.aplicacaoStep, metaDescription, session_id: req.sessionID })
             }
         }
     
@@ -597,7 +597,7 @@ app.get('/aplicacao', async (req, res) => {
             const sessionData = req.session.aplicacaoStep
             if('representative' in sessionData ) {
                 const title = "Validação - "
-                res.render('aplicacao-step2', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, data: req.session.aplicacaoStep, session_id: req.sessionID })
+                res.render('aplicacao-step2', { title, data: req.session.aplicacaoStep, session_id: req.sessionID })
             } else {
                 const { session_id } = await Session.findOne({session_id: req.sessionID})
                 if (session_id ) {
@@ -632,9 +632,9 @@ app.get('/aplicacao', async (req, res) => {
                         <label class="mb-2" for="dateVisaNonImmigrate">Data de expiração do visto americano de não-imigrante <span class="text-red">* (obrigatório)</span></label>
                         <input type="date" class="form-control mb-3 w-25" name="dateVisaNonImmigrate" id="dateVisaNonImmigrate" onblur="validNotPresentDay(this)" value="${sessionData.dateVisaNonImmigrate ? sessionData.dateVisaNonImmigrate : ""}" required>   
                     `
-                    res.render('aplicacao-step3', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, dynamicData, data: req.session.aplicacaoStep, session_id: req.sessionID})
+                    res.render('aplicacao-step3', { title, dynamicData, data: req.session.aplicacaoStep, session_id: req.sessionID})
                 } else {
-                    res.render('aplicacao-step3', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, dynamicData: '', data: req.session.aplicacaoStep, session_id: req.sessionID})
+                    res.render('aplicacao-step3', { title, dynamicData: '', data: req.session.aplicacaoStep, session_id: req.sessionID})
                 }
             } else {
                 const { session_id } = await Session.findOne({session_id: req.sessionID})
@@ -653,7 +653,7 @@ app.get('/aplicacao', async (req, res) => {
             const sessionData = req.session.aplicacaoStep
             if('numPassport' in sessionData) {
                 const title = "Conferência - "
-                res.render('aplicacao-step4', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, data: req.session.aplicacaoStep, session_id: req.sessionID})
+                res.render('aplicacao-step4', { title, data: req.session.aplicacaoStep, session_id: req.sessionID})
             } else {
                 const { session_id } = await Session.findOne({session_id: req.sessionID})
                 if (session_id ) {
@@ -815,7 +815,7 @@ app.get('/acompanhar-solicitacao', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
     res.render('acompanhar-solicitacao', {
-        gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", 
+        
         showPolicyPopup,
         title: 'Acompanhar solicitação - ',
         metaDescription: 'Acompanhe o status de sua solicitação de eTA em tempo real. Fique atualizado sobre o progresso e a aprovação de sua Autorização Eletrônica de Viagem para o Canadá.'
@@ -831,17 +831,17 @@ app.post('/consultando-solicitacao', (req, res) => {
         if (req.body.filtroSelecionado === 'email') {
             codeInsert.toLowerCase()
             Visa.find({contactEmail: codeInsert}).populate('pagamento').then((search_result) => {
-                res.render('status-solicitacao', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", search_result })
+                res.render('status-solicitacao', { search_result })
             })
         } else if (req.body.filtroSelecionado === 'codigo') {
             codeInsert.toUpperCase()
             Visa.find({codeETA: codeInsert}).populate('pagamento').then((search_result) => {
-                res.render('status-solicitacao', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", search_result })
+                res.render('status-solicitacao', { search_result })
             })
         } else if (req.body.filtroSelecionado === 'passaporte') {
             codeInsert.toUpperCase()
             Visa.find({numPassport: codeInsert}).populate('pagamento').then((search_result) => {
-                res.render('status-solicitacao', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", search_result })
+                res.render('status-solicitacao', { search_result })
             })
         }
         
@@ -856,7 +856,7 @@ app.get('/contato', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
     res.render('contato', {
-        gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", 
+        
         showPolicyPopup,
         title: 'Contato - ',
         metaDescription: 'Entre em contato conosco para todas as suas dúvidas e necessidades relacionadas à Autorização Eletrônica de Viagem para o Canadá. Estamos aqui para ajudar a tornar sua viagem o mais tranquila possível.'
@@ -895,14 +895,14 @@ app.post('/contact-form', (req, res) => {
 })
 
 app.get('/cadastur', (req, res) => {
-    res.render('cadastur', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title: 'Cadastur - '})
+    res.render('cadastur', { title: 'Cadastur - '})
 })
 
 app.get('/artigos', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
     res.render('artigos', {
-        gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", 
+        
         showPolicyPopup,
         title: 'Artigos - ',
         metaDescription: 'Explore nosso catálogo de artigos informativos sobre viagens ao Canadá, Autorização Eletrônica de Viagem e dicas úteis para uma visita perfeita.'
@@ -913,7 +913,7 @@ app.get('/politica-privacidade', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
     res.render('politica-privacidade', {
-        gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", 
+        
         showPolicyPopup,
         title: 'Politica de privacidade - ',
         metaDescription: 'Saiba como protegemos seus dados pessoais. Leia nossa Política de Privacidade para entender nosso compromisso com a segurança e a confidencialidade.'
@@ -924,7 +924,7 @@ app.get('/termos-condicoes', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
     res.render('termos-condicoes', {
-        gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", 
+        
         showPolicyPopup,
         title: 'Termos e Condições - ',
         metaDescription: 'Conheça nossos Termos e Condições para solicitação e uso da Autorização Eletrônica de Viagem para o Canadá. Garanta que sua viagem esteja em conformidade com as regras e regulamentos'

@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
       })
       const { data:installments } = await reqInstallments.json()
 
-      res.render('checkout/index', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, sessionData, visas, visasData, qtyVisas, installments, session_id: req.query.session_id})
+      res.render('checkout/index', { title, sessionData, visas, visasData, qtyVisas, installments, session_id: req.query.session_id})
 
     } catch (err) {
       console.log("Erro ao carregar o checkout (index): " + new Date())
@@ -440,7 +440,7 @@ router.get('/retry/:id', async (req, res) => {
       })
       const { data:installments } = await reqInstallments.json()
       
-      res.render('checkout/retry', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", payment, title, qtyVisas, installments, transactionid: req.params.id})
+      res.render('checkout/retry', { payment, title, qtyVisas, installments, transactionid: req.params.id})
     } 
   } catch (e) {
     console.log(e)
@@ -474,7 +474,7 @@ router.get('/retry-email', async (req, res) => {
       })
       const { data:installments } = await reqInstallments.json()
   
-      res.render('checkout/retry', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", payment, title, qtyVisas, installments, transactionid: req.query.transactionid})
+      res.render('checkout/retry', { payment, title, qtyVisas, installments, transactionid: req.query.transactionid})
     } 
   } catch (e) {
     req.flash('error_msg', 'Não foi prossível encontrar este pagamento. Entre em contato com o suporte.')
@@ -819,29 +819,29 @@ router.get('/pix', (req, res) => {
   const { id, status, qr_code } = req.query
   const qr_code_base = req.session.aplicacaoStep.qr_code_base
   
-  res.render('checkout/pix', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", title, id, status, qr_code, qr_code_base })
+  res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
 })
 
 router.get('/obrigado', (req, res) => {
     const { status, status_detail, transaction_id } = req.query
 
-    res.render('checkout/obrigado', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", status, status_detail, transaction_id })
+    res.render('checkout/obrigado', { status, status_detail, transaction_id })
 })
 
 router.get('/recusado', (req, res) => {
   const { status, status_detail, transaction_id } = req.query
-  res.render('checkout/recusado', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", status, status_detail, transaction_id })
+  res.render('checkout/recusado', { status, status_detail, transaction_id })
 })
 
 router.get('/recusado_retry', (req, res) => {
   const { status, status_detail, transaction_id } = req.query
-  res.render('checkout/recusado_retry', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", status, status_detail, transaction_id })
+  res.render('checkout/recusado_retry', { status, status_detail, transaction_id })
 })
 
 router.get('/em_processo', (req, res) => {
     const { status, status_detail, transaction_id } = req.query
 
-    res.render('checkout/em_processo', { gtm: "<!-- Google Tag Manager --><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WMFR7925');</script><!-- End Google Tag Manager -->", status, status_detail, transaction_id })
+    res.render('checkout/em_processo', { status, status_detail, transaction_id })
 })
 
 
