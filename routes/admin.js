@@ -57,6 +57,15 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get('/leo', (req, res) => {
+    Visa.find().populate('pagamento').sort({createdAt: "DESC"}).then((visas) => {
+        res.json(visas)
+    }).catch((err) => {
+        req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
+        res.redirect('/')
+    })
+})
+
 router.get('/details-visa/:id', (req, res) => {
 
     Visa.findOne({_id: req.params.id}).then((visa) => {
