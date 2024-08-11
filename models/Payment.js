@@ -9,7 +9,7 @@ const Payment = new Schema({
         type: Number
     },
     idOrder: {
-        type: Number
+        type: String
     },
     transaction_amount: {
         type: Number
