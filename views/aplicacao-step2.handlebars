@@ -127,6 +127,7 @@
                     <option value="" selected disabled>Selecione</option>
                     <option value="AND (Andorra)">AND (Andorra)</option>
                     <option value="ATG (Antígua e Barbuda)">ATG (Antígua e Barbuda)</option>
+                    <option value="ARG (Argentina)">ARG (Argentina)</option>
                     <option value="AUS (Austrália)">AUS (Austrália)</option>
                     <option value="AUT (Áustria)">AUT (Áustria)</option>
                     <option value="BEL (Bélgica)">BEL (Bélgica)</option>
@@ -169,6 +170,7 @@
                     <option value="SVN (Eslovênia)">SVN (Eslovênia)</option>
                     <option value="SVK (Eslováquia)">SVK (Eslováquia)</option>
                     <option value="SWE (Suécia)">SWE (Suécia)</option>
+                    <option value="URY (Uruguai)">URY (Uruguai)</option>
                     <option value="WSM (Samoa)">WSM (Samoa)</option>
                 </select>
                 <div id="dynamicUSCIS"></div>
@@ -195,7 +197,7 @@
         let dynamicUSCIS = document.getElementById('dynamicUSCIS')
         dynamicUSCIS.innerHTML = ''
 
-        if (codPassport === 'ATG (Antígua e Barbuda)' || codPassport === 'BRA (Brasil)') {
+        if (codPassport === 'ATG (Antígua e Barbuda)' || codPassport === 'BRA (Brasil)' || codPassport === 'ARG (Argentina)' || codPassport === 'URY (Uruguai)') {
             dynamicUSCIS.innerHTML += `
                 <label for="nationalityPassport" class="mt-3">Qual é a nacionalidade indicada neste passaporte? <span class="text-red">* (obrigatório)</span></label>
                 <select name="nationalityPassport" id="nationalityPassport" class="form-select w-50 mb-3" required>
@@ -203,6 +205,7 @@
                     <option value="Alemanha">Alemanha</option>
                     <option value="Andorra">Andorra</option>
                     <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Argentina">Argentina</option>
                     <option value="Austrália">Austrália</option>
                     <option value="Áustria">Áustria</option>
                     <option value="Bahamas">Bahamas</option>
@@ -245,6 +248,7 @@
                     <option value="Singapura">Singapura</option>
                     <option value="Suécia">Suécia</option>
                     <option value="Suíça">Suíça</option>
+                    <option value="Uruguai">Uruguai</option>
                 </select>
                 <label for="residentUSCIS" class="mt-3">Você é um residente permanente legal dos Estados Unidos com um número válido dos Serviços de Cidadania e Imigração dos EUA (USCIS)? <span class="text-red">* (obrigatório)</span></label>
                 <div class="p-2 w-50 d-flex flex-row gap-4">
@@ -275,6 +279,7 @@
                     <option value="Alemanha">Alemanha</option>
                     <option value="Andorra">Andorra</option>
                     <option value="Antígua e Barbuda">Antígua e Barbuda</option>
+                    <option value="Argentina">Argentina</option>
                     <option value="Austrália">Austrália</option>
                     <option value="Áustria">Áustria</option>
                     <option value="Bahamas">Bahamas</option>
@@ -317,6 +322,7 @@
                     <option value="Singapura">Singapura</option>
                     <option value="Suécia">Suécia</option>
                     <option value="Suíça">Suíça</option>
+                    <option value="Uruguai">Uruguai</option>
                 </select>
                 <div id="dynamicAviao"></div>
             `
