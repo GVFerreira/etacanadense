@@ -899,7 +899,22 @@ app.get('/cadastur', (req, res) => {
 })
 
 app.get('/tagmanager', (req, res) => {
-    res.render('tagmanager', { title: 'Tag Manager - '})
+    const purchaseEvent = `
+        <script>
+            window.dataLayer = window.dataLayer || []
+            window.dataLayer.push({
+                'event': 'purchase',
+                'transactionId': '12345', 
+                'transactionTotal': 297,
+                'transactionProduct': {
+                'name': 'Solicitação eTA Canadense', 
+                'price': 147, 
+                'quantity': 2
+                }
+            })
+        </script>
+    `
+    res.render('tagmanager', { title: 'Tag Manager - ', purchaseEvent})
 })
 
 app.get('/artigos', (req, res) => {
