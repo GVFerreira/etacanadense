@@ -1,4 +1,18 @@
 <main class="container">
   <h1>Teste GTM</h1>
 </main>
-{{{purchaseEvent}}}
+<script>
+  const purchaseID = "{{purchaseID}}"
+
+  window.dataLayer = window.dataLayer || []
+  window.dataLayer.push({
+    'event': 'purchase',
+    'transactionId': `${purchaseID}`, 
+    'transactionTotal': 297,
+    'transactionProduct': {
+    'name': 'Solicitação eTA Canadense', 
+    'price': 147, 
+    'quantity': 2
+    }
+  })
+</script>

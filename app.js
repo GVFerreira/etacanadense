@@ -901,23 +901,8 @@ app.get('/cadastur', (req, res) => {
 app.get('/tagmanager', (req, res) => {
     const salt = bcrypt.genSaltSync(10)
     const purchaseID = bcrypt.hashSync("Bacon", salt)
-    
-    const purchaseEvent = `
-        <script>
-            window.dataLayer = window.dataLayer || []
-            window.dataLayer.push({
-                'event': 'purchase',
-                'transactionId': ${purchaseID}, 
-                'transactionTotal': 297,
-                'transactionProduct': {
-                'name': 'Solicitação eTA Canadense', 
-                'price': 147, 
-                'quantity': 2
-                }
-            })
-        </script>
-    `
-    res.render('tagmanager', { title: 'Tag Manager - ', purchaseEvent})
+
+    res.render('tagmanager', { title: 'Tag Manager - ', purchaseID})
 })
 
 app.get('/artigos', (req, res) => {
