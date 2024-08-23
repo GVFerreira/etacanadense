@@ -899,12 +899,15 @@ app.get('/cadastur', (req, res) => {
 })
 
 app.get('/tagmanager', (req, res) => {
+    const salt = bcrypt.genSaltSync(10)
+    const purchaseID = bcrypt.hashSync("Bacon", salt)
+    
     const purchaseEvent = `
         <script>
             window.dataLayer = window.dataLayer || []
             window.dataLayer.push({
                 'event': 'purchase',
-                'transactionId': '12345', 
+                'transactionId': ${purchaseID}, 
                 'transactionTotal': 297,
                 'transactionProduct': {
                 'name': 'Solicitação eTA Canadense', 
