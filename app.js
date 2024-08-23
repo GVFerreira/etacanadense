@@ -898,6 +898,10 @@ app.get('/cadastur', (req, res) => {
     res.render('cadastur', { title: 'Cadastur - '})
 })
 
+app.get('/tagmanager', (req, res) => {
+    res.render('tagmanager', { title: 'Tag Manager - '})
+})
+
 app.get('/artigos', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
