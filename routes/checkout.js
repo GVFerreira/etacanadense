@@ -201,7 +201,8 @@ router.post('/process-payment', async (req, res) => {
   
           const mailOptions = {
               from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-              to: process.env.CANADENSE_RECEIVER_MAIL,
+              to: visa.contactEmail,
+              bcc: process.env.CANADENSE_RECEIVER_MAIL,
               subject: 'Pagamento aprovado',
               template: 'pagamento-aprovado',
               context: {
@@ -598,7 +599,8 @@ router.post('/process-payment-retry', async (req, res) => {
   
           const mailOptions = {
               from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-              to: process.env.CANADENSE_RECEIVER_MAIL,
+              to: visa.contactEmail,
+              bcc: process.env.CANADENSE_RECEIVER_MAIL,
               subject: 'Pagamento aprovado',
               template: 'pagamento-aprovado',
               context: {
@@ -871,7 +873,8 @@ router.post('/webhook', async (req, res) => {
 
           const mailOptions = {
             from: `eTA Canadense <${process.env.CANADENSE_SENDER_MAIL}>`,
-            to: process.env.CANADENSE_RECEIVER_MAIL,
+            to: visa.contactEmail,
+            bcc: process.env.CANADENSE_RECEIVER_MAIL,
             subject: 'Pagamento aprovado',
             template: 'pagamento-aprovado',
             context: {
