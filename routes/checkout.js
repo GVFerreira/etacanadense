@@ -822,10 +822,13 @@ router.get('/pix', (req, res) => {
   res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
 })
 
-router.get('/obrigado', (req, res) => {
+router.get('/obrigado', async (req, res) => {
     const { status, status_detail, transaction_id } = req.query
 
-    res.render('checkout/obrigado', { status, status_detail, transaction_id })
+    const payment = await Payment.findOne({_id: transaction_id})
+    const quantity = payment.visaIDs.length
+
+    res.render('checkout/obrigado', { status, status_detail, transaction_id, payment, quantity })
 })
 
 router.get('/recusado', (req, res) => {

@@ -37,4 +37,21 @@
         const text = document.getElementById("pix-code").value
         await navigator.clipboard.writeText(text)
     })
+
+    const transactionId = "{{payment._id}}"
+    const amount = parseFloat("{{payment.transaction_amount}}")
+    const productQuantity = parseInt("{{quantity}}")
+    const price = amount / productQuantity
+
+    window.dataLayer = window.dataLayer || []
+    window.dataLayer.push({
+        'event': 'purchase',
+        'transactionId': `${transactionId}`, 
+        'transactionTotal': amount,
+        'transactionProduct': {
+            'name': 'Solicitação eTA Canadense', 
+            'price': price, 
+            'quantity': productQuantity
+        }
+    })
 </script>
