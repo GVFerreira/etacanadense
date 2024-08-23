@@ -898,12 +898,12 @@ app.get('/cadastur', (req, res) => {
     res.render('cadastur', { title: 'Cadastur - '})
 })
 
-app.get('/tagmanager', (req, res) => {
-    const salt = bcrypt.genSaltSync(10)
-    const purchaseID = bcrypt.hashSync("Bacon", salt)
+// app.get('/tagmanager', (req, res) => {
+//     const salt = bcrypt.genSaltSync(10)
+//     const purchaseID = bcrypt.hashSync("Bacon", salt)
 
-    res.render('tagmanager', { title: 'Tag Manager - ', purchaseID})
-})
+//     res.render('tagmanager', { title: 'Tag Manager - ', purchaseID})
+// })
 
 app.get('/artigos', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
