@@ -41,8 +41,27 @@
                                 </select>
                             </div>
                             <div>
-                                <p class="filter">Buscar pelo passaporte:</p>
-                                <input type="text" name="filter" id="filter" class="form-control" value="{{filter}}">
+                                <p class="status">Status da aplicação:</p>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option value="Em análise">Em análise</option>
+                                    <option value="Recebido pelo Governo Canadense">Recebido pelo Governo Canadense</option>
+                                    <option value="Aprovado">Aprovado</option>
+                                    <option value="Recusado">Recusado</option>
+                                </select>
+                            </div>
+                            <div>
+                                <p class="payment">Status de pagamento:</p>
+                                <select name="payment" id="payment" class="form-select">
+                                    <option value="">Todos</option>
+                                    <option value="pending">Pendente</option>
+                                    <option value="approved">Aprovado</option>
+                                    <option value="rejected">Recusado</option>
+                                </select>
+                            </div>
+                            <div>
+                                <p class="passport">Buscar pelo passaporte:</p>
+                                <input type="text" name="passport" id="passport" class="form-control" value="{{passport}}">
                             </div>
                             <div class="d-none">
                                 <input type="text" name="page" id="page" value="1">
@@ -400,7 +419,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
-                                        <a href="/admin/delete-visa/{{id}}" class="btn btn-danger">Excluir</a>
+                                        <a href="/admin/delete-visa/{{id}}?{{queryString}}" class="btn btn-danger">Excluir</a>
                                     </div>
                                 </div>
                             </div>
@@ -421,6 +440,7 @@
                                             <p class="statusETA mb-2">Status da aplicação</p>
                                             <select class="form-select mb-3" name="statusETA" id="statusETA{{id}}" required>
                                                 <option disabled>Selcione</option>
+                                                <option value="Em análise">Em análise</option>
                                                 <option value="Recebido pelo Governo Canadense">Recebido pelo Governo Canadense</option>
                                                 <option value="Aprovado">Aprovado</option>
                                                 <option value="Recusado">Recusado</option>
@@ -457,7 +477,7 @@
                     <div class="d-flex flex-column justify-content-center my-2">
                         <p>Total de solicitações registradas: {{totalVisas}}</p>
                         <div class="d-flex flex-row justify-content-center gap-3">
-                            {{#pagination page totalPages limit sort}}{{/pagination}}
+                            {{#pagination page totalPages limit sort status payment}}{{/pagination}}
                         </div>
                     </div>
                 </div>
@@ -482,6 +502,8 @@
     window.onload = function() {
         document.getElementById("sort").value = "{{sort}}"
         document.getElementById("limit").value = "{{limit}}"
+        document.getElementById("status").value = "{{status}}"
+        document.getElementById("payment").value = "{{payment}}"
     }
 </script>
 

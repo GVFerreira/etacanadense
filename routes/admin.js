@@ -22,6 +22,7 @@ const uploadAttach = require('../helpers/uploadAttachments')
 const PDFPrinter = require("pdfmake")
 
 const Excel = require('exceljs')
+const passport = require('passport')
 
 require('dotenv').config()
 
@@ -29,31 +30,74 @@ require('dotenv').config()
 // SOLICITAÇÕES //
 //////////////////
 router.get('/', async (req, res) => {
-    const page = req.query.page || 1
-    const sort = req.query.sort || "DESC"
-    const limit = req.query.limit || 20
-    const filter = req.query.filter || ''
-    const visasPerPage = limit
-    const skip = (page - 1) * visasPerPage
+    try {
+        const page = parseInt(req.query.page) || 1
+        const sort = req.query.sort || "DESC"
+        const limit = parseInt(req.query.limit) || 20
+        const status = req.query.status || ""
+        const passport = req.query.passport || ""
+        const payment = req.query.payment || ""
+        const filter = {}
+        const visasPerPage = limit
+        const skip = (page - 1) * visasPerPage
 
-    const totalVisas = await Visa.countDocuments()
+        // Aplicar filtros de passaporte e status
+        if (passport) filter.numPassport = passport
+        if (status) filter.statusETA = status
 
-    if(filter) {
-        Visa.find({numPassport: filter}).populate('pagamento').sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
-            const totalPages = Math.ceil(totalVisas / visasPerPage)
-            res.render('admin/index', {visas, limit, sort, page, filter, totalPages, totalVisas, title: 'Administrativo - '})
-        }).catch((err) => {
-            req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
-            res.redirect('/')
+        // Definir o filtro de status de pagamento, se necessário
+        let paymentMatch = {}
+        if (payment) {
+            let statusArray
+            switch (payment) {
+                case 'approved':
+                    statusArray = ['approved']
+                    break
+                case 'pending':
+                    statusArray = ['pending', 'authorized', 'in_process', 'in_mediation']
+                    break
+                case 'rejected':
+                    statusArray = ['rejected', 'cancelled', 'refunded', 'charged_back']
+                    break
+            }
+            paymentMatch = { status: { $in: statusArray } }
+        }
+
+        // Contar o total de documentos sem aplicar o skip e limit
+        const totalVisas = await Visa.countDocuments(filter)
+
+        // Consultar o banco de dados com filtros e paginação
+        const visas = await Visa
+            .find(filter)
+            .populate({
+                path: 'pagamento',
+                match: payment ? paymentMatch : {} // Aplica o filtro de pagamento se houver
+            })
+            .sort({ createdAt: sort })
+            .skip(skip)
+            .limit(limit)
+
+        // Filtrar documentos sem pagamento, se necessário
+        const filteredVisas = payment ? visas.filter(visa => visa.pagamento) : visas
+
+        const totalPages = Math.ceil(totalVisas / visasPerPage)
+
+        res.render('admin/index', {
+            visas: filteredVisas,
+            limit,
+            sort,
+            page,
+            status,
+            payment,
+            passport,
+            totalPages,
+            totalVisas,
+            title: 'Administrativo - '
         })
-    } else {
-        Visa.find().populate('pagamento').sort({createdAt: sort}).skip(skip).limit(limit).then((visas) => {
-            const totalPages = Math.ceil(totalVisas / visasPerPage)
-            res.render('admin/index', {visas, limit, sort, page, totalPages, totalVisas, title: 'Administrativo - '})
-        }).catch((err) => {
-            req.flash('error_msg', 'Ocorreu um erro ao listar todos as solicitações')
-            res.redirect('/')
-        })
+    } catch (err) {
+        console.log(err)
+        req.flash('error_msg', 'Ocorreu um erro ao listar todas as solicitações')
+        res.redirect('/')
     }
 })
 
@@ -386,13 +430,21 @@ router.post('/add-message/:id', (req, res) => {
 })
 
 router.get('/delete-visa/:id', (req, res) => {
-    Visa.findByIdAndDelete({_id: req.params.id}).then(() => {
-        req.flash('success_msg', 'Solicitação excluída com sucesso')
-        res.redirect('/admin')
-    }).catch((err) => {
-        req.flash('error_msg', `Ocorreu um erro: ${err}`)
-        res.redirect('/admin')
-    })
+    const queryParams = req.query // Captura todos os parâmetros de query
+    const queryString = Object.keys(queryParams)
+        .map(key => `${key}=${encodeURIComponent(queryParams[key])}`)
+        .join('&') // Constrói a string de query
+
+    Visa.findByIdAndDelete({ _id: req.params.id })
+        .then(() => {
+            req.flash('success_msg', 'Solicitação excluída com sucesso')
+            // Redireciona de volta para a URL original com os parâmetros de query
+            res.redirect(`/admin?${queryString}`)
+        })
+        .catch((err) => {
+            req.flash('error_msg', `Ocorreu um erro: ${err}`)
+            res.redirect(`/admin?${queryString}`)
+        })
 })
 
 ///////////////
