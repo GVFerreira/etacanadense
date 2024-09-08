@@ -308,7 +308,7 @@ router.post('/process-payment', async (req, res) => {
   }
 })
 
-router.post("/process-payment-pix", async (req, res) => {
+router.post('/process-payment-pix', async (req, res) => {
   const {
     identificationType,
     identificationNumber

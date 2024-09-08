@@ -1,3 +1,8 @@
+<style>
+    header #nav {
+        display: none !important
+    }
+</style>
 <main>
     <section class="container d-flex justify-content-center align-items-center" style="margin: 7rem auto">
         <div class="container__result">
@@ -26,18 +31,14 @@
         </div>
     </section>
 </main>
-<style>
-    header #nav {
-        display: none !important;
-    }
-</style>
 <script>
     //Clipboard copy
     document.getElementById('btnCopy').addEventListener('click', async () => {
         const text = document.getElementById("pix-code").value
         await navigator.clipboard.writeText(text)
     })
-
+</script>
+<script>
     const transactionId = "{{payment._id}}"
     const amount = parseFloat("{{payment.transaction_amount}}")
     const productQuantity = parseInt("{{quantity}}")

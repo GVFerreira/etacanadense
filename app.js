@@ -20,31 +20,31 @@ const handle = handlebars.create({
             // return moment(date).format('DD/MM/YYYY hh:mm')
         },
         pagination: (page, totalPages, limit, sort, status, payment) => {
-            let output = '';
+            let output = ''
 
-            const pageNUM = parseInt(page);
+            const pageNUM = parseInt(page)
 
             // Adiciona link para a primeira página
             if (pageNUM > 1) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=1&status=${status}&payment=${payment}">&laquo;</a>
-                `;
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=1&status=${status}&payment=${payment}">&laquo</a>
+                `
             }
 
             // Adiciona link para a página anterior
             if (pageNUM > 1) {
                 output += `
-                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=${pageNUM - 1}&status=${status}&payment=${payment}">&lsaquo;</a>
-                `;
+                    <a class="btn btn-secondary" href="/admin?sort=${sort}&limit=${limit}&page=${pageNUM - 1}&status=${status}&payment=${payment}">&lsaquo</a>
+                `
             }
 
             // Adiciona links para páginas específicas (5 páginas no máximo)
             for (let i = Math.max(1, pageNUM - 2); i <= Math.min(totalPages, pageNUM + 2); i++) {
-                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary';
+                const activeClass = i === pageNUM ? 'btn-success' : 'btn-secondary'
 
                 output += `
                     <a class="btn ${activeClass}" href="/admin?sort=${sort}&limit=${limit}&page=${i}&status=${status}&payment=${payment}">${i}</a>
-                `;
+                `
             }
 
             // Adiciona link para a próxima página
@@ -723,44 +723,44 @@ app.post('/aplicacaoStep3', async (req, res) => {
 app.post('/aplicacaoStep4', async (req, res) => {
     /* Gera o codeETA, código de acompanhamento da solicitação de eTA. Este código é inserido nos e-mails
     de comunicação e pode ser usado para consultar o status da solicitação */
-    const codeSalt = bcrypt.genSaltSync(10);
-    const codeETA = codeSalt.substring(10, 15).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase();
+    const codeSalt = bcrypt.genSaltSync(10)
+    const codeETA = codeSalt.substring(10, 15).replace(/[^A-Z a-z 0-9]/g, "X").toUpperCase()
 
     // Verifica se o código gerado já existe
-    const existingCodeETA = await Visa.findOne({ codeETA });
+    const existingCodeETA = await Visa.findOne({ codeETA })
 
     if (!existingCodeETA) {
-        const { agreeCheck, consentAndDeclaration, whichAction } = req.body;
+        const { agreeCheck, consentAndDeclaration, whichAction } = req.body
 
         try {
-            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }));
-            const visaID = newVisa._id;
+            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }))
+            const visaID = newVisa._id
 
-            let session = await Session.findOne({ session_id: req.query.session_id });
+            let session = await Session.findOne({ session_id: req.query.session_id })
 
             if (session && session.visa_ids) {
-                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $push: { visa_ids: visaID } }, { new: true });
+                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $push: { visa_ids: visaID } }, { new: true })
             } else {
-                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $set: { visa_ids: [visaID] } }, { new: true });
+                session = await Session.findOneAndUpdate({ session_id: req.query.session_id }, { $set: { visa_ids: [visaID] } }, { new: true })
             }
 
             // Agrupa as informações em apenas um objeto na sessão
-            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA });
+            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA })
 
             // Salva as informações 
-            await newVisa.save();
+            await newVisa.save()
 
             // Verifica a ação escolhida pelo usuário. Opções: goToPayment ou newVisa. Ir para pagamento ou Nova solicitação, respectivamente.
             if (whichAction === "goToPayment") {
                 function formatTel(numberTel) {
-                    return numberTel.replace(/\D/g, '').slice(0, 11);
+                    return numberTel.replace(/\D/g, '').slice(0, 11)
                 }
 
                 if (!req.session.sessionCheckout) {
                     //  Cria um ID da sessão do checkout
-                    const checkoutSalt = bcrypt.genSaltSync(10);
-                    req.session.sessionCheckout = checkoutSalt;
-
+                    const checkoutSalt = bcrypt.genSaltSync(10)
+                    req.session.sessionCheckout = checkoutSalt
+                    
                     const newClient = await fetch(`${process.env.BASE_URL}/customer`, {
                         method: "POST",
                         headers: {
@@ -774,9 +774,8 @@ app.post('/aplicacaoStep4', async (req, res) => {
                             "telephone": formatTel(req.session.aplicacaoStep.contactTel),
                             "ip": req.ip,
                         })
-                    });
-
-                    const client = await newClient.json();
+                    })
+                    const client = await newClient.json()
 
                     if (client.success) {
                         const newPayment = new Payment({
@@ -784,9 +783,9 @@ app.post('/aplicacaoStep4', async (req, res) => {
                             idClient: client.data.id,
                             status: "Checkout em andamento",
                             visaIDs: session.visa_ids
-                        });
-                        
-                        await newPayment.save();
+                        })
+                        await newPayment.save()
+
                     } else {
                         console.log(client);
                     }
@@ -795,19 +794,19 @@ app.post('/aplicacaoStep4', async (req, res) => {
                     await Payment.findOneAndUpdate(
                         { idCheckout: req.session.sessionCheckout },
                         { $set: { visaIDs: session.visa_ids } }
-                    );
+                    )
                 }
             }
 
-            res.status(200).json({ whichAction, session_id: req.query.session_id });
+            res.status(200).json({ whichAction, session_id: req.query.session_id })
         } catch (err) {
-            console.error(err);
-            req.flash('error_msg', 'Ocorreu um erro ao salvar seus dados');
-            res.status(500).json({ error: 'Ocorreu um erro ao salvar seus dados' });
+            console.error(err)
+            req.flash('error_msg', 'Ocorreu um erro ao salvar seus dados')
+            res.status(500).json({ error: 'Ocorreu um erro ao salvar seus dados' })
         }
     } else {
-        req.flash("error_msg", "Tente enviar o formulário novamente");
-        res.redirect(`/aplicacao?step=4&session_id=${req.sessionID}`);
+        req.flash("error_msg", "Tente enviar o formulário novamente")
+        res.redirect(`/aplicacao?step=4&session_id=${req.sessionID}`)
     }
 })
 
@@ -938,7 +937,7 @@ app.get('/termos-condicoes', (req, res) => {
     })
 })
 
-app.use('/admin', /*isAdmin,*/ admin)
+app.use('/admin', isAdmin, admin)
 app.use('/users', users)
 app.use('/checkout', checkout)
 
