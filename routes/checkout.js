@@ -225,7 +225,7 @@ router.post('/process-payment', async (req, res) => {
             }
           })
 
-          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
+          res.redirect(`/checkout/finalizacao?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
           
         }
       }
@@ -623,7 +623,7 @@ router.post('/process-payment-retry', async (req, res) => {
             }
           })
 
-          res.redirect(`/checkout/obrigado?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
+          res.redirect(`/checkout/finalizao?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
           
         }
       }
@@ -824,7 +824,7 @@ router.get('/pix', (req, res) => {
   res.render('checkout/pix', { title, id, status, qr_code, qr_code_base })
 })
 
-router.get('/obrigado', async (req, res) => {
+router.get('/finalizacao', async (req, res) => {
     const { status, status_detail, transaction_id } = req.query
 
     const payment = await Payment.findOne({_id: transaction_id})
