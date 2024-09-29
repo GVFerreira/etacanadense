@@ -6,6 +6,7 @@
         'gtm.start': new Date().getTime(),
         event: 'gtm.js'
       });
+
       var 
         f=d.getElementsByTagName(s)[0],
         j=d.createElement(s),
@@ -26,5 +27,46 @@
           title: document.title
         }
       });
+    
+    function get_ga_clientid() {
+      var cookie = {};
+
+      document.cookie.split(';').forEach(function(el) {
+        var splitCookie = el.split('=');
+        var key = splitCookie[0].trim();
+        var value = splitCookie[1];
+        cookie[key] = value;
+      });
+
+      return cookie["_ga"].substring(6);
+    }
+
+    setTimeout(() => {
+  const measurement_id = `G-ES5X0JBPXB`;
+  const api_secret = `Px_5xIdDQ7689YNhT3wfrg`;
+
+  fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+    method: "POST",
+    body: JSON.stringify({
+      client_id: get_ga_clientid(),
+      events: [{
+        name: 'tutorial_begin',
+        params: {}
+      }]
+    })
+  })
+  .then(response => {
+    // Verifique o status da resposta
+    if (response.status === 204 || response.status === 200) {
+      console.log('Event sent successfully with status:', response.status);
+    } else {
+      throw new Error(`Failed to send event. Status: ${response.status}`);
+    }
+  })
+  .catch(error => {
+    console.error('Error sending event:', error);
+  });
+}, 2000);
+
   </script>
 <!-- End Google Tag Manager -->
