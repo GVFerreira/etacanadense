@@ -729,11 +729,21 @@ app.post('/aplicacaoStep4', async (req, res) => {
     // Verifica se o código gerado já existe
     const existingCodeETA = await Visa.findOne({ codeETA })
 
+    // Se o código não existe, seguimos com o cadastro do cliente
     if (!existingCodeETA) {
+        //Aceite dos termos e qual ação foi escolhida pelo usuário (wichAction: goToPayment | newVisa)
         const { agreeCheck, consentAndDeclaration, whichAction } = req.body
 
         try {
-            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA }))
+            function get_ga_clientid() {
+                var cookie = req.cookies._ga
+        
+                if(cookie) return cookie.substring(6)
+                
+                return ""
+            }
+            const gtm_client_id = get_ga_clientid()
+            const newVisa = new Visa(Object.assign({}, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA, gtm_client_id }))
             const visaID = newVisa._id
 
             let session = await Session.findOne({ session_id: req.query.session_id })
@@ -745,17 +755,15 @@ app.post('/aplicacaoStep4', async (req, res) => {
             }
 
             // Agrupa as informações em apenas um objeto na sessão
-            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA })
+            req.session.aplicacaoStep = Object.assign({}, { visaID }, req.session.aplicacaoStep, { agreeCheck, consentAndDeclaration, codeETA, gtm_client_id })
 
             // Salva as informações 
             await newVisa.save()
 
             // Verifica a ação escolhida pelo usuário. Opções: goToPayment ou newVisa. Ir para pagamento ou Nova solicitação, respectivamente.
             if (whichAction === "goToPayment") {
-                function formatTel(numberTel) {
-                    return numberTel.replace(/\D/g, '').slice(0, 11)
-                }
-
+                function formatTel(numberTel) { return numberTel.replace(/\D/g, '').slice(0, 11) }
+                
                 if (!req.session.sessionCheckout) {
                     //  Cria um ID da sessão do checkout
                     const checkoutSalt = bcrypt.genSaltSync(10)
@@ -895,13 +903,6 @@ app.post('/contact-form', (req, res) => {
 
 app.get('/cadastur', (req, res) => {
     res.render('cadastur', { title: 'Cadastur - '})
-})
-
-app.get('/tagmanager', (req, res) => {
-    const salt = bcrypt.genSaltSync(10)
-    const purchaseID = bcrypt.hashSync("Bacon", salt)
-
-    res.render('tagmanager', { title: 'Tag Manager - ', purchaseID})
 })
 
 app.get('/artigos', (req, res) => {

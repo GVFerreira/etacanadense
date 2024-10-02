@@ -250,6 +250,9 @@ const Visa = new Schema({
         type: String,
         default: ''
     },
+    gtm_client_id: {
+        type: String
+    },
     pagamento: {
         type: Schema.Types.ObjectId,
         ref: 'payment'

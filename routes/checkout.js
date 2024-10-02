@@ -225,6 +225,39 @@ router.post('/process-payment', async (req, res) => {
             }
           })
 
+          const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
+          const api_secret = process.env.CANADENSE_GA_API_SECRET
+
+          fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+            method: "POST",
+            body: JSON.stringify({
+              client_id: visa.gtm_client_id,
+              events: [{
+                name: 'purchase',
+                params: {
+                  'transactionId': savedPayment.transactionId, 
+                  'transactionTotal': savedPayment.transaction_amount / savedPayment.visaIDs.length,
+                  'transactionProduct': {
+                    'name': 'Solicitação eTA Canadense', 
+                    'price': savedPayment.transaction_amount / savedPayment.visaIDs.length, 
+                    'quantity': 1
+                  }
+                }
+              }]
+            })
+          })
+          .then(response => {
+            // Verifique o status da resposta
+            if (response.status === 204 || response.status === 200) {
+              console.log('Event sent successfully with status:', response.status);
+            } else {
+              throw new Error(`Failed to send event. Status: ${response.status}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error sending event:', error);
+          })
+
           res.redirect(`/checkout/finalizacao?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
           
         }
@@ -411,7 +444,6 @@ router.post('/process-payment-pix', async (req, res) => {
     res.redirect('/checkout')
   }
 })
-
 
 //////////////////////
 // NOVAS TENTATIVAS //
@@ -621,6 +653,39 @@ router.post('/process-payment-retry', async (req, res) => {
                 messageId
               })
             }
+          })
+
+          const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
+          const api_secret = process.env.CANADENSE_GA_API_SECRET
+
+          fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+            method: "POST",
+            body: JSON.stringify({
+              client_id: visa.gtm_client_id,
+              events: [{
+                name: 'purchase',
+                params: {
+                  'transactionId': savedPayment.transactionId, 
+                  'transactionTotal': savedPayment.transaction_amount / savedPayment.visaIDs.length,
+                  'transactionProduct': {
+                    'name': 'Solicitação eTA Canadense', 
+                    'price': savedPayment.transaction_amount / savedPayment.visaIDs.length, 
+                    'quantity': 1
+                  }
+                }
+              }]
+            })
+          })
+          .then(response => {
+            // Verifique o status da resposta
+            if (response.status === 204 || response.status === 200) {
+              console.log('Event sent successfully with status:', response.status);
+            } else {
+              throw new Error(`Failed to send event. Status: ${response.status}`);
+            }
+          })
+          .catch(error => {
+            console.error('Error sending event:', error);
           })
 
           res.redirect(`/checkout/finalizao?status_detail=accredited&status=approved&transaction_id=${savedPayment._id}`)
@@ -867,6 +932,39 @@ router.post('/webhook', async (req, res) => {
   
       for (const element of payment.visaIDs) {
         const visa = await Visa.findOne({ _id: element })
+
+        const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
+        const api_secret = process.env.CANADENSE_GA_API_SECRET
+
+        fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+          method: "POST",
+          body: JSON.stringify({
+            client_id: visa.gtm_client_id,
+            events: [{
+              name: 'purchase',
+              params: {
+                'transactionId': payment.transactionId, 
+                'transactionTotal': payment.transaction_amount / payment.visaIDs.length,
+                'transactionProduct': {
+                  'name': 'Solicitação eTA Canadense', 
+                  'price': payment.transaction_amount / payment.visaIDs.length, 
+                  'quantity': 1
+                }
+              }
+            }]
+          })
+        })
+        .then(response => {
+          // Verifique o status da resposta
+          if (response.status === 204 || response.status === 200) {
+            console.log('Event sent successfully with status:', response.status);
+          } else {
+            throw new Error(`Failed to send event. Status: ${response.status}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error sending event:', error);
+        })
           
         if (visa) {
           transporter.use('compile', hbs(handlebarOptions))
