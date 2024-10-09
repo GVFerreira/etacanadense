@@ -571,38 +571,6 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/aplicacao', async (req, res) => {
-    const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
-    const api_secret = process.env.CANADENSE_GA_API_SECRET
-
-    fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
-    method: "POST",
-    body: JSON.stringify({
-        client_id: visa.gtm_client_id,
-        events: [{
-        name: 'purchase',
-        params: {
-            'transactionId': "id-aleatorio-teste", 
-            'transactionTotal': 147,
-            'transactionProduct': {
-                'name': 'Solicitação eTA Canadense',
-                'price': 147,
-                'quantity': 1
-            }
-        }
-        }]
-    })
-    })
-    .then(response => {
-    // Verifique o status da resposta
-    if (response.status === 204 || response.status === 200) {
-        console.log('Event sent successfully with status:', response.status);
-    } else {
-        throw new Error(`Failed to send event. Status: ${response.status}`);
-    }
-    })
-    .catch(error => {
-    console.error('Error sending event:', error);
-    })
     if (!req.query.step) {
         const session = await Session.findOne({session_id: req.sessionID})
         if(!session) {
@@ -894,8 +862,50 @@ app.get('/consulta-download-documento/:filename', (req, res) => {
 app.get('/contato', (req, res) => {
     const policyAccepted = req.cookies.policyAccepted
     const showPolicyPopup = !policyAccepted
-    res.render('contato', {
+
+    const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
+    const api_secret = process.env.CANADENSE_GA_API_SECRET
+
+    function get_ga_clientid() {
+        var cookie = req.cookies._ga
+
+        if(cookie) return cookie.substring(6)
         
+        return ""
+    }
+    const gtm_client_id = get_ga_clientid()
+
+    fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+    method: "POST",
+    body: JSON.stringify({
+        client_id: gtm_client_id,
+        events: [{
+        name: 'purchase',
+        params: {
+            'transactionId': "id-aleatorio-teste", 
+            'transactionTotal': 147,
+            'transactionProduct': {
+                'name': 'Solicitação eTA Canadense',
+                'price': 147,
+                'quantity': 1
+            }
+        }
+        }]
+    })
+    })
+    .then(response => {
+    // Verifique o status da resposta
+    if (response.status === 204 || response.status === 200) {
+        console.log('Event sent successfully with status:', response.status);
+    } else {
+        throw new Error(`Failed to send event. Status: ${response.status}`);
+    }
+    })
+    .catch(error => {
+        console.error('Error sending event:', error);
+    })
+
+    res.render('contato', {
         showPolicyPopup,
         title: 'Contato - ',
         metaDescription: 'Entre em contato conosco para todas as suas dúvidas e necessidades relacionadas à Autorização Eletrônica de Viagem para o Canadá. Estamos aqui para ajudar a tornar sua viagem o mais tranquila possível.'
