@@ -875,31 +875,40 @@ app.get('/contato', (req, res) => {
     }
     const gtm_client_id = get_ga_clientid()
 
-    fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
-    method: "POST",
-    body: JSON.stringify({
-        client_id: gtm_client_id,
-        events: [{
-        name: 'purchase',
-        params: {
-            'transactionId': "id-aleatorio-teste", 
-            'transactionTotal': 147,
-            'transactionProduct': {
-                'name': 'Solicitação eTA Canadense',
-                'price': 147,
-                'quantity': 1
-            }
-        }
-        }]
-    })
+    fetch(`https://www.google-analytics.com/mp/collect?api_secret=${api_secret}&measurement_id=${measurement_id}`, {
+        method: "POST",
+        body: JSON.stringify({
+            "client_id": "GA1.1.1575000475.1727614007",
+            "non_personalized_ads":false,
+            "events":[
+                {
+                    "name":"teste_leo",
+                    "params": {
+                        "items":[
+                            {
+                                "item_name":
+                                "Solicitação eTA Canadense",
+                                "quantity":1,
+                                "price":147,
+                                "currency":"BRL"
+                            }
+                        ],
+                        "currency":"BRL",
+                        "transaction_id":"id-aleatorio-teste",
+                        "value":147
+                    }
+                }
+            ]
+        })
     })
     .then(response => {
-    // Verifique o status da resposta
-    if (response.status === 204 || response.status === 200) {
-        console.log('Event sent successfully with status:', response.status);
-    } else {
-        throw new Error(`Failed to send event. Status: ${response.status}`);
-    }
+        console.log(response)
+        // Verifique o status da resposta
+        if (response.status === 204 || response.status === 200) {
+            console.log('Event sent successfully with status:', response.status);
+        } else {
+            throw new Error(`Failed to send event. Status: ${response.status}`);
+        }
     })
     .catch(error => {
         console.error('Error sending event:', error);
