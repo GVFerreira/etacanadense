@@ -571,6 +571,38 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/aplicacao', async (req, res) => {
+    const measurement_id = process.env.CANADENSE_MEASUREMENT_ID
+    const api_secret = process.env.CANADENSE_GA_API_SECRET
+
+    fetch(`https://www.google-analytics.com/mp/collect?measurement_id=${measurement_id}&api_secret=${api_secret}`, {
+    method: "POST",
+    body: JSON.stringify({
+        client_id: visa.gtm_client_id,
+        events: [{
+        name: 'purchase',
+        params: {
+            'transactionId': "id-aleatorio-teste", 
+            'transactionTotal': 147,
+            'transactionProduct': {
+                'name': 'Solicitação eTA Canadense',
+                'price': 147,
+                'quantity': 1
+            }
+        }
+        }]
+    })
+    })
+    .then(response => {
+    // Verifique o status da resposta
+    if (response.status === 204 || response.status === 200) {
+        console.log('Event sent successfully with status:', response.status);
+    } else {
+        throw new Error(`Failed to send event. Status: ${response.status}`);
+    }
+    })
+    .catch(error => {
+    console.error('Error sending event:', error);
+    })
     if (!req.query.step) {
         const session = await Session.findOne({session_id: req.sessionID})
         if(!session) {
