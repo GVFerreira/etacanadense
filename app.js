@@ -870,7 +870,7 @@ app.get('/contato', (req, res) => {
         var cookie = req.cookies._ga
 
         if(cookie) return cookie.substring(6)
-        
+
         return ""
     }
     const gtm_client_id = get_ga_clientid()
@@ -878,7 +878,7 @@ app.get('/contato', (req, res) => {
     fetch(`https://www.google-analytics.com/mp/collect?api_secret=${api_secret}&measurement_id=${measurement_id}`, {
         method: "POST",
         body: JSON.stringify({
-            "client_id": "GA1.1.1575000475.1727614007",
+            "client_id": gtm_client_id,
             "non_personalized_ads":false,
             "events":[
                 {
@@ -902,7 +902,6 @@ app.get('/contato', (req, res) => {
         })
     })
     .then(response => {
-        console.log(response)
         // Verifique o status da resposta
         if (response.status === 204 || response.status === 200) {
             console.log('Event sent successfully with status:', response.status);
