@@ -879,23 +879,22 @@ app.get('/contato', (req, res) => {
         method: "POST",
         body: JSON.stringify({
             "client_id": gtm_client_id,
-            "non_personalized_ads":false,
-            "events":[
+            "non_personalized_ads": false,
+            "events": [
                 {
-                    "name":"teste_leo",
+                    "name": "purchase",
                     "params": {
-                        "items":[
+                        "items": [
                             {
-                                "item_name":
-                                "Solicitação eTA Canadense",
-                                "quantity":1,
-                                "price":147,
-                                "currency":"BRL"
+                                "item_name": "Solicitação eTA Canadense",
+                                "quantity": 1,
+                                "price": 147,
+                                "currency": "BRL"
                             }
                         ],
-                        "currency":"BRL",
-                        "transaction_id":"id-aleatorio-teste",
-                        "value":147
+                        "currency": "BRL",
+                        "transaction_id": "id-aleatorio-teste",
+                        "value": 147
                     }
                 }
             ]
